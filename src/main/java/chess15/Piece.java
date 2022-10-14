@@ -1,3 +1,5 @@
+package chess15;
+
 public class Piece extends BoardElement{
     public Color color;
     public Type look;
@@ -11,12 +13,14 @@ public class Piece extends BoardElement{
         this.movement = movement;
         this.isKing = isKing;
     }
-}
 
-enum Type{
-    PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING
-}
+    public enum Type {
+        PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING
+    }
 
-enum Color{
-    WHITE, BLACK
+
+    public enum Color {
+        WHITE, BLACK
+    }
+
 }

@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+package chess15;
 
 public class Board {
     private BoardElement[][] elements = new BoardElement[8][8];

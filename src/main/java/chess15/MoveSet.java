@@ -1,3 +1,5 @@
+package chess15;
+
 import java.util.ArrayList;
 
 public class MoveSet{
