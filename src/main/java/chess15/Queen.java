@@ -2,9 +2,10 @@ package chess15;
 
 import java.util.ArrayList;
 
+//Singleton class
 public class Queen extends MoveSet
 {
-    private Queen(ArrayList<Coords> moves, boolean repeating)
+    private Queen(ArrayList<Coords> moves, boolean repeating) 
     {
         this.moves = moves;
         this.repeating = repeating;

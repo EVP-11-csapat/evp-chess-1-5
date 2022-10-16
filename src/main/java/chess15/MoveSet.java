@@ -13,14 +13,12 @@ public abstract class MoveSet{
             for(int i=0; i<getSingleton().moves.size();i++)
             {
                 final Coords currentMove = getSingleton().moves.get(i);
-                //hozzáadja az adott lépés típus kordinátáit
                 for(Coords currentTile = new Coords(0,0).add(positionOfPiece).add(currentMove);
                     (currentTile.getX()<=7 && currentTile.getX()>=0 && currentTile.getY()<=7 && currentTile.getY()>=0);
                     currentTile.add(currentMove))
                 {
                     result.add(new Coords(currentTile));
                 }
-                //kivonja az adott lépés típus kordinátáit
                 for(Coords currentTile = new Coords(0,0).add(positionOfPiece).subtract(currentMove);
                     (currentTile.getX()<=7 && currentTile.getX()>=0 && currentTile.getY()<=7 && currentTile.getY()>=0);
                     currentTile.subtract(currentMove))
@@ -34,14 +32,12 @@ public abstract class MoveSet{
             {
                 final Coords currentMove = getSingleton().moves.get(i);
 
-                //hozzáadja az adott lépés típus kordinátáit
-                currentTile = Coords.add(positionOfPiece,getSingleton().moves.get(i));
+                currentTile = new Coords(0,0).add(positionOfPiece).add(currentMove);
                 if(currentTile.getX()<=7 && currentTile.getX()>=0 && currentTile.getY()<=7 && currentTile.getY()>=0)
                 {
                     result.add(new Coords(currentTile));
                 }
-                //kivonja az adott lépés típus kordinátáit
-                currentTile = Coords.subtract(positionOfPiece,getSingleton().moves.get(i));
+                currentTile = new Coords(0,0).add(positionOfPiece).subtract(currentMove);
                 if(currentTile.getX()<=7 && currentTile.getX()>=0 && currentTile.getY()<=7 && currentTile.getY()>=0)
                 {
                     result.add(new Coords(currentTile));
