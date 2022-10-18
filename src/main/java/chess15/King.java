@@ -5,6 +5,8 @@ import java.util.ArrayList;
 //Singleton class
 public class King extends MoveSet
 {
+    private static King instance;
+
     private King()
     {
         ArrayList<Coords> m = new ArrayList<Coords>();
