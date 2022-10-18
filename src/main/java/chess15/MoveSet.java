@@ -2,11 +2,16 @@ package chess15;
 
 import java.util.ArrayList;
 
-public abstract class MoveSet{
+public class MoveSet{
     public static ArrayList<Coords> moves;
     public static boolean repeating;
-    public abstract MoveSet getSingleton();
-    public ArrayList<Coords> possibleMoves(final Coords positionOfPiece)
+    protected static MoveSet instance;
+    public static MoveSet getInstance(){
+        if(instance == null) instance = new MoveSet();
+        return instance;
+    }
+
+    /* public ArrayList<Coords> possibleMoves(final Coords positionOfPiece)
     {
         ArrayList<Coords> result=new ArrayList<Coords>();
         if(repeating){
@@ -45,5 +50,5 @@ public abstract class MoveSet{
             }
         }
         return result;
-    }
+    }*/
 }

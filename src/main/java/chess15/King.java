@@ -5,38 +5,19 @@ import java.util.ArrayList;
 //Singleton class
 public class King extends MoveSet
 {
-    private King(ArrayList<Coords> moves, boolean repeating) 
+    private King()
     {
-        this.moves = moves;
-        this.repeating = repeating;
+        ArrayList<Coords> m = new ArrayList<Coords>();
+        m.add(new Coords(1,1));
+        m.add(new Coords(1,0));
+        m.add(new Coords(0,1));
+        m.add(new Coords(-1,1));
+        moves = m;
+        repeating = false;
     }
-    private static King KingSingleton= null;
-    public  static King getKingSingleton()
+    public static MoveSet getInstance()
     {
-        if(KingSingleton == null)
-        {
-            ArrayList<Coords> m = new ArrayList<Coords>();
-            m.add(new Coords(1,1));
-            m.add(new Coords(1,0));
-            m.add(new Coords(0,1));
-            m.add(new Coords(-1,1));
-            KingSingleton = new King( m,false);
-        }
-
-        return KingSingleton;
-    }
-    @Override public King getSingleton()
-    {
-        if(KingSingleton == null)
-        {
-            ArrayList<Coords> m = new ArrayList<Coords>();
-            m.add(new Coords(1,1));
-            m.add(new Coords(1,0));
-            m.add(new Coords(0,1));
-            m.add(new Coords(-1,1));
-            KingSingleton = new King( m,false);
-        }
-
-        return KingSingleton;
+        if(instance == null) instance = new King();
+        return instance;
     }
 }
