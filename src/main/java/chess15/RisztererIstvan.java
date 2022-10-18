@@ -7,14 +7,14 @@ public class RisztererIstvan
     public static void run()
     {
         //testCoords();
-        testQueen();
-        testKnight();
-        testKing();    
+        //testQueen();
+        //testKnight();
+        //testKing(); 
+        testPawn();   
     }
     public static void testCoords()
     {
         Coords c1 = new Coords(0,0);
-        
         Coords c2 = new Coords(1,0);
         Coords c3 = new Coords(0,1);
         Coords c4 = new Coords(1,1);
@@ -97,6 +97,70 @@ public class RisztererIstvan
         for(int i=0; i<result2.size(); i++)
         {
             System.out.println(result2.get(i).toString() );
+        }
+    }
+    public static void testPawn()
+    {
+        ArrayList<Coords> result1=PawnWhite.getPawnWhiteSingleton().possibleMoves(new Coords(0,0));
+        System.out.println("A paraszt a A1-es mezőről (0,0), az alábbi mezőkre tud lépni: ");
+        System.out.println("lehetséges lépések száma: "+ result1.size());
+        for(int i=0; i<result1.size(); i++)
+        {
+            System.out.println(result1.get(i).toString());
+
+        }
+        ArrayList<Coords> result2=PawnWhite.getPawnWhiteSingleton().possibleMoves(new Coords(3,3));
+        System.out.println("A paraszt a D4-es mezőről (3,3), az alábbi mezőkre tud lépni: ");
+        System.out.println("lehetséges lépések száma : "+result2.size());
+        for(int i=0; i<result2.size(); i++)
+        {
+            System.out.println(result2.get(i).toString() );
+        }
+
+        ArrayList<Coords> result3=PawnBlack.getPawnBlackSingleton().possibleMoves(new Coords(0,0));
+        System.out.println("A paraszt a A1-es mezőről (0,0), az alábbi mezőkre tud lépni: ");
+        System.out.println("lehetséges lépések száma: "+ result3.size());
+        for(int i=0; i<result3.size(); i++)
+        {
+            System.out.println(result3.get(i).toString());
+        }
+        ArrayList<Coords> result4=PawnBlack.getPawnBlackSingleton().possibleMoves(new Coords(3,3));
+        System.out.println("A  paraszt a D4-es mezőről (3,3), az alábbi mezőkre tud lépni: ");
+        System.out.println("lehetséges lépések száma : "+result4.size());
+        for(int i=0; i<result4.size(); i++)
+        {
+            System.out.println(result4.get(i).toString() );
+        }
+
+        ArrayList<Coords> result5=PawnWhite.getPawnWhiteSingleton().possibleAttack(new Coords(0,0));
+        System.out.println("A paraszt a A1-es mezőről (0,0), az alábbi mezőkre tud támadni: ");
+        System.out.println("lehetséges lépések száma: "+ result5.size());
+        for(int i=0; i<result5.size(); i++)
+        {
+            System.out.println(result5.get(i).toString());
+
+        }
+        ArrayList<Coords> result6=PawnWhite.getPawnWhiteSingleton().possibleAttack(new Coords(3,3));
+        System.out.println("A paraszt a D4-es mezőről (3,3), az alábbi mezőkre tud támadni: ");
+        System.out.println("lehetséges lépések száma : "+result6.size());
+        for(int i=0; i<result6.size(); i++)
+        {
+            System.out.println(result6.get(i).toString() );
+        }
+
+        ArrayList<Coords> result7=PawnBlack.getPawnBlackSingleton().possibleAttack(new Coords(0,0));
+        System.out.println("A paraszt a A1-es mezőről (0,0), az alábbi mezőkre tud támadni: ");
+        System.out.println("lehetséges lépések száma: "+ result7.size());
+        for(int i=0; i<result7.size(); i++)
+        {
+            System.out.println(result7.get(i).toString());
+        }
+        ArrayList<Coords> result8=PawnBlack.getPawnBlackSingleton().possibleAttack(new Coords(3,3));
+        System.out.println("A  paraszt a D4-es mezőről (3,3), az alábbi mezőkre tud támadni: ");
+        System.out.println("lehetséges lépések száma : "+result8.size());
+        for(int i=0; i<result8.size(); i++)
+        {
+            System.out.println(result8.get(i).toString() );
         }
     }
 }
