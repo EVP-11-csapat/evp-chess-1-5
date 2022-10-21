@@ -2,6 +2,6 @@ package chess15.gamemode;
 
 import chess15.Board;
 
-public abstract class gamemode {
+public abstract class Gamemode {
     abstract Board startState();
 }
