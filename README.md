@@ -37,3 +37,8 @@ Knight coordinates
 |       |       | 0;0 |      |      |
 | -2;1  |       |     |      | 2;1  |
 |       | -1;2  |     | 1;2  |      |
+
+---
+
+For readability, the following will be used to represent a coordinate
+`[x, y]` where `x` is the column we are in and `y` is the row we are in.

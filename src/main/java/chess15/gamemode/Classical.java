@@ -9,8 +9,8 @@ public class Classical extends Gamemode {
         Board board = new Board();
 
         for (int i = 0; i < 7; i++) {
-            board.elements[i][1] = new Piece(Piece.Color.BLACK, Piece.Type.PAWN, Pawn.getInstance(),false);
-            board.elements[i][6] = new Piece(Piece.Color.WHITE, Piece.Type.PAWN, Pawn.getInstance(),false);
+            board.elements[1][i] = new Piece(Piece.Color.BLACK, Piece.Type.PAWN, King.getInstance(),false);
+            board.elements[6][i] = new Piece(Piece.Color.WHITE, Piece.Type.PAWN, King.getInstance(),false);
         }
 
 
