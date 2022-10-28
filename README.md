@@ -18,12 +18,16 @@ Chess Board coordinates
 
 ---
 
+All moves are in order from top left and rotating clockwise
+
+---
+
 Standard piece movement coordinates
 
 | -1;-1 | 0;-1 | 1;-1 |
 |-------|------|------|
 | -1;0  | 0;0  | 1;0  |
-| -0;1  | 0;1  | 1;1  |
+| -1;1  | 0;1  | 1;1  |
 
 Knight coordinates
 
