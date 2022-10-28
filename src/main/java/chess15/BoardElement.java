@@ -6,4 +6,11 @@ public class BoardElement {
     public BoardElement(){
         isEmpty = true;
     }
+
+    @Override
+    public String toString() {
+        return "BoardElement{" +
+                "isEmpty=" + isEmpty +
+                '}';
+    }
 }

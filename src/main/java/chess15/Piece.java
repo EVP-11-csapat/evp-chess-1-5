@@ -6,7 +6,7 @@ public class Piece extends BoardElement{
     public MoveSet movement;
     public boolean isKing;
 
-    Piece(Color color, Type look, MoveSet movement, boolean isKing){
+    public Piece(Color color, Type look, MoveSet movement, boolean isKing){
         isEmpty = false;
         this.color = color;
         this.look = look;
@@ -23,4 +23,13 @@ public class Piece extends BoardElement{
         WHITE, BLACK
     }
 
+    @Override
+    public String toString() {
+        return "Piece{" +
+                "color=" + color +
+                ", look=" + look +
+                ", movement=" + movement +
+                ", isKing=" + isKing +
+                '}';
+    }
 }
