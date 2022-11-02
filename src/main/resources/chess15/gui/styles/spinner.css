@@ -1,0 +1,6 @@
+.spinner > .text-field
+{
+    -fx-alignment: center;
+    -fx-font-size: 35px;
+    /*-fx-background-color: #2A2A2A;*/
+}

@@ -1,6 +1,7 @@
 package chess15;
 
 import chess15.gamemode.Classical;
+import chess15.gui.ChessApplication;
 import chess15.util.BoardVisualizer;
 import chess15.util.JsonToBoard;
 
@@ -15,15 +16,17 @@ public class Main {
         //tesztelések
 //        RisztererIstvan.run();
 
-        Board board = new Board();
+//        Board board = new Board();
+//
+//        System.out.println(board.toString());
+//
+//        board = new Classical().startState();
+//
+//        System.out.println(board.toString());
+//
+//        BoardVisualizer.printBoard(board);
 
-        System.out.println(board.toString());
-
-        board = new Classical().startState();
-
-        System.out.println(board.toString());
-
-        BoardVisualizer.printBoard(board);
+        ChessApplication.open();
 
     }
 }
