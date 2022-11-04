@@ -17,5 +17,9 @@ public class BoardTest {
     @Test
     public void getElement() {
         assertSame(board.getElement(1,1), board.elements[0][7]);
+        assertSame(board.getElement(2,1), board.elements[1][7]);
+        assertSame(board.getElement(1,8), board.elements[0][0]);
+        assertSame(board.getElement(2,8), board.elements[1][0]);
+        assertSame(board.getElement(4,4), board.elements[3][5]);
     }
 }
