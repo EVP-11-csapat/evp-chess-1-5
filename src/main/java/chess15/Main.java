@@ -16,17 +16,17 @@ public class Main {
         //tesztelések
 //        RisztererIstvan.run();
 
-//        Board board = new Board();
-//
-//        System.out.println(board.toString());
-//
-//        board = new Classical().startState();
-//
-//        System.out.println(board.toString());
+        Board board = new Board();
+
+        System.out.println(board.toString());
+
+        board = new Classical().startState();
+
+        System.out.println(board.toString());
 //
 //        BoardVisualizer.printBoard(board);
 
-        ChessApplication.open();
+//        ChessApplication.open();
 
     }
 }
