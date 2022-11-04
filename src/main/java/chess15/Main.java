@@ -12,21 +12,20 @@ public class Main {
 //        MoveSet kingMoves = King.getInstance();
 
 //        System.out.println(kingMoves.moves.size());
-
-        //tesztelések
+//        tesztelések
 //        RisztererIstvan.run();
 
-        Board board = new Board();
+//        Board board = new Board();
 
-        System.out.println(board.toString());
+//        System.out.println(board.toString());
 
-        board = new Classical().startState();
+//        board = new Classical().startState();
 
-        System.out.println(board.toString());
+//        System.out.println(board.toString());
 //
 //        BoardVisualizer.printBoard(board);
 
-//        ChessApplication.open();
+        ChessApplication.open();
 
     }
 }

@@ -10,6 +10,10 @@ public class Board {
         return elements[col - 1][8 - row];
     }
 
+    public BoardElement at(Vector2 position){
+        return elements[position.x][position.y];
+    }
+
     public Board()
     {
         for (BoardElement[] row : elements) {

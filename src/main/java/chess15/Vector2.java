@@ -11,8 +11,16 @@ public class Vector2 {
         return new Vector2(a.x + b.x, a.y + b.y);
     }
 
+
+    public Vector2 scaleBy(int c){
+        return new Vector2(x*c, y*c);
+    }
     public Vector2 inverse(){
         return new Vector2(this.x, -this.y);
+    }
+
+    public boolean outOfBounds(){
+        return x < 0 || y < 0 || x > 7 || y > 7;
     }
 
     @Override

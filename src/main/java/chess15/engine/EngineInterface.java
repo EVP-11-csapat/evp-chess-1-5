@@ -1,4 +1,4 @@
-package chess15.engine.interfaces;
+package chess15.engine;
 
 import chess15.Vector2;
 
