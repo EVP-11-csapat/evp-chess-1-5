@@ -21,6 +21,8 @@ public class King extends MoveSet
 
         moves = m;
         repeating = false;
+        attackDifferent = false;
+        whiteDifferent = false;
     }
     public static MoveSet getInstance()
     {
