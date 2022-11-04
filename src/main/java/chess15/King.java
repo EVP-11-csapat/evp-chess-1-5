@@ -9,15 +9,15 @@ public class King extends MoveSet
 
     private King()
     {
-        ArrayList<Coords> m = new ArrayList<Coords>();
-        m.add(new Coords(-1, -1));
-        m.add(new Coords(0, -1));
-        m.add(new Coords(1, -1));
-        m.add(new Coords(-1, 0));
-        m.add(new Coords(1, 0));
-        m.add(new Coords(-1, 1));
-        m.add(new Coords(0, 1));
-        m.add(new Coords(1, 1));
+        ArrayList<Vector2> m = new ArrayList<Vector2>();
+        m.add(new Vector2(-1, -1));
+        m.add(new Vector2(0, -1));
+        m.add(new Vector2(1, -1));
+        m.add(new Vector2(-1, 0));
+        m.add(new Vector2(1, 0));
+        m.add(new Vector2(-1, 1));
+        m.add(new Vector2(0, 1));
+        m.add(new Vector2(1, 1));
 
         moves = m;
         repeating = false;

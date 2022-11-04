@@ -50,7 +50,6 @@ public class JsonToBoard {
         return switch (type) {
             case "pawn" ->
                     //Took out pawn because of black and white having unique moves
-//                return Pawn.getInstance();
                     null;
             case "rook" -> Rook.getInstance();
             case "knight" -> Knight.getInstance();

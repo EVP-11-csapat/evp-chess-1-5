@@ -19,10 +19,6 @@ public class Board {
 
     @Override
     public String toString() {
-//        return "Board{" +
-//                "elements=" + Arrays.toString(elements) +
-//                '}';
-
         String toReturn = "Board{elements=\n";
 
         for (int i = 0; i < 8; i++) {

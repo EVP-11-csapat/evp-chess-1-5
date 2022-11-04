@@ -1,9 +1,9 @@
 package chess15.gui.interfaces;
-import chess15.Coords;
+import chess15.Vector2;
 import chess15.Piece;
 
 public interface UIInteface {
     void endGame(Piece.Color won);
-    void setCheck(Coords checkCoord);
+    void setCheck(Vector2 checkCoord);
     void remove(Piece pieceToRemove); // Temp
 }
