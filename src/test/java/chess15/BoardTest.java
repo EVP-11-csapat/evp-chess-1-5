@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 public class BoardTest {
 
     Board board = new Board();
-
     @Before
     public void setUp() throws Exception {
         board = new Classical().startState();
@@ -17,7 +16,6 @@ public class BoardTest {
 
     @Test
     public void getElement() {
-        
+        assertSame(board.getElement(1,1), board.elements[0][7]);
     }
-
 }
