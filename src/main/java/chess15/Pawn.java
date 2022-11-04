@@ -10,6 +10,8 @@ public class Pawn extends MoveSet
         moves = new ArrayList<>();
         moves.add(new Vector2(0,-1));
 
+        attacks = new ArrayList<>();
+
 
 
     }
