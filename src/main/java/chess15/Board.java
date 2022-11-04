@@ -19,16 +19,16 @@ public class Board {
 
     @Override
     public String toString() {
-        String toReturn = "Board{elements=\n";
+        StringBuilder toReturn = new StringBuilder("Board{elements=\n");
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                toReturn += elements[i][j].toString() + ", ";
+                toReturn.append(elements[i][j].toString()).append(", ");
             }
-            toReturn += "\n";
+            toReturn.append("\n");
         }
 
-        toReturn += "}";
-        return toReturn;
+        toReturn.append("}");
+        return toReturn.toString();
     }
 }
