@@ -12,7 +12,7 @@ public class Vector2 {
     }
 
     public Vector2 inverse(){
-        return new Vector2(-this.x, -this.y);
+        return new Vector2(this.x, -this.y);
     }
 
     @Override
