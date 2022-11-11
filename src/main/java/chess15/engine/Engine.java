@@ -24,8 +24,10 @@ public class Engine implements EngineInterface {
     }
 
     private ArrayList<Vector2> calculateMoves(Vector2 position) {
-        Piece p = (Piece) board.elements[position.x][position.y];
+        BoardElement e = board.elements[position.x][position.y];
         ArrayList<Vector2> possibleMoves = new ArrayList<>();
+        if(e.isEmpty) return possibleMoves;
+        Piece p = (Piece)e;
 
         for (int i = 0; i < p.movement.moves.size(); i++) {
             Vector2 direction = p.movement.moves.get(i);
@@ -36,12 +38,14 @@ public class Engine implements EngineInterface {
             if (p.movement.repeating) {
                 for (int j = 1; j < 9; j++) {
                     Vector2 candidate = Vector2.add(position, direction.scaleBy(j));
-                    if (candidate.outOfBounds()) continue;
+                    if (candidate.outOfBounds()) break;
                     BoardElement target = board.at(candidate);
                     if (!target.isEmpty) {
-                        if (p.color != ((Piece) target).color && !p.movement.attackDifferent) {
-                            possibleMoves.add(candidate);
-                        }
+                        if (p.color != ((Piece) target).color) {
+                            if(!p.movement.attackDifferent) {
+                                possibleMoves.add(candidate);
+                            }
+                        } else break;
                     } else possibleMoves.add(candidate);
                 }
             } else {
@@ -50,8 +54,7 @@ public class Engine implements EngineInterface {
                 BoardElement target = board.at(candidate);
                 if (!target.isEmpty) {
                     if (p.color != ((Piece) target).color && !p.movement.attackDifferent) possibleMoves.add(candidate);
-
-                }
+                } possibleMoves.add(candidate);
             }
         }
 
