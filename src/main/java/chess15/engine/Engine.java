@@ -1,20 +1,24 @@
 package chess15.engine;
 
-import chess15.Board;
-import chess15.BoardElement;
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.*;
 import chess15.gamemode.Gamemode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Engine implements EngineInterface {
 
     private final Board board;
     private final RuleSet rules;
 
+    private HashMap<Vector2, ArrayList<Vector2>> moveMap;
 
-    public ArrayList<Vector2> getMoves(Vector2 position) {
+
+    public ArrayList<Vector2> getMoves(Vector2 position){
+        return moveMap.get(position);
+    }
+
+    private ArrayList<Vector2> calculateMoves(Vector2 position) {
         Piece p = (Piece) board.elements[position.x][position.y];
         ArrayList<Vector2> possibleMoves = new ArrayList<>();
 
@@ -57,13 +61,25 @@ public class Engine implements EngineInterface {
         return possibleMoves;
     }
 
+    private void calculateMoveMap(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Vector2 postition = new Vector2(i,j);
+                if(!board.at(postition).isEmpty) moveMap.put(postition, calculateMoves(postition));
+            }
+        }
+    }
+
     public void move(Vector2 from, Vector2 to) {
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
+        calculateMoveMap();
     }
 
     public Engine(Gamemode gamemode, RuleSet rules) {
         board = gamemode.startState();
         this.rules = rules;
+        moveMap = new HashMap<>();
+        calculateMoveMap();
     }
 }
