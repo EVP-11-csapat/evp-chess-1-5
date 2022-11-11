@@ -59,7 +59,7 @@ public class Engine implements EngineInterface {
                     direction = direction.inverse();
                 }
                 Vector2 candidate = Vector2.add(position, direction);
-                if (!board.at(candidate).isEmpty) possibleMoves.add(candidate);
+                if (!candidate.outOfBounds() && !board.at(candidate).isEmpty) possibleMoves.add(candidate);
             }
         }
 
@@ -70,11 +70,12 @@ public class Engine implements EngineInterface {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Vector2 postition = new Vector2(i,j);
-                BoardElement target = board.at(postition);
-                if(!target.isEmpty){
-                    if(((Piece) target).color == Piece.Color.WHITE) whiteMoves.put(postition, calculateMoves(postition));
-                    else blackMoves.put(postition, calculateMoves(postition));
-
+                if(postition != board.blackKing && postition != board.whiteKing){ //skip kings, calculate them last
+                    BoardElement target = board.at(postition);
+                    if(!target.isEmpty){
+                        if(((Piece) target).color == Piece.Color.WHITE) whiteMoves.put(postition, calculateMoves(postition));
+                        else blackMoves.put(postition, calculateMoves(postition));
+                    }
                 }
             }
         }
