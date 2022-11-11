@@ -25,7 +25,12 @@ public class JsonToBoard {
                         getMoveSet((String) pieceObject.get("moves")),
                         (Boolean) pieceObject.get("isKing"));
 
-                board.elements[((Long) pieceObject.get("row")).intValue()][((Long) pieceObject.get("column")).intValue()] = piece1;
+                Vector2 position = new Vector2(((Long) pieceObject.get("column")).intValue(),((Long) pieceObject.get("row")).intValue());
+                board.elements[position.x][position.y] = piece1;
+                if(piece1.isKing){
+                    if(piece1.color == Piece.Color.WHITE) board.whiteKing = position;
+                    else board.blackKing = position;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

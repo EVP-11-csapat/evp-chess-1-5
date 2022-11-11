@@ -26,7 +26,6 @@ public class Engine implements EngineInterface {
     private ArrayList<Vector2> calculateMoves(Vector2 position) {
         Piece p = (Piece) board.elements[position.x][position.y];
         ArrayList<Vector2> possibleMoves = new ArrayList<>();
-//        System.out.println(p);
 
         for (int i = 0; i < p.movement.moves.size(); i++) {
             Vector2 direction = p.movement.moves.get(i);
