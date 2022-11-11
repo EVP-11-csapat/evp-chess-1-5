@@ -15,7 +15,7 @@ public class Rook extends MoveSet
         moves.add(new Vector2(0, 1));
         moves.add(new Vector2(-1, 0));
 
-        reapeting = true;
+        repeating = true;
         attackDifferent = false;
         whiteDifferent = false;
     }
