@@ -8,11 +8,11 @@ public class Pawn extends MoveSet
 
     private Pawn(){
         moves = new ArrayList<>();
-        moves.add(new Vector2(0,-1));
+        moves.add(new Vector2(0,1));
 
         attacks = new ArrayList<>();
-        attacks.add(new Vector2(-1,-1));
-        attacks.add(new Vector2(1,-1));
+        attacks.add(new Vector2(1,1));
+        attacks.add(new Vector2(-1,1));
 
         repeating = false;
         attackDifferent = true;

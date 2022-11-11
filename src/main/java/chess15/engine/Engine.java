@@ -26,6 +26,7 @@ public class Engine implements EngineInterface {
     private ArrayList<Vector2> calculateMoves(Vector2 position) {
         Piece p = (Piece) board.elements[position.x][position.y];
         ArrayList<Vector2> possibleMoves = new ArrayList<>();
+//        System.out.println(p);
 
         for (int i = 0; i < p.movement.moves.size(); i++) {
             Vector2 direction = p.movement.moves.get(i);
@@ -54,7 +55,7 @@ public class Engine implements EngineInterface {
 
         if (p.movement.attackDifferent) {
             for (int i = 0; i < p.movement.attacks.size(); i++) {
-                Vector2 direction = p.movement.moves.get(i);
+                Vector2 direction = p.movement.attacks.get(i);
                 if (p.movement.whiteDifferent && p.color == Piece.Color.WHITE) {
                     direction = direction.inverse();
                 }
@@ -67,21 +68,14 @@ public class Engine implements EngineInterface {
     }
 
     private void calculateMoveMap(){
-        Vector2 blackKing;
-        Vector2 whiteKing;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Vector2 postition = new Vector2(i,j);
                 BoardElement target = board.at(postition);
                 if(!target.isEmpty){
+                    if(((Piece) target).color == Piece.Color.WHITE) whiteMoves.put(postition, calculateMoves(postition));
+                    else blackMoves.put(postition, calculateMoves(postition));
 
-                    if(((Piece) target).color == Piece.Color.WHITE){
-                        whiteMoves.put(postition, calculateMoves(postition));
-                        if(((Piece) target).isKing) whiteKing = postition;
-                    }else {
-                        blackMoves.put(postition, calculateMoves(postition));
-                        if(((Piece) target).isKing) blackKing = postition;
-                    }
                 }
             }
         }
