@@ -48,9 +48,7 @@ public class JsonToBoard {
 
     private static MoveSet getMoveSet(String type) {
         return switch (type) {
-            case "pawn" ->
-                    //Took out pawn because of black and white having unique moves
-                    null;
+            case "pawn" -> Pawn.getInstance();
             case "rook" -> Rook.getInstance();
             case "knight" -> Knight.getInstance();
             case "bishop" -> Bishop.getInstance();
