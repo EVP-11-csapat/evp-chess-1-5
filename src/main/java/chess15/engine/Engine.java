@@ -11,11 +11,14 @@ public class Engine implements EngineInterface {
     private final Board board;
     private final RuleSet rules;
 
-    private HashMap<Vector2, ArrayList<Vector2>> moveMap;
+    private HashMap<Vector2, ArrayList<Vector2>> whiteMoves;
+    private HashMap<Vector2, ArrayList<Vector2>> blackMoves;
 
 
     public ArrayList<Vector2> getMoves(Vector2 position){
-        return moveMap.get(position);
+        if(((Piece)board.at(position)).color == Piece.Color.WHITE)
+        return whiteMoves.get(position);
+        else return blackMoves.get(position);
     }
 
     private ArrayList<Vector2> calculateMoves(Vector2 position) {
@@ -62,10 +65,22 @@ public class Engine implements EngineInterface {
     }
 
     private void calculateMoveMap(){
+        Vector2 blackKing;
+        Vector2 whiteKing;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Vector2 postition = new Vector2(i,j);
-                if(!board.at(postition).isEmpty) moveMap.put(postition, calculateMoves(postition));
+                BoardElement target = board.at(postition);
+                if(!target.isEmpty){
+
+                    if(((Piece) target).color == Piece.Color.WHITE){
+                        whiteMoves.put(postition, calculateMoves(postition));
+                        if(((Piece) target).isKing) whiteKing = postition;
+                    }else {
+                        blackMoves.put(postition, calculateMoves(postition));
+                        if(((Piece) target).isKing) blackKing = postition;
+                    }
+                }
             }
         }
     }
@@ -79,7 +94,8 @@ public class Engine implements EngineInterface {
     public Engine(Gamemode gamemode, RuleSet rules) {
         board = gamemode.startState();
         this.rules = rules;
-        moveMap = new HashMap<>();
+        whiteMoves = new HashMap<>();
+        blackMoves = new HashMap<>();
         calculateMoveMap();
     }
 }
