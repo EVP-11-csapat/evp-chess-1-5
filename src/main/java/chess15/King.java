@@ -9,7 +9,7 @@ public class King extends MoveSet
 
     private King()
     {
-        moves = new ArrayList<>();
+        moves = new ArrayList<Vector2>();
         moves.add(new Vector2(-1, -1));
         moves.add(new Vector2(0, -1));
         moves.add(new Vector2(1, -1));
