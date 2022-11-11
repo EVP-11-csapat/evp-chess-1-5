@@ -46,26 +46,23 @@ public class Engine implements EngineInterface {
                 }
             } else {
                 Vector2 candidate = Vector2.add(position, direction);
-                if (candidate.outOfBounds()) break;
+                if (candidate.outOfBounds()) continue;
                 BoardElement target = board.at(candidate);
                 if (!target.isEmpty) {
-                    if (p.color != ((Piece) target).color) {
-                        possibleMoves.add(candidate);
-                    } else break;
+                    if (p.color != ((Piece) target).color && !p.movement.attackDifferent) possibleMoves.add(candidate);
+
                 }
             }
         }
 
         if (p.movement.attackDifferent) {
             for (int i = 0; i < p.movement.attacks.size(); i++) {
-                Vector2 direction = p.movement.attacks.get(i);
-                if (p.movement.whiteDifferent && p.color == Piece.Color.WHITE) {
-                    direction = direction.inverse();
+                Vector2 candidate = Vector2.add(position, p.movement.attacks.get(i));
+                if (candidate.outOfBounds()) continue;
+                BoardElement target = board.at(candidate);
+                if (!target.isEmpty) {
+                    if (p.color != ((Piece) target).color) possibleMoves.add(candidate);
                 }
-                Vector2 candidate = Vector2.add(position, direction);
-                if (!candidate.outOfBounds() && !board.at(candidate).isEmpty){
-
-                } possibleMoves.add(candidate);
             }
         }
 
