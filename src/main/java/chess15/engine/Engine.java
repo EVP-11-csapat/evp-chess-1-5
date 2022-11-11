@@ -46,8 +46,12 @@ public class Engine implements EngineInterface {
                 }
             } else {
                 Vector2 candidate = Vector2.add(position, direction);
-                if (!candidate.outOfBounds()) {
-                    if (!p.movement.attackDifferent || board.at(candidate).isEmpty) possibleMoves.add(candidate);
+                if (candidate.outOfBounds()) break;
+                BoardElement target = board.at(candidate);
+                if (!target.isEmpty) {
+                    if (p.color != ((Piece) target).color) {
+                        possibleMoves.add(candidate);
+                    } else break;
                 }
             }
         }
@@ -59,7 +63,9 @@ public class Engine implements EngineInterface {
                     direction = direction.inverse();
                 }
                 Vector2 candidate = Vector2.add(position, direction);
-                if (!candidate.outOfBounds() && !board.at(candidate).isEmpty) possibleMoves.add(candidate);
+                if (!candidate.outOfBounds() && !board.at(candidate).isEmpty){
+
+                } possibleMoves.add(candidate);
             }
         }
 
