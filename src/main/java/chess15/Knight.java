@@ -9,18 +9,19 @@ public class Knight extends MoveSet
 
     private Knight()
     {
-        ArrayList<Vector2> m = new ArrayList<Vector2>();
-        m.add(new Vector2(-1, -2));
-        m.add(new Vector2(1, -2));
-        m.add(new Vector2(-2, -1));
-        m.add(new Vector2(2, -1));
-        m.add(new Vector2(-2, 1));
-        m.add(new Vector2(2, 1));
-        m.add(new Vector2(-1, 2));
-        m.add(new Vector2(1, 2));
+        moves = new ArrayList<Vector2>();
+        moves.add(new Vector2(-1, -2));
+        moves.add(new Vector2(1, -2));
+        moves.add(new Vector2(-2, -1));
+        moves.add(new Vector2(2, -1));
+        moves.add(new Vector2(-2, 1));
+        moves.add(new Vector2(2, 1));
+        moves.add(new Vector2(-1, 2));
+        moves.add(new Vector2(1, 2));
 
-        moves = m;
         repeating = false;
+        attackDifferent = false;
+        whiteDifferent = false;
     }
 
     public static MoveSet getInstance()
