@@ -2,6 +2,7 @@ package chess15.engine;
 
 import chess15.*;
 import chess15.gamemode.Gamemode;
+import chess15.gui.interfaces.UIInteface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ public class Engine implements EngineInterface {
 
     private final Board board;
     private final RuleSet rules;
+    private final UIInteface UIRef;
 
     private HashMap<Vector2, ArrayList<Vector2>> whiteMoves;
     private HashMap<Vector2, ArrayList<Vector2>> blackMoves;
@@ -91,9 +93,10 @@ public class Engine implements EngineInterface {
         calculateMoveMap();
     }
 
-    public Engine(Gamemode gamemode, RuleSet rules) {
+    public Engine(Gamemode gamemode, RuleSet rules, UIInteface uiRef) {
         board = gamemode.startState();
         this.rules = rules;
+        UIRef = uiRef;
         whiteMoves = new HashMap<>();
         blackMoves = new HashMap<>();
         calculateMoveMap();
