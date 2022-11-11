@@ -9,14 +9,15 @@ public class Bishop extends MoveSet
 
     private Bishop()
     {
-        ArrayList<Vector2> m = new ArrayList<Vector2>();
-        m.add(new Vector2(-1, -1));
-        m.add(new Vector2(1, -1));
-        m.add(new Vector2(1, 1));
-        m.add(new Vector2(-1, 1));
-
-        moves = m;
+        moves= new ArrayList<Vector2>();
+        moves.add(new Vector2(-1, -1));
+        moves.add(new Vector2(1, -1));
+        moves.add(new Vector2(1, 1));
+        moves.add(new Vector2(-1, 1));
+        
         repeating = true;
+        attackDifferent = false;
+        whiteDifferent = false;
     }
 
     public static MoveSet getInstance()
