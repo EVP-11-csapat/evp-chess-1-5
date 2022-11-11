@@ -1,20 +1,27 @@
 package chess15.engine;
 
-import chess15.Board;
-import chess15.BoardElement;
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.*;
 import chess15.gamemode.Gamemode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Engine implements EngineInterface {
 
     private final Board board;
     private final RuleSet rules;
 
+    private HashMap<Vector2, ArrayList<Vector2>> whiteMoves;
+    private HashMap<Vector2, ArrayList<Vector2>> blackMoves;
 
-    public ArrayList<Vector2> getMoves(Vector2 position) {
+
+    public ArrayList<Vector2> getMoves(Vector2 position){
+        if(((Piece)board.at(position)).color == Piece.Color.WHITE)
+        return whiteMoves.get(position);
+        else return blackMoves.get(position);
+    }
+
+    private ArrayList<Vector2> calculateMoves(Vector2 position) {
         Piece p = (Piece) board.elements[position.x][position.y];
         ArrayList<Vector2> possibleMoves = new ArrayList<>();
 //        System.out.println(p);
@@ -58,13 +65,38 @@ public class Engine implements EngineInterface {
         return possibleMoves;
     }
 
+    private void calculateMoveMap(){
+        Vector2 blackKing;
+        Vector2 whiteKing;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Vector2 postition = new Vector2(i,j);
+                BoardElement target = board.at(postition);
+                if(!target.isEmpty){
+
+                    if(((Piece) target).color == Piece.Color.WHITE){
+                        whiteMoves.put(postition, calculateMoves(postition));
+                        if(((Piece) target).isKing) whiteKing = postition;
+                    }else {
+                        blackMoves.put(postition, calculateMoves(postition));
+                        if(((Piece) target).isKing) blackKing = postition;
+                    }
+                }
+            }
+        }
+    }
+
     public void move(Vector2 from, Vector2 to) {
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
+        calculateMoveMap();
     }
 
     public Engine(Gamemode gamemode, RuleSet rules) {
         board = gamemode.startState();
         this.rules = rules;
+        whiteMoves = new HashMap<>();
+        blackMoves = new HashMap<>();
+        calculateMoveMap();
     }
 }
