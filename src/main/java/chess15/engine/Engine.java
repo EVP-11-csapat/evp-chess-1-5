@@ -36,12 +36,12 @@ public class Engine implements EngineInterface {
             if (p.movement.repeating) {
                 for (int j = 1; j < 9; j++) {
                     Vector2 candidate = Vector2.add(position, direction.scaleBy(j));
-                    if (candidate.outOfBounds()) break;
+                    if (candidate.outOfBounds()) continue;
                     BoardElement target = board.at(candidate);
                     if (!target.isEmpty) {
                         if (p.color != ((Piece) target).color && !p.movement.attackDifferent) {
                             possibleMoves.add(candidate);
-                        } else break;
+                        }
                     } else possibleMoves.add(candidate);
                 }
             } else {
