@@ -9,18 +9,19 @@ public class Queen extends MoveSet
 
     private Queen()
     {
-        ArrayList<Vector2> m = new ArrayList<Vector2>();
-        m.add(new Vector2(-1, -1));
-        m.add(new Vector2(0, -1));
-        m.add(new Vector2(1, -1));
-        m.add(new Vector2(-1, 0));
-        m.add(new Vector2(1, 0));
-        m.add(new Vector2(-1, 1));
-        m.add(new Vector2(0, 1));
-        m.add(new Vector2(1, 1));
-
-        moves = m;
+        moves= new ArrayList<Vector2>();
+        moves.add(new Vector2(-1, -1));
+        moves.add(new Vector2(0, -1));
+        moves.add(new Vector2(1, -1));
+        moves.add(new Vector2(-1, 0));
+        moves.add(new Vector2(1, 0));
+        moves.add(new Vector2(-1, 1));
+        moves.add(new Vector2(0, 1));
+        moves.add(new Vector2(1, 1));
+        
         repeating = true;
+        attackDifferent = false;
+        whiteDifferent = false;
     }
 
     public static MoveSet getInstance()
