@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class Engine implements EngineInterface {
 
-    private final Board board;
+    public final Board board;
     private final RuleSet rules;
     private final UIInteface UIRef;
 

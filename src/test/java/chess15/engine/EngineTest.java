@@ -25,8 +25,14 @@ public class EngineTest {
 
     @Test
     public void getMoves() {
-        System.out.println(engine.getMoves(new Vector2(1, 1)));
         assertFalse(engine.getMoves(new Vector2(1, 1)).isEmpty());
         assertTrue(engine.getMoves(new Vector2(0, 0)).isEmpty());
+    }
+
+    @Test
+    public void move() {
+        engine.move(new Vector2(1, 1), new Vector2(1, 2));
+        assertTrue(engine.board.at(new Vector2(1, 1)).isEmpty);
+        assertFalse(engine.board.at(new Vector2(1, 2)).isEmpty);
     }
 }
