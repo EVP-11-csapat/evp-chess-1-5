@@ -9,8 +9,9 @@ import java.util.HashMap;
 
 public class Engine implements EngineInterface {
 
-    public final Board board;
+    public Board board;
     private final RuleSet rules;
+    private final Gamemode gamemode;
     private final UIInteface UIRef;
 
     private HashMap<Vector2, ArrayList<Vector2>> whiteMoves;
@@ -93,7 +94,15 @@ public class Engine implements EngineInterface {
         calculateMoveMap();
     }
 
+    public void reset(){
+        board = gamemode.startState();
+        whiteMoves = new HashMap<>();
+        blackMoves = new HashMap<>();
+        calculateMoveMap();
+    }
+
     public Engine(Gamemode gamemode, RuleSet rules, UIInteface uiRef) {
+        this.gamemode = gamemode;
         board = gamemode.startState();
         this.rules = rules;
         UIRef = uiRef;

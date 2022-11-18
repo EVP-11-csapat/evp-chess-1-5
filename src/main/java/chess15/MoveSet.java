@@ -13,4 +13,15 @@ public abstract class MoveSet{
     public boolean attackDifferent;
     public boolean whiteDifferent;
     public boolean repeating;
+
+    @Override
+    public String toString() {
+        return "MoveSet{" +
+                "moves=" + moves +
+                ", attacks=" + attacks +
+                ", attackDifferent=" + attackDifferent +
+                ", whiteDifferent=" + whiteDifferent +
+                ", repeating=" + repeating +
+                '}';
+    }
 }
