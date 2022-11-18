@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * The controller for the main menu.
+ */
 public class MainMenuController {
     @FXML
     protected Button multiplayerButton;
@@ -16,14 +19,20 @@ public class MainMenuController {
     private static final String IDLE_BUTTON_STYLE = "-fx-background-color: #424242;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
-
-
+    /**
+     * Initializes the controller.
+     * Sets the button styles for mouse interaction.
+     */
     public void initialize() {
         multiplayerButton.setStyle(IDLE_BUTTON_STYLE);
         multiplayerButton.setOnMouseEntered(event -> multiplayerButton.setStyle(HOVERED_BUTTON_STYLE));
         multiplayerButton.setOnMouseExited(event -> multiplayerButton.setStyle(IDLE_BUTTON_STYLE));
     }
 
+    /**
+     * Opens the multiplayer menu.
+     * @throws IOException if the fxml file cannot be found.
+     */
     @FXML
     protected void onMultiplayerButtonPressed() throws IOException {
         System.out.println("Multiplayer button pressed");

@@ -25,7 +25,7 @@ public class Main {
 
         BoardVisualizer.printBoard(board);
 
-//        ChessApplication.open();
+//       ChessApplication.open();
 
     }
 }

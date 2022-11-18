@@ -5,8 +5,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 
+/**
+ * The controller for the settings menu.
+ */
 public class SettingsMenuController {
-
     @FXML
     private Button playButton;
     @FXML
@@ -38,15 +40,16 @@ public class SettingsMenuController {
     private String IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
+    /**
+     * Sets the gamemode to what the user pressed to be later used in the game.
+     */
     private void setSelectedGameModeButton() {
         if (selectedGameMode.equals("classical")) {
-            // TODO: Set the classical button to selected
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
             classicalButton.setStyle("-fx-background-color: #5A5A5A;");
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
         } else if (selectedGameMode.equals("fastpaced")) {
-            // TODO: Set the fastpaced button to selected
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
@@ -54,6 +57,10 @@ public class SettingsMenuController {
         }
     }
 
+    /**
+     * Disables evry input option
+     * This is a utility method for the settings.
+     */
     private void disableEverything() {
         playButton.setDisable(true);
         timerCheckBox.setDisable(true);
@@ -64,6 +71,10 @@ public class SettingsMenuController {
         promotionCheckBox.setDisable(true);
     }
 
+    /**
+     * Initializes the settings menu.
+     * Sets up the styles and disables everything.
+     */
     public void initialize() {
         System.out.println("Settings menu loaded");
 
@@ -93,6 +104,10 @@ public class SettingsMenuController {
         playButton.setDisable(true);
     }
 
+    /**
+     * When the user preses the classical button. Sets the game mode to classical.
+     * And enables the timer and the other options.
+     */
     @FXML
     protected void onClassicalSelected() {
         selectedGameMode = "classical";
@@ -107,6 +122,10 @@ public class SettingsMenuController {
         castlingCheckBox.setDisable(false);
     }
 
+    /**
+     * When the user preses the fastpaced button. Sets the game mode to fastpaced.
+     * Enables the 3 options
+     */
     @FXML
     protected void onFastpacedSelected() {
         selectedGameMode = "fastpaced";
@@ -120,6 +139,9 @@ public class SettingsMenuController {
         playButton.setDisable(false);
     }
 
+    /**
+     * When the user enables the timer checkbox, we enable the spinners.
+     */
     @FXML
     protected void onTimerEnableTicked()
     {
@@ -133,24 +155,36 @@ public class SettingsMenuController {
         }
     }
 
+    /**
+     * When the user enables the castling checkbox, we set the castling to true, so we can later use it for the engine.
+     */
     @FXML
     protected void onCastlingEnableTicked()
     {
         isCastlingEnabled = !castlingCheckBox.isSelected();
     }
 
+    /**
+     * When the user enables the enpassant checkbox, we set the enpassant to true, so we can later use it for the engine.
+     */
     @FXML
     protected void onEnPassantEnableTicked()
     {
         isEnPassantEnabled = !enpassantCheckBox.isSelected();
     }
 
+    /**
+     * When the user enables the promotion checkbox, we set the promotion to true, so we can later use it for the engine.
+     */
     @FXML
     protected void onPromotionEnableEnableTick()
     {
         isPromotionEnabled = !promotionCheckBox.isSelected();
     }
 
+    /**
+     * When the user presses the play button, we load the game window, and generate the engine with the specified inputs.
+     */
     @FXML
     protected void onPlayButtonPressed()
     {

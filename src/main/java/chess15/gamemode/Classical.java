@@ -11,9 +11,6 @@ public class Classical extends Gamemode {
 
         board = JsonToBoard.jsonToBoard("classical.json");
 
-        System.out.println(board.toString());
-
-
         return board;
     }
 }

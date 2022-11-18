@@ -2,6 +2,10 @@ package chess15;
 
 import java.util.ArrayList;
 
+/**
+ * Abstract class represents the set of moves that a piece can make.
+ * Used to extend the MoveSet class to create a specific set of moves.
+ */
 public abstract class MoveSet{
     public ArrayList<Vector2> moves;
     public ArrayList<Vector2> attacks;
