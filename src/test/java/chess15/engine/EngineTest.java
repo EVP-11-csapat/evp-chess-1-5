@@ -35,4 +35,12 @@ public class EngineTest {
         assertTrue(engine.board.at(new Vector2(1, 1)).isEmpty);
         assertFalse(engine.board.at(new Vector2(1, 2)).isEmpty);
     }
+
+    @Test
+    public void reset() {
+        engine.move(new Vector2(1, 1), new Vector2(1, 2));
+        engine.reset();
+        assertFalse(engine.board.at(new Vector2(1, 1)).isEmpty);
+        assertTrue(engine.board.at(new Vector2(1, 2)).isEmpty);
+    }
 }

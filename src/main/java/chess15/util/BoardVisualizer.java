@@ -32,7 +32,7 @@ public class BoardVisualizer {
      * @param piece A Piece object that we want to represent.
      * @return The character representing the role of piece given.
      */
-    private static String getLookChar(Piece piece){
+    protected static String getLookChar(Piece piece){
         if(piece == null){
             return " ";
         }
@@ -54,7 +54,7 @@ public class BoardVisualizer {
      * @param piece A Piece object that we want to represent.
      * @return The character representing the color of piece given.
      */
-    private static String getColorChar(Piece piece){
+    protected static String getColorChar(Piece piece){
         if(piece == null){
             return " ";
         }

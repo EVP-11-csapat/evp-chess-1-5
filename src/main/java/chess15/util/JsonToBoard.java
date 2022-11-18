@@ -54,7 +54,7 @@ public class JsonToBoard {
      * @param type A string with the lowercase name of the piece type.
      * @return The Piece type.
      */
-    private static Piece.Type getPieceType(String type) {
+    protected static Piece.Type getPieceType(String type) {
         return switch (type) {
             case "pawn" -> Piece.Type.PAWN;
             case "rook" -> Piece.Type.ROOK;
@@ -71,7 +71,7 @@ public class JsonToBoard {
      * @param moves A string with the lowercase name of the move set.
      * @return The MoveSet.
      */
-    private static MoveSet getMoveSet(String type) {
+    protected static MoveSet getMoveSet(String type) {
         return switch (type) {
             case "pawn" -> Pawn.getInstance();
             case "rook" -> Rook.getInstance();
