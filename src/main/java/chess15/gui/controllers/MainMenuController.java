@@ -41,4 +41,13 @@ public class MainMenuController {
         primaryStage.getScene().setRoot(newRoot);
         primaryStage.requestFocus();
     }
+
+    @FXML
+    protected void onAiButtonPressed() throws IOException {
+        System.out.println("AI button pressed");
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
+        Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
+        primaryStage.getScene().setRoot(newRoot);
+        primaryStage.requestFocus();
+    }
 }
