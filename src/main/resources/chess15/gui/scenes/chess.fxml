@@ -7,9 +7,16 @@
    <children>
       <VBox prefHeight="720.0" prefWidth="1280.0">
          <children>
-            <HBox fx:id="chessBoardHBox" prefHeight="720.0" prefWidth="1280.0">
+            <HBox prefHeight="720.0" prefWidth="1280.0">
                <children>
-                  <ImageView fx:id="chessBoard" fitHeight="720.0" fitWidth="720.0" pickOnBounds="true" preserveRatio="true" />
+                  <StackPane fx:id="chessBoardStackPane" prefHeight="720.0" prefWidth="720.0">
+                     <children>
+                        <ImageView fx:id="chessBoard" fitHeight="720.0" fitWidth="720.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/chess.png" />
+                           </image></ImageView>
+                        <Pane fx:id="chessBoardPane" prefHeight="720.0" prefWidth="720.0" />
+                     </children></StackPane>
                </children>
             </HBox>
          </children>
