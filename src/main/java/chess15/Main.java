@@ -14,18 +14,17 @@ public class Main {
 //        System.out.println(kingMoves.moves.size());
 //        tesztelések
 //        RisztererIstvan.run();
-
+//
 //        Board board = new Board();
 //
-//        System.out.println(board.toString());
 //
 //        board = new Classical().startState();
 //
 //        System.out.println(board.toString());
-//
+//        System.out.println(board.at(new Vector2(0,6)));
 //        BoardVisualizer.printBoard(board);
-
-       ChessApplication.open();
+//
+        ChessApplication.open();
 
     }
 }
