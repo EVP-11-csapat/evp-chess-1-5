@@ -27,7 +27,7 @@ public class EngineTest {
         assertTrue(engine.getMoves(new Vector2(1, 0)).contains(new Vector2(2,2)));
         engine.move(new Vector2(1, 0), new Vector2(2, 2));
         assertTrue(engine.getMoves(new Vector2(2, 7)).contains(new Vector2(5,4)));
-
+        assertTrue(engine.getMoves(new Vector2(6, 6)).contains(new Vector2(6,4)));
     }
 
     @Test
