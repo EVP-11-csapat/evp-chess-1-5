@@ -1,6 +1,7 @@
 package chess15;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public class Pawn extends MoveSet
 {
@@ -17,6 +18,14 @@ public class Pawn extends MoveSet
         repeating = false;
         attackDifferent = true;
         whiteDifferent = true;
+
+
+
+        special = (pos, color) -> (
+                (pos.y == 1 && color == Piece.Color.BLACK) ? new Vector2(pos.x, 3) : (pos.y == 6 && color == Piece.Color.WHITE) ? new Vector2(pos.x, 4) : null
+        );
+
+
     }
 
     public static MoveSet getInstance(){

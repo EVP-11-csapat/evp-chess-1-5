@@ -55,6 +55,9 @@ public class Engine implements EngineInterface {
         if (e.isEmpty) return moves;
         Piece p = (Piece) e;
 
+        Vector2 special = p.movement.special.apply(position, nextPlayer);
+        if(special != null) moves.add(special);
+
         for (int i = 0; i < p.movement.moves.size(); i++) {
             Vector2 direction = orient(p.movement.moves.get(i), p.movement.whiteDifferent);
 
