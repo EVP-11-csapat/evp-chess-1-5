@@ -6,6 +6,7 @@ import chess15.gui.interfaces.UIInteface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Engine implements EngineInterface {
 
@@ -56,17 +57,17 @@ public class Engine implements EngineInterface {
         Piece p = (Piece) e;
 
         Vector2 special = p.movement.special.apply(position, nextPlayer);
-        if(special != null) moves.add(special);
+        if (special != null && filterDirection(special, p.pin)) moves.add(special);
 
-        for (int i = 0; i < p.movement.moves.size(); i++) {
-            Vector2 direction = orient(p.movement.moves.get(i), p.movement.whiteDifferent);
+        ArrayList<Vector2> moveDirections = filterDirections(p.movement.moves, p.pin);
+
+        for (int i = 0; i < moveDirections.size(); i++) {
+
+            Vector2 direction = orient(moveDirections.get(i), p.movement.whiteDifferent);
 
             if (p.movement.repeating) {
-                for (int j = 1; j < 9; j++) {
-                    Vector2 candidate = Vector2.add(position, direction.scaleBy(j));
-                    if (candidate.outOfBounds()) break;
-                    if (evalMove(candidate, !p.movement.attackDifferent, false)) moves.add(candidate);
-                }
+
+                moves.addAll(repeatMove(position, direction, !p.movement.attackDifferent));
             } else {
                 Vector2 candidate = Vector2.add(position, direction);
                 if (evalMove(candidate, !p.movement.attackDifferent, false)) moves.add(candidate);
@@ -74,8 +75,9 @@ public class Engine implements EngineInterface {
         }
 
         if (p.movement.attackDifferent) {
-            for (int i = 0; i < p.movement.attacks.size(); i++) {
-                Vector2 candidate = Vector2.add(position, orient(p.movement.attacks.get(i), p.movement.whiteDifferent));
+            ArrayList<Vector2> attackDirections = filterDirections(p.movement.attacks, p.pin);
+            for (Vector2 attackDirection : attackDirections) {
+                Vector2 candidate = Vector2.add(position, orient(attackDirection, p.movement.whiteDifferent));
                 if (evalMove(candidate, true, true)) moves.add(candidate);
             }
         }
@@ -95,20 +97,15 @@ public class Engine implements EngineInterface {
 
     private void selectPieces() {
         pieces = new ArrayList<>();
-        Vector2 king = null;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Vector2 position = new Vector2(i, j);
                 BoardElement target = board.at(position);
                 if (!target.isEmpty) {
-                    if (((Piece) target).color == nextPlayer) {
-                        if (((Piece) target).isKing) king = position;
-                        else pieces.add(position);
-                    }
+                    if (((Piece) target).color == nextPlayer) pieces.add(position);
                 }
             }
         }
-        pieces.add(king);
     }
 
     private boolean evalMove(Vector2 pos, boolean isAttack, boolean onlyAttack) {
@@ -121,8 +118,69 @@ public class Engine implements EngineInterface {
         return !onlyAttack;
     }
 
-    private Vector2 orient(Vector2 direction, boolean whiteDifferent){
-        if(nextPlayer == Piece.Color.WHITE && whiteDifferent) return direction.inverse();
+    private ArrayList<Vector2> repeatMove(Vector2 pos, Vector2 direction, boolean allowAttack) {
+        ArrayList<Vector2> moves = new ArrayList<>();
+
+        Piece target = null;
+
+        Vector2 candidate = Vector2.add(pos, direction);
+        for (int i = 0; i < 9; i++) {
+            if (candidate.outOfBounds()) return moves;
+
+            boolean empty = board.at(candidate).isEmpty;
+            if (!allowAttack && !empty) return moves;
+
+            if (empty) moves.add(candidate);
+            else {
+                target = (Piece) board.at(candidate);
+                if (target.color == nextPlayer) return moves;
+                if (target.isKing) return moves; //impossible situation
+                moves.add(candidate);
+                break;
+            }
+            candidate = Vector2.add(candidate, direction);
+        }
+
+        candidate = Vector2.add(candidate, direction);
+
+        for (int i = 0; i < 9; i++) {
+
+            if (candidate.outOfBounds()) return moves;
+            if (!board.at(candidate).isEmpty) {
+                Piece p = ((Piece) board.at(candidate));
+
+                if (p.isKing && p.color != nextPlayer) {
+                    assert target != null;
+                    target.pin = direction;
+                }
+                return moves;
+            }
+
+            candidate = Vector2.add(candidate, direction);
+        }
+
+        return moves;
+    }
+
+    private Vector2 orient(Vector2 direction, boolean whiteDifferent) {
+        if (nextPlayer == Piece.Color.WHITE && whiteDifferent) return direction.flip();
         return direction;
+    }
+
+    private boolean filterDirection(Vector2 direction, Vector2 pinDirection) {
+        if (pinDirection == null) return true;
+
+        return Vector2.sameDirection(direction, pinDirection);
+    }
+
+    private ArrayList<Vector2> filterDirections(ArrayList<Vector2> directions, Vector2 pinDirection) {
+        if (pinDirection == null) return directions;
+
+        ArrayList<Vector2> filteredDirections = new ArrayList<>();
+        for (Vector2 direction : directions) {
+            if (filterDirection(direction,pinDirection)) filteredDirections.add(direction);
+        }
+
+        return filteredDirections;
     }
 }

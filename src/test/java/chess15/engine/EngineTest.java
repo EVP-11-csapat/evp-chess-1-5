@@ -1,5 +1,6 @@
 package chess15.engine;
 
+import chess15.Piece;
 import chess15.Vector2;
 import chess15.gamemode.Classical;
 import chess15.gui.interfaces.UIInteface;

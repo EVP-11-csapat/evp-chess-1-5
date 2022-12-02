@@ -14,7 +14,7 @@ public class Piece extends BoardElement{
      * @param color The color of the piece.
      * @param look The type of the piece.
      * @param movement The movement of the piece.
-     * @param isKing Whether or not the piece is a king.
+     * @param isKing Whether the piece is a king.
      */
     public Piece(Color color, Type look, MoveSet movement, boolean isKing){
         isEmpty = false;
@@ -38,6 +38,8 @@ public class Piece extends BoardElement{
     public enum Color {
         WHITE, BLACK
     }
+
+    public Vector2 pin = null;
 
     /**
      * A method to print the piece to the console. Used for debugging.

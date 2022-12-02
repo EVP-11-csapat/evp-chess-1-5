@@ -16,9 +16,9 @@ public class Vector2Test {
     }
 
     @Test
-    public void inverse() {
+    public void flip() {
         Vector2 a = new Vector2(1, 2);
-        Vector2 b = a.inverse();
+        Vector2 b = a.flip();
         assertEquals(b.x, 1);
         assertEquals(b.y, -2);
     }
@@ -35,6 +35,32 @@ public class Vector2Test {
         Vector2 b = a.scaleBy(3);
         assertEquals(b.x, 3);
         assertEquals(b.y, 6);
+    }
+
+
+    @Test
+    public void normalize(){
+        Vector2 a = new Vector2(-1,1);
+        Vector2 b = new Vector2(2,2);
+        Vector2 c = new Vector2(2,1);
+        Vector2 d = new Vector2(2,0);
+
+        assertEquals(new Vector2(-1,1), a.normalize());
+        assertEquals(new Vector2(1,1), b.normalize());
+        assertEquals(new Vector2(2,1), c.normalize());
+        assertEquals(new Vector2(1,0), d.normalize());
+    }
+
+    @Test
+    public void sameDirection(){
+        Vector2 a = new Vector2(-1,1);
+        Vector2 b = new Vector2(1,-1);
+        Vector2 c = new Vector2(0,1);
+
+        assertTrue(Vector2.sameDirection(a,b));
+        assertTrue(Vector2.sameDirection(b,a));
+        assertFalse(Vector2.sameDirection(a,c));
+        assertFalse(Vector2.sameDirection(b,c));
     }
 
     @Test
