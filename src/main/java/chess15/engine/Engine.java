@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+
 public class Engine implements EngineInterface {
 
     public Board board;
@@ -29,6 +31,7 @@ public class Engine implements EngineInterface {
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
 
+        previousAttacks = new HashMap<>();
         previousAttacks = calculateMoveMap(true);
         if (nextPlayer == Piece.Color.WHITE) nextPlayer = Piece.Color.BLACK;
         else nextPlayer = Piece.Color.WHITE;
@@ -56,21 +59,53 @@ public class Engine implements EngineInterface {
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
         int last = pieces.size() - 1;
-
-        for (int i = 0; i < last; i++) {
-            Vector2 pos = pieces.get(i);
-            movemap.put(pos, calculateMoves(pos, onlyAttacks));
-        }
-
         Vector2 kingPos = pieces.get(last);
+
+        Vector2 checkGivenby = null;
+        boolean checkAvoidable = true; //by capturing or blocking the piece that's giving check, (if there are several it's inavoidable)
+
         ArrayList<Vector2> kingMoves = calculateMoves(kingPos, onlyAttacks);
 
         for(Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()){
+            if(entry.getValue().contains(kingPos)){
+                // check
+                if(checkGivenby == null) checkGivenby = entry.getKey();
+                else checkAvoidable = false;
+            }
             for (Vector2 pos : entry.getValue()) {
                 kingMoves.remove(pos);
             }
         }
         movemap.put(kingPos, kingMoves);
+
+        if(checkAvoidable){
+            for (int i = 0; i < last; i++) {
+                Vector2 pos = pieces.get(i);
+                ArrayList<Vector2> rawMoves = calculateMoves(pos, onlyAttacks);
+                ArrayList<Vector2> moves = new ArrayList<>();
+                if(checkGivenby != null){
+                    for (int j = 0; j < rawMoves.size(); j++) {
+                        Vector2 checkVector = Vector2.add(kingPos, checkGivenby.invert()).normalize();
+
+                        for (Vector2 attack : previousAttacks.get(checkGivenby)) {
+                            if(attack.normalize().equals(checkVector)){
+                                moves.add(rawMoves.get(j));
+                            }
+                        }
+                    }
+                    if(rawMoves.contains(checkGivenby)) moves.add(checkGivenby);
+                    movemap.put(pos,moves);
+                }else movemap.put(pos, rawMoves);
+            }
+        }
+
+        boolean checkmate = true;
+        for (Map.Entry<Vector2, ArrayList<Vector2>> entry: movemap.entrySet()){
+            if(!entry.getValue().isEmpty()) {
+                checkmate = false;
+                break;
+            }
+        }
 
         return movemap;
     }
@@ -159,7 +194,6 @@ public class Engine implements EngineInterface {
             else {
                 target = (Piece) board.at(candidate);
                 if (target.color == nextPlayer) return moves;
-                if (target.isKing) return moves; // maybe check for check here
                 moves.add(candidate);
                 break;
             }

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SituationTests {
+public class SituationalTests {
 
     private Engine engine;
     private UIInteface UIRef;
@@ -55,4 +55,20 @@ public class SituationTests {
         assertEquals(4, engine.getMoves(new Vector2(3,5)).size());
         assertFalse(engine.getMoves(new Vector2(3,5)).contains(new Vector2(3,4)));
     }
+
+    @Test
+    public void movesInCheck(){
+        engine.reset();
+        engine.move(new Vector2(5,6), new Vector2(5,4));
+        engine.move(new Vector2(4,1), new Vector2(4,2));
+        engine.move(new Vector2(4,6), new Vector2(4,5));
+        engine.move(new Vector2(5,0), new Vector2(4,1));
+        engine.move(new Vector2(3,7), new Vector2(7,3));
+        engine.move(new Vector2(4,1), new Vector2(7,4));
+        assertEquals(0, engine.getMoves(new Vector2(1,7)).size());
+        assertEquals(0, engine.getMoves(new Vector2(2,6)).size());
+        assertEquals(1, engine.getMoves(new Vector2(7,3)).size());
+    }
+
+
 }
