@@ -6,7 +6,7 @@ import chess15.gui.interfaces.UIInteface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public class Engine implements EngineInterface {
 
@@ -16,6 +16,7 @@ public class Engine implements EngineInterface {
     private final UIInteface UIRef;
 
     private HashMap<Vector2, ArrayList<Vector2>> possibleMoves;
+    private HashMap<Vector2, ArrayList<Vector2>> previousAttacks;
     private Piece.Color nextPlayer;
     private ArrayList<Vector2> pieces;
 
@@ -27,95 +28,119 @@ public class Engine implements EngineInterface {
     public void move(Vector2 from, Vector2 to) {
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
+
+        previousAttacks = calculateMoveMap(true);
         if (nextPlayer == Piece.Color.WHITE) nextPlayer = Piece.Color.BLACK;
         else nextPlayer = Piece.Color.WHITE;
-        calculateMoveMap();
+        possibleMoves = calculateMoveMap(false);
     }
 
     public void reset() {
         board = gamemode.startState();
+        nextPlayer = Piece.Color.WHITE;
         possibleMoves = new HashMap<>();
-        calculateMoveMap();
+        previousAttacks = new HashMap<>();
+        pieces = new ArrayList<>();
+        possibleMoves = calculateMoveMap(false);
     }
 
     public Engine(Gamemode gamemode, RuleSet rules, UIInteface uiRef) {
         this.gamemode = gamemode;
-        board = gamemode.startState();
         this.rules = rules;
         UIRef = uiRef;
-        nextPlayer = Piece.Color.WHITE;
-        possibleMoves = new HashMap<>();
-        pieces = new ArrayList<>();
-        calculateMoveMap();
+        reset();
     }
 
+    private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
+        selectPieces();
+        HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
-    private ArrayList<Vector2> calculateMoves(Vector2 position) {
+        int last = pieces.size() - 1;
+
+        for (int i = 0; i < last; i++) {
+            Vector2 pos = pieces.get(i);
+            movemap.put(pos, calculateMoves(pos, onlyAttacks));
+        }
+
+        Vector2 kingPos = pieces.get(last);
+        ArrayList<Vector2> kingMoves = calculateMoves(kingPos, onlyAttacks);
+
+        for(Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()){
+            for (Vector2 pos : entry.getValue()) {
+                kingMoves.remove(pos);
+            }
+        }
+        movemap.put(kingPos, kingMoves);
+
+        return movemap;
+    }
+
+    private ArrayList<Vector2> calculateMoves(Vector2 position, boolean onlyAttacks) {
         BoardElement e = board.elements[position.x][position.y];
         ArrayList<Vector2> moves = new ArrayList<>();
         if (e.isEmpty) return moves;
         Piece p = (Piece) e;
+        boolean isAttackDifferent = p.movement.attackDifferent;
 
         Vector2 special = p.movement.special.apply(position, nextPlayer);
         if (special != null && filterDirection(special, p.pin)) moves.add(special);
 
         ArrayList<Vector2> moveDirections = filterDirections(p.movement.moves, p.pin);
 
-        for (int i = 0; i < moveDirections.size(); i++) {
+        if(!isAttackDifferent || !onlyAttacks){
+            for (int i = 0; i < moveDirections.size(); i++) {
 
-            Vector2 direction = orient(moveDirections.get(i), p.movement.whiteDifferent);
+                Vector2 direction = orient(moveDirections.get(i), p.movement.whiteDifferent);
 
-            if (p.movement.repeating) {
+                if (p.movement.repeating) {
 
-                moves.addAll(repeatMove(position, direction, !p.movement.attackDifferent));
-            } else {
-                Vector2 candidate = Vector2.add(position, direction);
-                if (evalMove(candidate, !p.movement.attackDifferent, false)) moves.add(candidate);
+                    moves.addAll(repeatMove(position, direction, !p.movement.attackDifferent));
+                } else {
+                    Vector2 candidate = Vector2.add(position, direction);
+                    if (evalMove(candidate, !p.movement.attackDifferent, false, onlyAttacks)) moves.add(candidate);
+                }
             }
         }
 
-        if (p.movement.attackDifferent) {
+        if (isAttackDifferent) {
             ArrayList<Vector2> attackDirections = filterDirections(p.movement.attacks, p.pin);
             for (Vector2 attackDirection : attackDirections) {
                 Vector2 candidate = Vector2.add(position, orient(attackDirection, p.movement.whiteDifferent));
-                if (evalMove(candidate, true, true)) moves.add(candidate);
+                if (evalMove(candidate, true, true, onlyAttacks)) moves.add(candidate);
             }
         }
 
         return moves;
     }
 
-    private void calculateMoveMap() {
-        selectPieces();
-        possibleMoves = new HashMap<>();
-
-        for (int i = 0; i < pieces.size(); i++) {
-            Vector2 pos = pieces.get(i);
-            possibleMoves.put(pos, calculateMoves(pos));
-        }
-    }
-
     private void selectPieces() {
         pieces = new ArrayList<>();
+        Vector2 king = null;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Vector2 position = new Vector2(i, j);
                 BoardElement target = board.at(position);
                 if (!target.isEmpty) {
-                    if (((Piece) target).color == nextPlayer) pieces.add(position);
+                    Piece piece = ((Piece) target);
+                    if (piece.color == nextPlayer) {
+                        if (piece.isKing) king = position;
+                        else pieces.add(position);
+                    } else piece.pin = null;
+
                 }
             }
         }
+        pieces.add(king);
     }
 
-    private boolean evalMove(Vector2 pos, boolean isAttack, boolean onlyAttack) {
+    private boolean evalMove(Vector2 pos, boolean isAttack, boolean onlyAttack, boolean forceAttack) {
         if (pos.outOfBounds()) return false;
         if (!board.at(pos).isEmpty) {
             if (!isAttack) return false;
             Piece target = (Piece) board.at(pos);
             return target.color != nextPlayer;
         }
-        return !onlyAttack;
+        return !onlyAttack || forceAttack;
     }
 
     private ArrayList<Vector2> repeatMove(Vector2 pos, Vector2 direction, boolean allowAttack) {
@@ -134,7 +159,7 @@ public class Engine implements EngineInterface {
             else {
                 target = (Piece) board.at(candidate);
                 if (target.color == nextPlayer) return moves;
-                if (target.isKing) return moves; //impossible situation
+                if (target.isKing) return moves; // maybe check for check here
                 moves.add(candidate);
                 break;
             }
@@ -178,7 +203,7 @@ public class Engine implements EngineInterface {
 
         ArrayList<Vector2> filteredDirections = new ArrayList<>();
         for (Vector2 direction : directions) {
-            if (filterDirection(direction,pinDirection)) filteredDirections.add(direction);
+            if (filterDirection(direction, pinDirection)) filteredDirections.add(direction);
         }
 
         return filteredDirections;
