@@ -59,6 +59,7 @@ public class ChessController {
 
     private void handlePieceClick(Vector2 pos, MouseEvent event) throws IOException {
         System.out.println("Clicked on piece at " + pos + " with event " + event);
+        removePosibleMoves();
         displayPosibleMoves(new ArrayList<>() {
             {
                 add(new Vector2(0, 2));
