@@ -37,24 +37,82 @@ public class ChessController {
     public void initialize() throws IOException {
         scene = chessBoard.getScene();
         System.out.println("Chess controller initialized");
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.PAWN, Pawn.getInstance(), false), new Vector2(1, 1));
-        addClickEventToPiece(new Vector2(1, 1));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.PAWN, Pawn.getInstance(), false), new Vector2(0, 0));
-        addClickEventToPiece(new Vector2(0, 0));
-        movePiece(new Vector2(0, 0), new Vector2(0, 1));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(0, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(1, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(2, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.QUEEN, Pawn.getInstance(), false), new Vector2(3, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.KING, Pawn.getInstance(), false), new Vector2(4, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(5, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(6, 0));
+        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(7, 0));
+        for (int i = 0; i < 8; i++) {
+            createPiece(new Piece(Piece.Color.BLACK, Piece.Type.PAWN, Pawn.getInstance(), false), new Vector2(i, 1));
+        }
+
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(0, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(1, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(2, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.QUEEN, Pawn.getInstance(), false), new Vector2(3, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.KING, Pawn.getInstance(), false), new Vector2(4, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(5, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(6, 7));
+        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(7, 7));
+        for (int i = 0; i < 8; i++) {
+            createPiece(new Piece(Piece.Color.WHITE, Piece.Type.PAWN, Pawn.getInstance(), false), new Vector2(i, 6));
+        }
+    }
+
+    private String getPieceColorString(Piece p) {
+        if (p.color == Piece.Color.WHITE) return "white";
+        else return "black";
+    }
+
+    private String getPieceTypeString(Piece p) {
+        switch (p.look) {
+            case KING -> {
+                return "king";
+            }
+            case PAWN -> {
+                return "pawn";
+            }
+            case ROOK -> {
+                return "rook";
+            }
+            case QUEEN -> {
+                return "queen";
+            }
+            case BISHOP -> {
+                return "bishop";
+            }
+            case KNIGHT -> {
+                return "knight";
+            }
+            default -> {
+                return "";
+            }
+        }
     }
 
     private void createPiece(Piece p, Vector2 pos) throws IOException {
         System.out.println("Creating piece");
-        Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/ai.png")).openStream());
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitHeight(90);
-        imageView.setFitWidth(90);
-        imageView.setX(90 * pos.x);
-        imageView.setY(90 * pos.y);
-        pieces.put(pos, imageView);
-        chessBoardPane.getChildren().add(imageView);
+        StringBuilder imagePath = new StringBuilder();
+
+        imagePath.append("pieces/");
+        imagePath.append(getPieceColorString(p));
+        imagePath.append("-");
+        imagePath.append(getPieceTypeString(p));
+        imagePath.append(".png");
+
+        Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath.toString())).openStream());
+        ImageView pieceImage = new ImageView();
+        pieceImage.setImage(image);
+        pieceImage.setFitHeight(90);
+        pieceImage.setFitWidth(90);
+        pieceImage.setX(90 * pos.x);
+        pieceImage.setY(90 * pos.y);
+        pieces.put(pos, pieceImage);
+        addClickEventToPiece(pos, pieceImage);
+        chessBoardPane.getChildren().add(pieceImage);
     }
 
     private void handlePieceClick(Vector2 pos, MouseEvent event) throws IOException {
@@ -70,7 +128,7 @@ public class ChessController {
 
     private void updateClickEventToPiece(Vector2 pos) {
         ImageView piece = pieces.get(pos);
-        piece.setOnMouseClicked(event -> {
+        piece.setOnMousePressed(event -> {
             try {
                 handlePieceClick(pos, event);
             } catch (IOException e) {
@@ -79,9 +137,8 @@ public class ChessController {
         });
     }
 
-    private void addClickEventToPiece(Vector2 pos) {
-        ImageView piece = pieces.get(pos);
-        piece.setOnMouseClicked(event -> {
+    private void addClickEventToPiece(Vector2 pos, ImageView piece) {
+        piece.setOnMousePressed(event -> {
             try {
                 handlePieceClick(pos, event);
             } catch (IOException e) {
@@ -105,32 +162,23 @@ public class ChessController {
         pieces.remove(pos);
     }
 
-    private void handleMove(Vector2 fromPos, Vector2 toPos, MouseEvent event) throws IOException {
-        System.out.println("Clicked on move at " + fromPos + " with event " + event);
-        movePiece(fromPos, toPos);
-        removePosibleMoves();
-    }
-
     private void displayPosibleMoves(ArrayList<Vector2> moves, Vector2 piece) throws IOException {
         System.out.println("Displaying posible moves");
         for (Vector2 move : moves) {
             Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/possibleMove.jpg")).openStream());
-            ImageView imageView = new ImageView();
-            imageView.setImage(image);
-            imageView.setFitHeight(90);
-            imageView.setFitWidth(90);
-            imageView.setX(90 * move.x);
-            imageView.setY(90 * move.y);
-            imageView.setOpacity(0.5);
-            imageView.setOnMouseClicked(event -> {
-                try {
-                    handleMove(piece, move, event);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            ImageView possibleMoveImage = new ImageView();
+            possibleMoveImage.setImage(image);
+            possibleMoveImage.setFitHeight(90);
+            possibleMoveImage.setFitWidth(90);
+            possibleMoveImage.setX(90 * move.x);
+            possibleMoveImage.setY(90 * move.y);
+            possibleMoveImage.setOpacity(0.5);
+            possibleMoveImage.setOnMouseClicked(event -> {
+                movePiece(piece, move);
+                removePosibleMoves();
             });
-            possibleMoves.put(move, imageView);
-            chessBoardPane.getChildren().add(imageView);
+            possibleMoves.put(move, possibleMoveImage);
+            chessBoardPane.getChildren().add(possibleMoveImage);
         }
     }
 
