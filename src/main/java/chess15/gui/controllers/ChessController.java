@@ -102,6 +102,7 @@ public class ChessController {
         imagePath.append("-");
         imagePath.append(getPieceTypeString(p));
         imagePath.append(".png");
+//        imagePath.append("test.png");
 
         Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath.toString())).openStream());
         ImageView pieceImage = new ImageView();
