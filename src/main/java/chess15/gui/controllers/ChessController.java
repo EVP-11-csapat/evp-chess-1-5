@@ -138,6 +138,7 @@ public class ChessController {
     }
 
     private void addClickEventToPiece(Vector2 pos, ImageView piece) {
+        System.out.println("Creating click listener for: " + pos );
         piece.setOnMousePressed(event -> {
             try {
                 handlePieceClick(pos, event);
