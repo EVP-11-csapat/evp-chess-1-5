@@ -5,6 +5,7 @@ import chess15.engine.Engine;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gui.interfaces.UIInteface;
+import chess15.util.Move;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -27,6 +28,7 @@ public class ChessController implements UIInteface {
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
     private HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
     private ArrayList<Piece> takenPieces = new ArrayList<>();
+    public ArrayList<Move> playedMoves = new ArrayList<>();
     private Board board = null;
     private EngineInterface engine;
 
@@ -189,17 +191,21 @@ public class ChessController implements UIInteface {
     }
 
     private void movePiece(Vector2 from, Vector2 to) {
-        ImageView piece = pieces.get(from);
+        ImageView pieceView = pieces.get(from);
+        Piece piece = (Piece) engine.getBoard().getElement(from);
         System.out.println(takenPieces);
         if (engine.getBoard().getElement(to) instanceof Piece) {
             takenPieces.add((Piece) engine.getBoard().getElement(to));
             removePiece(to);
             System.out.println(takenPieces);
         }
-        piece.setX(90 * to.x);
-        piece.setY(90 * to.y);
+        Move move = new Move(from, to, piece.color);
+        playedMoves.add(move);
+        System.out.println("PLAYED: " + playedMoves);
+        pieceView.setX(90 * to.x);
+        pieceView.setY(90 * to.y);
         pieces.remove(from);
-        pieces.put(to, piece);
+        pieces.put(to, pieceView);
         engine.move(from, to);
         updateClickEventToPiece(to);
     }

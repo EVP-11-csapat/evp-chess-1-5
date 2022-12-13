@@ -16,11 +16,8 @@ public class RuleSet {
     public Gamemode gamemode;   //gamemode reference
 
     public static RuleSet getInstance() {
+        if (instance == null) instance = new RuleSet();
         return instance;
-    }
-
-    public RuleSet(Gamemode gamemode){
-        this.gamemode = gamemode;
     }
 
     @Override
