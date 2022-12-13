@@ -16,7 +16,7 @@ public class SituationalTests {
 
     @Before
     public void setUp() {
-        engine = new Engine(new Classical(), new RuleSet(), UIRef);
+        engine = new Engine(new RuleSet(new Classical()), UIRef);
     }
 
     @Test
