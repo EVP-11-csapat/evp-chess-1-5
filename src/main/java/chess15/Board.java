@@ -21,6 +21,10 @@ public class Board {
         return elements[col - 1][8 - row];
     }
 
+    public BoardElement getElement(Vector2 pos) {
+        return elements[pos.x][pos.y];
+    }
+
     /**
      * Returns the board element at the given coordinates defined by a Vector2.
      * @param position The position of the piece we want to get in Vector2.

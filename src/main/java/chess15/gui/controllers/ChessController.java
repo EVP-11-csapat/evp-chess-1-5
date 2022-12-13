@@ -13,11 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
+import javax.print.attribute.HashDocAttributeSet;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 public class ChessController implements UIInteface {
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
     private HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
+    private ArrayList<Piece> takenPieces = new ArrayList<>();
     private Board board = null;
     private EngineInterface engine;
 
@@ -63,6 +63,7 @@ public class ChessController implements UIInteface {
                     }
                 }
                 pieces.clear();
+                takenPieces = new ArrayList<>();
                 setUpBoard();
             }
         };
@@ -131,16 +132,14 @@ public class ChessController implements UIInteface {
 
     private void createPiece(Piece p, Vector2 pos) throws IOException {
         System.out.println("Creating piece");
-        StringBuilder imagePath = new StringBuilder();
 
-        imagePath.append("pieces/");
-        imagePath.append(getPieceColorString(p));
-        imagePath.append("-");
-        imagePath.append(getPieceTypeString(p));
-        imagePath.append(".png");
-//        imagePath.append("test.png");
+        String imagePath = "pieces/" +
+                getPieceColorString(p) +
+                "-" +
+                getPieceTypeString(p) +
+                ".png";
 
-        Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath.toString())).openStream());
+        Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
         ImageView pieceImage = new ImageView();
         pieceImage.setImage(image);
         pieceImage.setFitHeight(90);
@@ -191,6 +190,12 @@ public class ChessController implements UIInteface {
 
     private void movePiece(Vector2 from, Vector2 to) {
         ImageView piece = pieces.get(from);
+        System.out.println(takenPieces);
+        if (engine.getBoard().getElement(to) instanceof Piece) {
+            takenPieces.add((Piece) engine.getBoard().getElement(to));
+            removePiece(to);
+            System.out.println(takenPieces);
+        }
         piece.setX(90 * to.x);
         piece.setY(90 * to.y);
         pieces.remove(from);
