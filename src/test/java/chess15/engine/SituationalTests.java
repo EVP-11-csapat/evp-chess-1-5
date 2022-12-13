@@ -16,7 +16,9 @@ public class SituationalTests {
 
     @Before
     public void setUp() {
-        engine = new Engine(new RuleSet(new Classical()), UIRef);
+        RuleSet rules = RuleSet.getInstance();
+        rules.gamemode = new Classical();
+        engine = new Engine(rules, UIRef);
     }
 
     @Test

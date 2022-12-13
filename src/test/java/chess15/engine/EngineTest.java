@@ -6,6 +6,7 @@ import chess15.gamemode.Classical;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,7 +18,9 @@ public class EngineTest {
 
     @Before
     public void setUp() {
-        engine = new Engine(new RuleSet(new Classical()), UIRef);
+        RuleSet rules = RuleSet.getInstance();
+        rules.gamemode = new Classical();
+        engine = new Engine(rules, UIRef);
     }
 
     @Test
