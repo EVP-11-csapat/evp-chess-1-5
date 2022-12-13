@@ -12,7 +12,7 @@ public abstract class MoveSet{
     public ArrayList<Vector2> moves;
     public ArrayList<Vector2> attacks;
 
-    public BiFunction<Vector2, Piece.Color, Vector2> special = (a,b) -> (null);
+    public BiFunction<Vector2, Board, Vector2> special = (a,b) -> (null);
 
     public boolean attackDifferent;
     public boolean whiteDifferent;

@@ -21,8 +21,8 @@ public class Pawn extends MoveSet
 
 
 
-        special = (pos, color) -> (
-                (pos.y == 1 && color == Piece.Color.BLACK ) ? new Vector2(pos.x, 3) : (pos.y == 6 && color == Piece.Color.WHITE) ? new Vector2(pos.x, 4) : null
+        special = (pos, board) -> (
+                (pos.y == 1 && ((Piece)board.at(pos)).color == Piece.Color.BLACK && board.at(Vector2.add(pos, new Vector2(0, 1))).isEmpty ) ? new Vector2(pos.x, 3) : (pos.y == 6 && ((Piece)board.at(pos)).color  == Piece.Color.WHITE && board.at(Vector2.add(pos, new Vector2(0, -1))).isEmpty) ? new Vector2(pos.x, 4) : null
         );
 
 

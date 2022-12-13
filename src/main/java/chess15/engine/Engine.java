@@ -122,7 +122,7 @@ public class Engine implements EngineInterface {
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
 
-        Vector2 special = p.movement.special.apply(position, nextPlayer);
+        Vector2 special = p.movement.special.apply(position, board);
         if (special != null && filterDirection(special, p.pin)) moves.add(special);
 
         ArrayList<Vector2> moveDirections = filterDirections(p.movement.moves, p.pin);
