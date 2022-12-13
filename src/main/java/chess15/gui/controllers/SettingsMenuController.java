@@ -1,5 +1,7 @@
 package chess15.gui.controllers;
 
+import chess15.engine.RuleSet;
+import chess15.gamemode.Classical;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
+import org.junit.Rule;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -194,6 +197,14 @@ public class SettingsMenuController {
     @FXML
     protected void onPlayButtonPressed() throws IOException {
         if (!selectedGameMode.equals("")) {
+            RuleSet rules = RuleSet.getInstance();
+            if (Objects.equals(selectedGameMode, "classical")) rules.gamemode = new Classical();
+            rules.timer = gameTimerEnabled;
+            rules.startTime = gameTimerMinutes;
+            rules.timeDelta = gameTimerSeconds;
+            rules.castling = isCastlingEnabled;
+            rules.promotion = isPromotionEnabled;
+            rules.enpassant = isEnPassantEnabled;
             System.out.println("Play button pressed");
             System.out.println("Game mode: " + selectedGameMode);
             System.out.println("Game timer enabled: " + gameTimerEnabled);

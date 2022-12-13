@@ -5,8 +5,8 @@ import chess15.gamemode.Gamemode;
 public class RuleSet {
     public static RuleSet instance = null;
 
-    public static int startTime; //minutes
-    public static int timeDelta; //seconds
+    public int startTime; //minutes
+    public int timeDelta; //seconds
 
     public boolean timer;       //true if enabled
     public boolean castling;    //true if enabled
