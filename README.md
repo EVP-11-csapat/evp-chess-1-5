@@ -42,3 +42,8 @@ Knight coordinates
 
 For readability, the following will be used to represent a coordinate
 `[x, y]` where `x` is the column we are in and `y` is the row we are in.
+
+---
+
+To reload the chess board once moves had been made, press the `<Ctrl> + <Alt> + <R>`
+combination on your keyboard.
