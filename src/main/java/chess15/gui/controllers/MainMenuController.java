@@ -1,5 +1,7 @@
 package chess15.gui.controllers;
 
+import chess15.engine.RuleSet;
+import chess15.gamemode.Classical;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -45,6 +47,15 @@ public class MainMenuController {
     @FXML
     protected void onAiButtonPressed() throws IOException {
         System.out.println("AI button pressed");
+        RuleSet rules = RuleSet.getInstance();
+        rules.castling = true;
+        rules.enpassant = true;
+        rules.promotion = true;
+        rules.gamemode = new Classical();
+        rules.startTime = 90;
+        rules.timeDelta = 0;
+        rules.timer = false;
+
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
         primaryStage.getScene().setRoot(newRoot);

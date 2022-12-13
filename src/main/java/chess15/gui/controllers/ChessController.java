@@ -1,27 +1,36 @@
 package chess15.gui.controllers;
 
-import chess15.Pawn;
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.*;
+import chess15.engine.Engine;
+import chess15.engine.EngineInterface;
+import chess15.engine.RuleSet;
+import chess15.gui.interfaces.UIInteface;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 //import java.awt.*;
 
-public class ChessController {
+public class ChessController implements UIInteface {
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
     private HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
+    private Board board = null;
+    private EngineInterface engine;
+
+    private Vector2 handlePos;
 
     Scene scene;
 
@@ -34,31 +43,57 @@ public class ChessController {
     @FXML
     private StackPane chessBoardStackPane;
 
-    public void initialize() throws IOException {
-        scene = chessBoard.getScene();
-        System.out.println("Chess controller initialized");
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(0, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(1, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(2, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.QUEEN, Pawn.getInstance(), false), new Vector2(3, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.KING, Pawn.getInstance(), false), new Vector2(4, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(5, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(6, 0));
-        createPiece(new Piece(Piece.Color.BLACK, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(7, 0));
-        for (int i = 0; i < 8; i++) {
-            createPiece(new Piece(Piece.Color.BLACK, Piece.Type.PAWN, Pawn.getInstance(), false), new Vector2(i, 1));
-        }
+    @FXML
+    Pane main;
 
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(0, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(1, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(2, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.QUEEN, Pawn.getInstance(), false), new Vector2(3, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.KING, Pawn.getInstance(), false), new Vector2(4, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.BISHOP, Pawn.getInstance(), false), new Vector2(5, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Pawn.getInstance(), false), new Vector2(6, 7));
-        createPiece(new Piece(Piece.Color.WHITE, Piece.Type.ROOK, Pawn.getInstance(), false), new Vector2(7, 7));
+    public void initialize() throws IOException {
+        engine = new Engine(RuleSet.getInstance(), this);
+        System.out.println("Chess controller initialized");
+        System.out.println(RuleSet.getInstance().toString());
+        board = engine.getBoard();
+        setUpBoard();
+        EventHandler<KeyEvent> resetHandler = e -> {
+            if (e.getCode() == KeyCode.R && e.isControlDown() && e.isAltDown()) {
+                engine.reset();
+                removePosibleMoves();
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        removePiece(new Vector2(j, i));
+                    }
+                }
+                pieces.clear();
+                setUpBoard();
+            }
+        };
+
+        if (main.getScene() != null) {
+            main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
+        } else {
+            main.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                if (newScene != null) {
+                    main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
+                }
+            });
+        }
+    }
+
+    private void setUpBoard() {
+
         for (int i = 0; i < 8; i++) {
-            createPiece(new Piece(Piece.Color.WHITE, Piece.Type.PAWN, Pawn.getInstance(), false), new Vector2(i, 6));
+            for (int j = 0; j < 8; j++) {
+                BoardElement element = board.elements[j][i];
+                Piece piece = null;
+                if (!(element instanceof Piece))  continue;
+                piece = (Piece) element;
+                Vector2 piecePos = new Vector2(j, i);
+
+                try {
+                    createPiece(piece, piecePos);
+                } catch (IOException e) {
+                    System.out.println(e.toString());
+                    System.out.println("Image NOT Found");
+                }
+            }
         }
     }
 
@@ -119,34 +154,38 @@ public class ChessController {
     private void handlePieceClick(Vector2 pos, MouseEvent event) throws IOException {
         System.out.println("Clicked on piece at " + pos + " with event " + event);
         removePosibleMoves();
-        displayPosibleMoves(new ArrayList<>() {
-            {
-                add(new Vector2(0, 2));
-                add(new Vector2(1, 2));
-            }
-        }, pos);
+        displayPosibleMoves(engine.getMoves(pos), pos);
     }
 
-    private void updateClickEventToPiece(Vector2 pos) {
-        ImageView piece = pieces.get(pos);
-        piece.setOnMousePressed(event -> {
+    public static <T, E> List<T> getKeysByValue(Map<T, E> map, E value) {
+        return map.entrySet()
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), value))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    EventHandler<MouseEvent> pressedHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent mouseEvent) {
             try {
-                handlePieceClick(pos, event);
+                System.out.println(mouseEvent.getSource());
+                Vector2 handlePos = getKeysByValue(pieces, (ImageView) mouseEvent.getSource()).get(0);
+                handlePieceClick(handlePos, mouseEvent);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
+        }
+    };
+
+    private void updateClickEventToPiece(Vector2 pos) {
+        ImageView piece = pieces.get(pos);
+        piece.setOnMousePressed(pressedHandler);
     }
 
     private void addClickEventToPiece(Vector2 pos, ImageView piece) {
         System.out.println("Creating click listener for: " + pos );
-        piece.setOnMousePressed(event -> {
-            try {
-                handlePieceClick(pos, event);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        piece.setOnMousePressed(pressedHandler);
     }
 
     private void movePiece(Vector2 from, Vector2 to) {
@@ -155,6 +194,7 @@ public class ChessController {
         piece.setY(90 * to.y);
         pieces.remove(from);
         pieces.put(to, piece);
+        engine.move(from, to);
         updateClickEventToPiece(to);
     }
 
@@ -190,5 +230,20 @@ public class ChessController {
             chessBoardPane.getChildren().remove(imageView);
         }
         possibleMoves.clear();
+    }
+
+    @Override
+    public void endGame(Piece.Color won) {
+
+    }
+
+    @Override
+    public void setCheck(Vector2 checkCoord) {
+
+    }
+
+    @Override
+    public void remove(Piece pieceToRemove) {
+
     }
 }

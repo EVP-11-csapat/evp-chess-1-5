@@ -38,6 +38,11 @@ public class Engine implements EngineInterface {
         possibleMoves = calculateMoveMap(false);
     }
 
+    @Override
+    public Board getBoard() {
+        return board;
+    }
+
     public void reset() {
         board = gamemode.startState();
         nextPlayer = Piece.Color.WHITE;
@@ -47,8 +52,8 @@ public class Engine implements EngineInterface {
         possibleMoves = calculateMoveMap(false);
     }
 
-    public Engine(Gamemode gamemode, RuleSet rules, UIInteface uiRef) {
-        this.gamemode = gamemode;
+    public Engine(RuleSet rules, UIInteface uiRef) {
+        this.gamemode = rules.gamemode;
         this.rules = rules;
         UIRef = uiRef;
         reset();

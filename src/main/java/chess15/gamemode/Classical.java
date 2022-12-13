@@ -13,4 +13,9 @@ public class Classical extends Gamemode {
 
         return board;
     }
+
+    @Override
+    public String toString() {
+        return "classical";
+    }
 }
