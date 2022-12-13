@@ -22,7 +22,7 @@ public class Pawn extends MoveSet
 
 
         special = (pos, color) -> (
-                (pos.y == 1 && color == Piece.Color.BLACK) ? new Vector2(pos.x, 3) : (pos.y == 6 && color == Piece.Color.WHITE) ? new Vector2(pos.x, 4) : null
+                (pos.y == 1 && color == Piece.Color.BLACK ) ? new Vector2(pos.x, 3) : (pos.y == 6 && color == Piece.Color.WHITE) ? new Vector2(pos.x, 4) : null
         );
 
 
