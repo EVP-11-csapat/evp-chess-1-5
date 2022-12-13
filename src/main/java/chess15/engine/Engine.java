@@ -71,10 +71,10 @@ public class Engine implements EngineInterface {
 
         ArrayList<Vector2> kingMoves = calculateMoves(kingPos, onlyAttacks);
 
-        for(Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()){
-            if(entry.getValue().contains(kingPos)){
+        for (Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()) {
+            if (entry.getValue().contains(kingPos)) {
                 // check
-                if(checkGivenby == null) checkGivenby = entry.getKey();
+                if (checkGivenby == null) checkGivenby = entry.getKey();
                 else checkAvoidable = false;
             }
             for (Vector2 pos : entry.getValue()) {
@@ -83,30 +83,31 @@ public class Engine implements EngineInterface {
         }
         movemap.put(kingPos, kingMoves);
 
-        if(checkAvoidable){
+        if (checkAvoidable) {
             for (int i = 0; i < last; i++) {
                 Vector2 pos = pieces.get(i);
                 ArrayList<Vector2> rawMoves = calculateMoves(pos, onlyAttacks);
                 ArrayList<Vector2> moves = new ArrayList<>();
-                if(checkGivenby != null){
-                    for (int j = 0; j < rawMoves.size(); j++) {
-                        Vector2 checkVector = Vector2.add(kingPos, checkGivenby.invert()).normalize();
+                if (checkGivenby != null) {
 
-                        for (Vector2 attack : previousAttacks.get(checkGivenby)) {
-                            if(attack.normalize().equals(checkVector)){
-                                moves.add(rawMoves.get(j));
-                            }
+                    Vector2 checkVector = Vector2.add(kingPos, checkGivenby.invert()).normalize();
+
+                    if (((Piece) board.at(checkGivenby)).movement.repeating) {
+                        for (int k = 1; k < 8; k++) {
+                            Vector2 candidate = Vector2.add(checkGivenby, checkVector.scaleBy(k));
+                            if (rawMoves.contains(candidate)) moves.add(candidate);
                         }
                     }
-                    if(rawMoves.contains(checkGivenby)) moves.add(checkGivenby);
-                    movemap.put(pos,moves);
-                }else movemap.put(pos, rawMoves);
+                    if (rawMoves.contains(checkGivenby)) moves.add(checkGivenby);
+                    movemap.put(pos, moves);
+
+                } else movemap.put(pos, rawMoves);
             }
         }
 
         boolean checkmate = true;
-        for (Map.Entry<Vector2, ArrayList<Vector2>> entry: movemap.entrySet()){
-            if(!entry.getValue().isEmpty()) {
+        for (Map.Entry<Vector2, ArrayList<Vector2>> entry : movemap.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
                 checkmate = false;
                 break;
             }
@@ -127,7 +128,7 @@ public class Engine implements EngineInterface {
 
         ArrayList<Vector2> moveDirections = filterDirections(p.movement.moves, p.pin);
 
-        if(!isAttackDifferent || !onlyAttacks){
+        if (!isAttackDifferent || !onlyAttacks) {
             for (int i = 0; i < moveDirections.size(); i++) {
 
                 Vector2 direction = orient(moveDirections.get(i), p.movement.whiteDifferent);
