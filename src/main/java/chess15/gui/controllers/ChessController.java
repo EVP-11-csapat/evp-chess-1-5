@@ -55,6 +55,7 @@ public class ChessController implements UIInteface {
         EventHandler<KeyEvent> resetHandler = e -> {
             if (e.getCode() == KeyCode.R && e.isControlDown() && e.isAltDown()) {
                 engine.reset();
+                board = engine.getBoard();
                 removePosibleMoves();
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
