@@ -188,6 +188,7 @@ public class Engine implements EngineInterface {
         ArrayList<Vector2> moves = new ArrayList<>();
 
         Piece target = null;
+        Vector2 targetpos = null;
 
         Vector2 candidate = Vector2.add(pos, direction);
         for (int i = 0; i < 9; i++) {
@@ -199,6 +200,7 @@ public class Engine implements EngineInterface {
             if (empty) moves.add(candidate);
             else {
                 target = (Piece) board.at(candidate);
+                targetpos = candidate;
                 if (target.color == nextPlayer) return moves;
                 moves.add(candidate);
                 break;
@@ -216,7 +218,7 @@ public class Engine implements EngineInterface {
 
                 if (p.isKing && p.color != nextPlayer) {
                     assert target != null;
-                    target.pin = direction;
+                    target.pin = Vector2.add(pos, targetpos.invert());
                 }
                 return moves;
             }
@@ -244,7 +246,9 @@ public class Engine implements EngineInterface {
         ArrayList<Vector2> filteredDirections = new ArrayList<>();
         for (Vector2 direction : directions) {
             if (filterDirection(direction, pinDirection)) filteredDirections.add(direction);
+            if (pinDirection.normalize().equals(direction)) filteredDirections.add(pinDirection);
         }
+
 
         return filteredDirections;
     }
