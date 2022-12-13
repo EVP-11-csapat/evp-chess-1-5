@@ -246,7 +246,6 @@ public class Engine implements EngineInterface {
         ArrayList<Vector2> filteredDirections = new ArrayList<>();
         for (Vector2 direction : directions) {
             if (filterDirection(direction, pinDirection)) filteredDirections.add(direction);
-            if (pinDirection.normalize().equals(direction)) filteredDirections.add(pinDirection);
         }
 
 
