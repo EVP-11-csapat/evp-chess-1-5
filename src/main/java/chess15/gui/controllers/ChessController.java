@@ -6,9 +6,11 @@ import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gui.interfaces.UIInteface;
 import chess15.util.Move;
+import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -16,13 +18,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.util.Duration;
 
-import javax.print.attribute.HashDocAttributeSet;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-//import java.awt.*;
 
 public class ChessController implements UIInteface {
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
@@ -46,7 +48,10 @@ public class ChessController implements UIInteface {
     private StackPane chessBoardStackPane;
 
     @FXML
-    Pane main;
+    private Pane main;
+
+    @FXML
+    private ListView moveListElement;
 
     public void initialize() throws IOException {
         engine = new Engine(RuleSet.getInstance(), this);
@@ -190,6 +195,62 @@ public class ChessController implements UIInteface {
         piece.setOnMousePressed(pressedHandler);
     }
 
+    public String convertMoveToChessCord(Vector2 move) {
+        switch (move.x) {
+            case 0 -> {
+                return "A" + (8 - move.y);
+            }
+            case 1 -> {
+                return "B" + (8 - move.y);
+            }
+            case 2 -> {
+                return "C" + (8 - move.y);
+            }
+            case 3 -> {
+                return "D" + (8 - move.y);
+            }
+            case 4 -> {
+                return "E" + (8 - move.y);
+            }
+            case 5 -> {
+                return "F" + (8 - move.y);
+            }
+            case 6 -> {
+                return "G" + (8 - move.y);
+            }
+            case 7 -> {
+                return "H" + (8 - move.y);
+            }
+        }
+        return null;
+    }
+
+    public String generateMoveString(Move move) {
+        String color = move.color == Piece.Color.WHITE ? "White" : "Black";
+        String fromCoord = convertMoveToChessCord(move.from);
+        String toCoord = convertMoveToChessCord(move.to);
+        return color + " played " + fromCoord + " to " + toCoord;
+    }
+
+    /**
+     * @deprecated
+     * @param moveToRemove
+     */
+    public void removeElementFromList(Move moveToRemove) {
+        moveListElement.getItems().remove(generateMoveString(moveToRemove));
+    }
+
+    private void updateMoveList(Move moveToAdd) {
+        playedMoves.add(moveToAdd);
+        moveListElement.getItems().add(generateMoveString(moveToAdd));
+        moveListElement.scrollTo(moveListElement.getItems().size());
+        System.out.println("PLAYED: " + generateMoveString(moveToAdd));
+//        if (playedMoves.size() > 11) {
+//            removeElementFromList(playedMoves.get(0));
+//            playedMoves.remove(0);
+//        }
+    }
+
     private void movePiece(Vector2 from, Vector2 to) {
         ImageView pieceView = pieces.get(from);
         Piece piece = (Piece) engine.getBoard().getElement(from);
@@ -200,8 +261,17 @@ public class ChessController implements UIInteface {
             System.out.println(takenPieces);
         }
         Move move = new Move(from, to, piece.color);
-        playedMoves.add(move);
-        System.out.println("PLAYED: " + playedMoves);
+        updateMoveList(move);
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(1);
+        timeline.setAutoReverse(false);
+        KeyValue kvx = new KeyValue(pieceView.xProperty(), 90 * to.x);
+        KeyValue kvy = new KeyValue(pieceView.yProperty(), 90 * to.y);
+        KeyFrame kfx = new KeyFrame(Duration.millis(100 * Math.abs(to.x - from.x)), kvx);
+        KeyFrame kfy = new KeyFrame(Duration.millis(100 * Math.abs(to.y - from.y)), kvy);
+        timeline.getKeyFrames().add(kfx);
+        timeline.getKeyFrames().add(kfy);
+        timeline.play();
         pieceView.setX(90 * to.x);
         pieceView.setY(90 * to.y);
         pieces.remove(from);

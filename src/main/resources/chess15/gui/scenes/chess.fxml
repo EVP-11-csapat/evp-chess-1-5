@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
@@ -17,6 +18,22 @@
                            </image></ImageView>
                         <Pane fx:id="chessBoardPane" prefHeight="720.0" prefWidth="720.0" />
                      </children></StackPane>
+                  <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" scaleX="2.0" />
+                  <VBox prefHeight="200.0" prefWidth="600.0">
+                     <children>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" />
+                        <Separator opacity="0.0" prefWidth="200.0" />
+                        <Pane prefHeight="200.0" prefWidth="200.0" />
+                        <Separator opacity="0.0" prefWidth="200.0" />
+                        <Pane prefHeight="300.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="moveListElement" prefHeight="260.0" prefWidth="550.0" />
+                              <Separator prefWidth="200.0" />
+                              <TextField layoutY="260.0" prefWidth="550.0" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </VBox>
                </children>
             </HBox>
          </children>
