@@ -135,7 +135,7 @@ public class Engine implements EngineInterface {
 
                 if (p.movement.repeating) {
 
-                    moves.addAll(repeatMove(position, direction, !p.movement.attackDifferent));
+                    moves.addAll(repeatMove(position, direction, !p.movement.attackDifferent, onlyAttacks));
                 } else {
                     Vector2 candidate = Vector2.add(position, direction);
                     if (evalMove(candidate, !p.movement.attackDifferent, false, onlyAttacks)) moves.add(candidate);
@@ -177,6 +177,7 @@ public class Engine implements EngineInterface {
     private boolean evalMove(Vector2 pos, boolean isAttack, boolean onlyAttack, boolean forceAttack) {
         if (pos.outOfBounds()) return false;
         if (!board.at(pos).isEmpty) {
+            if(forceAttack) return true;
             if (!isAttack) return false;
             Piece target = (Piece) board.at(pos);
             return target.color != nextPlayer;
@@ -184,13 +185,16 @@ public class Engine implements EngineInterface {
         return !onlyAttack || forceAttack;
     }
 
-    private ArrayList<Vector2> repeatMove(Vector2 pos, Vector2 direction, boolean allowAttack) {
+    private ArrayList<Vector2> repeatMove(Vector2 pos, Vector2 direction, boolean allowAttack, boolean forceAttack) {
         ArrayList<Vector2> moves = new ArrayList<>();
 
         Piece target = null;
         Vector2 targetpos = null;
 
         Vector2 candidate = Vector2.add(pos, direction);
+
+        boolean stoppedOnce = false;
+
         for (int i = 0; i < 9; i++) {
             if (candidate.outOfBounds()) return moves;
 
@@ -201,7 +205,12 @@ public class Engine implements EngineInterface {
             else {
                 target = (Piece) board.at(candidate);
                 targetpos = candidate;
-                if (target.color == nextPlayer) return moves;
+                if(forceAttack){
+                    if(stoppedOnce) return moves;
+                    stoppedOnce = true;
+                }else{
+                    if (target.color == nextPlayer) return moves;
+                }
                 moves.add(candidate);
                 break;
             }
