@@ -87,8 +87,14 @@ public class ChessController implements UIInteface {
                         removePiece(new Vector2(j, i));
                     }
                 }
+                moveListElement.getItems().clear();
+
+                whiteTaken.getChildren().clear();
+                blackTaken.getChildren().clear();
+
                 pieces.clear();
                 takenPieces = new ArrayList<>();
+                takenList = new HashMap<>();
                 setUpBoard();
             }
         };
