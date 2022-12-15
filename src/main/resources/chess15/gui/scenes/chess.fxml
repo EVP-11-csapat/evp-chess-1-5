@@ -45,7 +45,7 @@
                         <Pane prefHeight="300.0" prefWidth="200.0">
                            <children>
                               <ListView fx:id="moveListElement" prefHeight="260.0" prefWidth="550.0" />
-                              <TextField layoutY="260.0" prefWidth="550.0" />
+                              <TextField fx:id="inputText" layoutY="260.0" prefWidth="550.0" />
                            </children>
                         </Pane>
                      </children>

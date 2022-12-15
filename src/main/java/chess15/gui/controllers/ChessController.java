@@ -6,12 +6,14 @@ import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gui.interfaces.UIInteface;
 import chess15.util.Move;
+import chess15.util.PiecePoints;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -23,9 +25,13 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ChessController implements UIInteface {
+    private Boolean aditionalString = true;
+
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
     private HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
     private ArrayList<Piece> takenPieces = new ArrayList<>();
@@ -58,6 +64,9 @@ public class ChessController implements UIInteface {
 
     @FXML
     private ScrollPane whiteTakenScroll;
+
+    @FXML
+    private TextField inputText;
 
     private Pane whiteTaken;
     private Pane blackTaken;
@@ -92,6 +101,25 @@ public class ChessController implements UIInteface {
                     main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
                 }
             });
+        }
+
+        inputText.setOnAction(e -> {
+            handleTextMove(inputText.getCharacters().toString());
+        });
+    }
+
+    private void handleTextMove(String text) {
+        System.out.println(text);
+        Pattern testPattern = Pattern.compile("[a-h][1-8][a-h][1-8]");
+        Matcher patternMatcher = testPattern.matcher(text.toLowerCase());
+        Boolean correctInput = patternMatcher.matches();
+        if (correctInput) {
+            System.out.println("Pattern FOUND");
+            System.out.println(text);
+            //TODO: Parse to move and call move method
+            inputText.clear();
+        } else {
+            System.out.println("Pattern NOT FOUND");
         }
     }
 
@@ -234,18 +262,52 @@ public class ChessController implements UIInteface {
         return null;
     }
 
-    public String generateMoveString(Move move) {
+    private void generateAditional(StringBuilder aditional, Move move) {
+        int whitePoints = 0;
+        int blackPoints = 0;
+        for (Piece p : takenPieces) {
+            if (p.color == Piece.Color.WHITE) blackPoints += PiecePoints.evaluate(p);
+            else whitePoints += PiecePoints.evaluate(p);
+        }
+        if (whitePoints == blackPoints) {
+            return;
+        } else if (whitePoints > blackPoints) {
+            aditional.append(" with a material ");
+            String adv = move.color == Piece.Color.WHITE
+                    ? "advantage of "
+                    : "disadvantage of ";
+            aditional.append(adv);
+            aditional.append(whitePoints - blackPoints);
+        } else if (whitePoints < blackPoints) {
+            aditional.append(" with a material ");
+            String adv = move.color == Piece.Color.BLACK
+                    ? "advantage of "
+                    : "disadvantage of ";
+            aditional.append(adv);
+            aditional.append(blackPoints - whitePoints);
+        }
+    }
+
+    private String generateMoveString(Move move) {
         String color = move.color == Piece.Color.WHITE ? "White" : "Black";
         String fromCoord = convertMoveToChessCord(move.from);
         String toCoord = convertMoveToChessCord(move.to);
-        return color + " played " + fromCoord + " to " + toCoord;
+        if (aditionalString) {
+            StringBuilder aditional = new StringBuilder();
+
+            generateAditional(aditional, move);
+
+            return color + " played " + fromCoord + " to " + toCoord + aditional.toString();
+        } else {
+            return color + " played " + fromCoord + " to " + toCoord;
+        }
     }
 
     /**
      * @deprecated
      * @param moveToRemove
      */
-    public void removeElementFromList(Move moveToRemove) {
+    private void removeElementFromList(Move moveToRemove) {
         moveListElement.getItems().remove(generateMoveString(moveToRemove));
     }
 
