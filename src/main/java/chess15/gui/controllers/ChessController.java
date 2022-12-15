@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -18,8 +19,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ public class ChessController implements UIInteface {
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
     private HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
     private ArrayList<Piece> takenPieces = new ArrayList<>();
+    private HashMap<Piece, ImageView> takenList = new HashMap<>();
     public ArrayList<Move> playedMoves = new ArrayList<>();
     private Board board = null;
     private EngineInterface engine;
@@ -52,6 +52,15 @@ public class ChessController implements UIInteface {
 
     @FXML
     private ListView moveListElement;
+
+    @FXML
+    private ScrollPane blackTakenScroll;
+
+    @FXML
+    private ScrollPane whiteTakenScroll;
+
+    private Pane whiteTaken;
+    private Pane blackTaken;
 
     public void initialize() throws IOException {
         engine = new Engine(RuleSet.getInstance(), this);
@@ -245,10 +254,66 @@ public class ChessController implements UIInteface {
         moveListElement.getItems().add(generateMoveString(moveToAdd));
         moveListElement.scrollTo(moveListElement.getItems().size());
         System.out.println("PLAYED: " + generateMoveString(moveToAdd));
-//        if (playedMoves.size() > 11) {
-//            removeElementFromList(playedMoves.get(0));
-//            playedMoves.remove(0);
-//        }
+    }
+
+    private void displayTaken() {
+        int whiteSpacing = whiteTaken.getChildren().size();
+        int blackSpacing = blackTaken.getChildren().size();
+        int whiteTakenWidth = 550;
+        int blackTakenWidth = 550;
+        if (80 * whiteSpacing > whiteTakenWidth) whiteTakenWidth = 80 * whiteSpacing;
+        if (80 * blackSpacing > blackTakenWidth) blackTakenWidth = 80 * blackSpacing;
+        whiteTaken.setPrefWidth(whiteTakenWidth);
+        blackTaken.setPrefWidth(blackTakenWidth);
+        whiteTakenScroll.setContent(whiteTaken);
+        blackTakenScroll.setContent(blackTaken);
+    }
+
+    private void addToTaken(Piece piece) throws IOException {
+        String imagePath = "pieces/" +
+                getPieceColorString(piece) +
+                "-" +
+                getPieceTypeString(piece) +
+                ".png";
+        Image image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
+        ImageView pieceImage = new ImageView();
+        pieceImage.setImage(image);
+        pieceImage.setFitHeight(80);
+        pieceImage.setFitWidth(80);
+        int spacign = 0;
+        if (piece.color == Piece.Color.WHITE) spacign = whiteTaken.getChildren().size();
+        else spacign = blackTaken.getChildren().size();
+        pieceImage.setX(80 * spacign);
+        takenList.put(piece, pieceImage);
+        if (piece.color == Piece.Color.WHITE) whiteTaken.getChildren().add(pieceImage);
+        else blackTaken.getChildren().add(pieceImage);
+    }
+
+    private void clearTaken() {
+        for (Piece piece : takenList.keySet()) {
+            ImageView imageView = takenList.get(piece);
+            if (piece.color == Piece.Color.WHITE) whiteTaken.getChildren().remove(imageView);
+            else blackTaken.getChildren().remove(imageView);
+        }
+        takenList.clear();
+        whiteTaken = new Pane();
+        blackTaken = new Pane();
+        whiteTaken.setPrefHeight(100);
+        blackTaken.setPrefHeight(100);
+        whiteTaken.setStyle("-fx-background-color: #555555");
+        blackTaken.setStyle("-fx-background-color: #cdcdcd");
+    }
+
+    private void handleTakenList() {
+        clearTaken();
+        for (Piece p : takenPieces) {
+            try {
+                addToTaken(p);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        displayTaken();
     }
 
     private void movePiece(Vector2 from, Vector2 to) {
@@ -257,6 +322,7 @@ public class ChessController implements UIInteface {
         System.out.println(takenPieces);
         if (engine.getBoard().getElement(to) instanceof Piece) {
             takenPieces.add((Piece) engine.getBoard().getElement(to));
+            handleTakenList();
             removePiece(to);
             System.out.println(takenPieces);
         }
@@ -325,7 +391,7 @@ public class ChessController implements UIInteface {
     }
 
     @Override
-    public void remove(Piece pieceToRemove) {
-
+    public void remove(Vector2 pieceToRemove) {
+        removePiece(pieceToRemove);
     }
 }

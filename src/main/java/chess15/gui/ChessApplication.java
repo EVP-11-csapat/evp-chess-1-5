@@ -24,7 +24,7 @@ public class ChessApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         primaryStage.setTitle("Chess 1.5");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

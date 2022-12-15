@@ -5,5 +5,5 @@ import chess15.Piece;
 public interface UIInteface {
     void endGame(Piece.Color won);
     void setCheck(Vector2 checkCoord);
-    void remove(Piece pieceToRemove); // Temp
+    void remove(Vector2 pieceToRemove); // Temp
 }
