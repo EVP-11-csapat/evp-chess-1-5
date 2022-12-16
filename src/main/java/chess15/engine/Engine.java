@@ -37,8 +37,9 @@ public class Engine implements EngineInterface {
             if(Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
             if(from.x != to.x && board.at(to).isEmpty){
                 System.out.println("en passant");
+                Piece toRemove = (Piece)board.at(new Vector2(to.x, from.y));
                 board.elements[to.x][from.y] = new BoardElement();
-                UIRef.remove(new Vector2(to.x, from.y));
+                UIRef.remove(new Vector2(to.x, from.y), toRemove);
             }
         }
 

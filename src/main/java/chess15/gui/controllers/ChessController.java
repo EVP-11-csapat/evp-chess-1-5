@@ -108,7 +108,7 @@ public class ChessController implements UIInteface {
                 removePosibleMoves();
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
-                        removePiece(new Vector2(j, i));
+                        removePiece(new Vector2(j, i), null);
                     }
                 }
                 moveListElement.getItems().clear();
@@ -514,7 +514,7 @@ public class ChessController implements UIInteface {
         if (engine.getBoard().getElement(to) instanceof Piece) {
             takenPieces.add((Piece) engine.getBoard().getElement(to));
             handleTakenList();
-            removePiece(to);
+            removePiece(to, null);
             System.out.println(takenPieces);
         }
         Move move = new Move(from, to, piece.color);
@@ -550,10 +550,14 @@ public class ChessController implements UIInteface {
         blackTimerLabel.setText(formatTime(blackTimeInMillis));
     }
 
-    private void removePiece(Vector2 pos) {
+    private void removePiece(Vector2 pos, Piece taken) {
         ImageView piece = pieces.get(pos);
         chessBoardPane.getChildren().remove(piece);
         pieces.remove(pos);
+        if (taken != null) {
+            takenPieces.add(taken);
+            handleTakenList();
+        }
     }
 
     private void displayPosibleMoves(ArrayList<Vector2> moves, Vector2 piece) throws IOException {
@@ -595,7 +599,7 @@ public class ChessController implements UIInteface {
     }
 
     @Override
-    public void remove(Vector2 pieceToRemove) {
-        removePiece(pieceToRemove);
+    public void remove(Vector2 pieceToRemove, Piece taken) {
+        removePiece(pieceToRemove, taken);
     }
 }
