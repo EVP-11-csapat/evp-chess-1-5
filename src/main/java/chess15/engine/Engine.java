@@ -4,7 +4,6 @@ import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +28,20 @@ public class Engine implements EngineInterface {
     }
 
     public void move(Vector2 from, Vector2 to) {
+        pieces.forEach(p -> {
+            if(((Piece)board.at(p)).movement.getClass() == Pawn.class) ((Piece)board.at(p)).boolProperty = false;
+        });
+
+        Piece piece = (Piece)board.at(from);
+        if(piece.movement.getClass() == Pawn.class){
+            if(Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
+            if(from.x != to.x && board.at(to).isEmpty){
+                System.out.println("en passant");
+                board.elements[to.x][from.y] = new BoardElement();
+                UIRef.remove(new Vector2(to.x, from.y));
+            }
+        }
+
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
 
@@ -126,11 +139,14 @@ public class Engine implements EngineInterface {
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
 
-        Vector2 special = p.movement.special.apply(position, board);
-        if (special != null && filterDirection(special, p.pin)) moves.add(special);
+        ArrayList<Vector2> special = p.movement.special.apply(position, board);
+        if (special != null){
+            special = filterDirections(special, p.pin);
+            special.forEach(dir -> moves.add(Vector2.add(position, dir)));
+        }
+
 
         ArrayList<Vector2> moveDirections = filterDirections(orient(p.movement.moves, p.movement.whiteDifferent, p.color), p.pin);
-        ArrayList<Vector2> attackDirections = filterDirections(orient(p.movement.attacks, p.movement.whiteDifferent, p.color), p.pin);
 
         if (!isAttackDifferent || !onlyAttacks) {
             for (Vector2 direction : moveDirections) {
@@ -144,6 +160,7 @@ public class Engine implements EngineInterface {
         }
 
         if (isAttackDifferent) {
+            ArrayList<Vector2> attackDirections = filterDirections(orient(p.movement.attacks, p.movement.whiteDifferent, p.color), p.pin);
             for (Vector2 attackDirection : attackDirections) {
                 Vector2 candidate = Vector2.add(position, attackDirection);
                 if (evalMove(candidate, true, true, onlyAttacks)) moves.add(candidate);

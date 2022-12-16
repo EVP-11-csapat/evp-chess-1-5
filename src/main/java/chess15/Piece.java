@@ -9,6 +9,9 @@ public class Piece extends BoardElement{
     public MoveSet movement;
     public boolean isKing;
 
+    //planning to use this both for castling and en passant
+    public boolean boolProperty = false;
+
     /**
      * Constructor for a piece.
      * @param color The color of the piece.

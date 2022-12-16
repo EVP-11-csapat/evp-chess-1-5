@@ -33,7 +33,7 @@ public class SituationalTests {
         engine.move(new Vector2(4,6), new Vector2(5,6));
         engine.move(new Vector2(1,1), new Vector2(1,2));
 
-        assertEquals(new Vector2(2,-2), ((Piece)engine.board.at(new Vector2(5,6))).pin);
+        assertEquals(new Vector2(2,-2   ), ((Piece)engine.board.at(new Vector2(5,6))).pin);
         assertEquals(2, engine.getMoves(new Vector2(5,6)).size());
         assertTrue(engine.getMoves(new Vector2(5, 6)).contains(new Vector2(6,5)));
         assertFalse(engine.getMoves(new Vector2(5, 6)).contains(new Vector2(5,5)));
