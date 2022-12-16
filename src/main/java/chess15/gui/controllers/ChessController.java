@@ -8,20 +8,24 @@ import chess15.gui.interfaces.UIInteface;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.junit.Rule;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,6 +43,9 @@ public class ChessController implements UIInteface {
     public ArrayList<Move> playedMoves = new ArrayList<>();
     private Board board = null;
     private EngineInterface engine;
+
+    private Label whiteTimerLabel;
+    private Label blackTimerLabel;
 
     private Vector2 handlePos;
 
@@ -68,8 +75,25 @@ public class ChessController implements UIInteface {
     @FXML
     private TextField inputText;
 
+    @FXML
+    private Pane clockPane;
+
     private Pane whiteTaken;
     private Pane blackTaken;
+
+    private HBox timerHBox;
+
+    private Pane whiteTimerBox;
+    private Pane blackTimerBox;
+
+    private long whiteTimeInMillis;
+    private long blackTimeInMillis;
+    private boolean isRunning;
+    private boolean whiteSide;
+    private Thread timerThread;
+
+    private boolean whiteTimeRanOut = false;
+    private boolean blackTimeRanOut = false;
 
     public void initialize() throws IOException {
         engine = new Engine(RuleSet.getInstance(), this);
@@ -89,22 +113,38 @@ public class ChessController implements UIInteface {
                 }
                 moveListElement.getItems().clear();
 
-                whiteTaken.getChildren().clear();
-                blackTaken.getChildren().clear();
+                if (whiteTaken != null) whiteTaken.getChildren().clear();
+                if (blackTaken != null) blackTaken.getChildren().clear();
 
                 pieces.clear();
                 takenPieces = new ArrayList<>();
                 takenList = new HashMap<>();
+                whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+                blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+                whiteTimerLabel.setText(formatTime(whiteTimeInMillis));
+                blackTimerLabel.setText(formatTime(blackTimeInMillis));
                 setUpBoard();
             }
         };
 
         if (main.getScene() != null) {
             main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
+            ((Stage) main.getScene().getWindow()).setOnCloseRequest(e -> {
+                if (timerThread != null) {
+                    timerThread.interrupt();
+                    timerThread.stop();
+                }
+            });
         } else {
             main.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
                     main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
+                    ((Stage) main.getScene().getWindow()).setOnCloseRequest(e -> {
+                        if (timerThread != null) {
+                            timerThread.interrupt();
+                            timerThread.stop();
+                        }
+                    });
                 }
             });
         }
@@ -112,6 +152,89 @@ public class ChessController implements UIInteface {
         inputText.setOnAction(e -> {
             handleTextMove(inputText.getCharacters().toString());
         });
+
+        if (RuleSet.getInstance().timer) {
+            whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+            blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+
+            // Set up Timer Environment
+            timerHBox = new HBox();
+            timerHBox.setAlignment(Pos.CENTER);
+            whiteTimerBox = new Pane();
+            blackTimerBox = new Pane();
+            whiteTimerBox.setStyle("-fx-background-color: #cdcdcd");
+            blackTimerBox.setStyle("-fx-background-color: #cdcdcd");
+            whiteTimerBox.setPrefWidth(250);
+            whiteTimerBox.setPrefHeight(200);
+            blackTimerBox.setPrefWidth(250);
+            blackTimerBox.setPrefHeight(200);
+            Separator sep = new Separator();
+            sep.setOrientation(Orientation.VERTICAL);
+            sep.setPrefWidth(47);
+            sep.setOpacity(0);
+            whiteTimerLabel = new Label();
+            whiteTimerLabel.setText(formatTime(whiteTimeInMillis));
+            blackTimerLabel = new Label();
+            blackTimerLabel.setText(formatTime(blackTimeInMillis));
+
+            whiteTimerLabel.setFont(new Font("Arial", 100));
+            blackTimerLabel.setFont(new Font("Arial", 100));
+
+            whiteTimerLabel.layoutXProperty().bind(whiteTimerBox.widthProperty().subtract(whiteTimerLabel.widthProperty()).divide(2));
+            whiteTimerLabel.layoutYProperty().bind(whiteTimerBox.heightProperty().subtract(whiteTimerLabel.heightProperty()).divide(2));
+
+            blackTimerLabel.layoutXProperty().bind(blackTimerBox.widthProperty().subtract(blackTimerLabel.widthProperty()).divide(2));
+            blackTimerLabel.layoutYProperty().bind(blackTimerBox.heightProperty().subtract(blackTimerLabel.heightProperty()).divide(2));
+
+            whiteTimerBox.getChildren().add(whiteTimerLabel);
+            blackTimerBox.getChildren().add(blackTimerLabel);
+            timerHBox.getChildren().addAll(whiteTimerBox, sep, blackTimerBox);
+            clockPane.getChildren().add(timerHBox);
+
+            // Set up timer
+            isRunning = true;
+            whiteSide = true;
+            timerThread = new Thread(() -> {
+                while (isRunning && !Thread.currentThread().isInterrupted()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (whiteSide) {
+                        whiteTimeInMillis -= 10;
+                        if (whiteTimeInMillis <= 0) {
+                            isRunning = false;
+                            whiteTimeRanOut = true;
+                            Platform.runLater(() -> setWinner(Piece.Color.BLACK));
+                        }
+
+                        Platform.runLater(() -> whiteTimerLabel.setText(formatTime(whiteTimeInMillis)));
+                    } else {
+                        blackTimeInMillis -= 10;
+                        if (blackTimeInMillis <= 0) {
+                            isRunning = false;
+                            blackTimeRanOut = true;
+                            Platform.runLater(() -> setWinner(Piece.Color.WHITE));
+                        }
+
+                        Platform.runLater(() -> blackTimerLabel.setText(formatTime(blackTimeInMillis)));
+                    }
+                }
+            });
+
+            timerThread.start();
+        }
+    }
+
+    private String formatTime(long timeInMillis) {
+        int minutes = (int) (timeInMillis / 60000);
+        int seconds = (int) ((timeInMillis / 1000) % 60);
+        return String.format("%d:%02d", minutes, seconds);
+    }
+
+    private void setWinner(Piece.Color winnerColor) {
+        System.out.println("The Winner is: " + winnerColor.toString());
     }
 
     private void handleTextMove(String text) {
@@ -412,6 +535,19 @@ public class ChessController implements UIInteface {
         pieces.put(to, pieceView);
         engine.move(from, to);
         updateClickEventToPiece(to);
+        handleTimerUpdate(piece.color);
+    }
+
+    private void handleTimerUpdate(Piece.Color color) {
+        if (color == Piece.Color.WHITE) whiteSide = false;
+        else whiteSide = true;
+        if (RuleSet.getInstance().timeDelta != 0) {
+            if (color == Piece.Color.WHITE) whiteTimeInMillis += RuleSet.getInstance().timeDelta * 1000L;
+            if (color == Piece.Color.BLACK) blackTimeInMillis += RuleSet.getInstance().timeDelta * 1000L;
+        }
+
+        whiteTimerLabel.setText(formatTime(whiteTimeInMillis));
+        blackTimerLabel.setText(formatTime(blackTimeInMillis));
     }
 
     private void removePiece(Vector2 pos) {

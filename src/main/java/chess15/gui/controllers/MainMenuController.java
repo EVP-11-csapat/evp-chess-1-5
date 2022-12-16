@@ -52,9 +52,9 @@ public class MainMenuController {
         rules.enpassant = true;
         rules.promotion = true;
         rules.gamemode = new Classical();
-        rules.startTime = 90;
-        rules.timeDelta = 0;
-        rules.timer = false;
+        rules.startTime = 1;
+        rules.timeDelta = 5;
+        rules.timer = true;
 
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();

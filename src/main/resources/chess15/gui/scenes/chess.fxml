@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -21,7 +22,10 @@
                   <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" scaleX="2.0" />
                   <VBox prefHeight="200.0" prefWidth="600.0">
                      <children>
-                        <BorderPane prefHeight="200.0" prefWidth="200.0" />
+                        <Pane fx:id="clockPane" prefHeight="200.0" prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets left="1.0" />
+                           </VBox.margin></Pane>
                         <Separator opacity="0.0" prefWidth="200.0" />
                         <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2a2a2a;">
                            <children>
