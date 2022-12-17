@@ -134,7 +134,7 @@ public class Engine implements EngineInterface {
                 break;
             }
         }
-        Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.WHITE : Piece.Color.BLACK;
+        Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
         if(checkmate) UIRef.endGame(winner);
 
         return movemap;
