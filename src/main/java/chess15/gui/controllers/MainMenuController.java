@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -54,7 +56,7 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void onAiButtonPressed() throws IOException {
+    protected void onAiButtonPressed() throws IOException, URISyntaxException {
         System.out.println("AI button pressed");
         RuleSet rules = RuleSet.getInstance();
         rules.castling = true;
@@ -65,6 +67,7 @@ public class MainMenuController {
         rules.timeDelta = 5;
         rules.timer = true;
 
+        System.out.println(ResourceGrabber.getInstance().getClass().getResource("chess.fxml").toURI().toString());
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
 //        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();

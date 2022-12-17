@@ -1,11 +1,14 @@
 package chess15.util;
 
 import chess15.*;
+import chess15.gamemodes.GameGrabber;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -14,7 +17,7 @@ import java.util.Objects;
 public class JsonToBoard {
     /**
      * Converts a JSON file to a Board object.
-     * @param path The path to the JSON file.
+     * @param json The path to the JSON file.
      * @return The Board object.
      * @throws Exception If the JSON file is invalid.
      */
@@ -23,7 +26,12 @@ public class JsonToBoard {
         JSONParser parser = new JSONParser();
 
         try {
-            Object obj = parser.parse(new FileReader( "src/main/resources/gamemodes/" + json));
+            System.out.println(json);
+            URL url = GameGrabber.getInstance().getClass().getResource(json);
+            System.out.println(url.toString());
+//            File file = new File(url.getPath());
+//            Object obj = parser.parse(new FileReader(file));
+            Object obj = parser.parse(new FileReader(url.getFile()));
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray pieces = (JSONArray) jsonObject.get("pieces");
 
@@ -68,7 +76,7 @@ public class JsonToBoard {
 
     /**
      * Gets the MoveSet from a String.
-     * @param moves A string with the lowercase name of the move set.
+     * @param type A string with the lowercase name of the move set.
      * @return The MoveSet.
      */
     protected static MoveSet getMoveSet(String type) {
