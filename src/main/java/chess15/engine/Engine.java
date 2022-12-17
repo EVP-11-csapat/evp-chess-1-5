@@ -114,8 +114,10 @@ public class Engine implements EngineInterface {
 
                     if (((Piece) board.at(checkGivenby)).movement.repeating) {
                         for (int k = 1; k < 8; k++) {
-                            Vector2 candidate = Vector2.add(checkGivenby, checkVector.scaleBy(k));
-                            if (rawMoves.contains(candidate)) moves.add(candidate);
+                            Vector2 offset = checkVector.scaleBy(k);
+                            Vector2 candidate = Vector2.add(checkGivenby, offset);
+                            if(candidate.equals(kingPos)) break;
+                            else if (rawMoves.contains(candidate)) moves.add(candidate);
                         }
                     }
                     if (rawMoves.contains(checkGivenby)) moves.add(checkGivenby);
@@ -229,6 +231,11 @@ public class Engine implements EngineInterface {
             if (candidate.outOfBounds()) return moves;
 
             boolean empty = board.at(candidate).isEmpty;
+            if(!empty && forceAttack){
+                Piece potentialKing = (Piece)board.at(candidate);
+                if(potentialKing.isKing && potentialKing.color != nextPlayer) empty = true;
+            }
+
             if (!allowAttack && !empty) return moves;
 
             if (empty) moves.add(candidate);
@@ -237,7 +244,7 @@ public class Engine implements EngineInterface {
                 targetpos = candidate;
                 if(forceAttack){
                     if(stoppedOnce) return moves;
-                    stoppedOnce = true;
+                    else stoppedOnce = true;
                 }else{
                     if (target.color == nextPlayer) return moves;
                 }
