@@ -41,9 +41,10 @@ public class Engine implements EngineInterface {
             if(Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
             if(from.x != to.x && board.at(to).isEmpty){
                 System.out.println("en passant");
-                Piece toRemove = (Piece)board.at(new Vector2(to.x, from.y));
-                board.elements[to.x][from.y] = new BoardElement();
-                UIRef.remove(new Vector2(to.x, from.y), toRemove);
+                Vector2 passed = new Vector2(to.x, from.y);
+
+                UIRef.remove(passed, (Piece)board.at(passed));
+                board.elements[passed.x][passed.y] = new BoardElement();
             }
         }
 
@@ -133,6 +134,8 @@ public class Engine implements EngineInterface {
                 break;
             }
         }
+        Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.WHITE : Piece.Color.BLACK;
+        if(checkmate) UIRef.endGame(winner);
 
         return movemap;
     }
