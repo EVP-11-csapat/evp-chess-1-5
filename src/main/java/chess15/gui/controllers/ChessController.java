@@ -535,7 +535,9 @@ public class ChessController implements UIInteface {
         pieces.put(to, pieceView);
         engine.move(from, to);
         updateClickEventToPiece(to);
-        handleTimerUpdate(piece.color);
+        if (RuleSet.getInstance().timer) {
+            handleTimerUpdate(piece.color);
+        }
     }
 
     private void handleTimerUpdate(Piece.Color color) {
