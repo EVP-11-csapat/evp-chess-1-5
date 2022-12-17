@@ -2,6 +2,7 @@ package chess15.gui.controllers;
 
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,9 @@ public class MainMenuController {
     @FXML
     protected Button multiplayerButton;
 
+    @FXML
+    protected Button aiButton;
+
     private static final String IDLE_BUTTON_STYLE = "-fx-background-color: #424242;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
@@ -29,6 +33,10 @@ public class MainMenuController {
         multiplayerButton.setStyle(IDLE_BUTTON_STYLE);
         multiplayerButton.setOnMouseEntered(event -> multiplayerButton.setStyle(HOVERED_BUTTON_STYLE));
         multiplayerButton.setOnMouseExited(event -> multiplayerButton.setStyle(IDLE_BUTTON_STYLE));
+
+        aiButton.setStyle(IDLE_BUTTON_STYLE);
+        aiButton.setOnMouseEntered(event -> aiButton.setStyle(HOVERED_BUTTON_STYLE));
+        aiButton.setOnMouseExited(event -> aiButton.setStyle(IDLE_BUTTON_STYLE));
     }
 
     /**
@@ -38,7 +46,8 @@ public class MainMenuController {
     @FXML
     protected void onMultiplayerButtonPressed() throws IOException {
         System.out.println("Multiplayer button pressed");
-        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/settingsMenu.fxml")));
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("settingsMenu.fxml")));
+//        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/settingsMenu.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
         primaryStage.getScene().setRoot(newRoot);
         primaryStage.requestFocus();
@@ -56,7 +65,8 @@ public class MainMenuController {
         rules.timeDelta = 5;
         rules.timer = true;
 
-        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+//        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
         primaryStage.getScene().setRoot(newRoot);
         primaryStage.requestFocus();

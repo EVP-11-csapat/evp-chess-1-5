@@ -43,7 +43,7 @@
                     </font>
                 </Button>
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="515.0" />
-                <Button mnemonicParsing="false" onMouseClicked="#onAiButtonPressed" style="-fx-background-color: #424242;" text="The computer" textAlignment="CENTER" textFill="#cdcdcd">
+                <Button fx:id="aiButton" mnemonicParsing="false" onMouseClicked="#onAiButtonPressed" style="-fx-background-color: #424242;" text="The computer" textAlignment="CENTER" textFill="#cdcdcd">
                     <font>
                         <Font size="34.0" />
                     </font>

@@ -2,6 +2,7 @@ package chess15.gui.controllers;
 
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
-import org.junit.Rule;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -213,7 +213,8 @@ public class SettingsMenuController {
             System.out.println("Castling enabled: " + isCastlingEnabled);
             System.out.println("En passant enabled: " + isEnPassantEnabled);
             System.out.println("Promotion enabled: " + isPromotionEnabled);
-            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
+            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+//            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
             Stage primarStage = (Stage) playButton.getScene().getWindow();
             primarStage.getScene().setRoot(newRoot);
             primarStage.requestFocus();
