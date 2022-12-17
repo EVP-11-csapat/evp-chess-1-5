@@ -140,7 +140,7 @@ public class Engine implements EngineInterface {
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
 
-        ArrayList<Vector2> special = p.movement.special.apply(position, board);
+        ArrayList<Vector2> special = p.movement.special.invoke(position, board, rules);
         if (special != null){
             special = filterDirections(special, p.pin);
             special.forEach(dir -> moves.add(Vector2.add(position, dir)));

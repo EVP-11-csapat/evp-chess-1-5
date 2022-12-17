@@ -19,34 +19,38 @@ public class Pawn extends MoveSet {
         whiteDifferent = true;
 
 
-        special = (pos, board) -> {
+        special = (pos, board, rules) -> {
             ArrayList<Vector2> specialMoves = new ArrayList<Vector2>();
             Piece piece = (Piece) board.at(pos);
-            Vector2 left = Vector2.add(pos, new Vector2(-1, 0));
-            Vector2 right = Vector2.add(pos, new Vector2(1, 0));
+
 
             if ((pos.y == 1 && (piece).color == Piece.Color.BLACK && board.at(Vector2.add(pos, new Vector2(0, 1))).isEmpty && board.at(Vector2.add(pos, new Vector2(0, 2))).isEmpty))
                 specialMoves.add(new Vector2(0, 2));
             else if (pos.y == 6 && (piece).color == Piece.Color.WHITE && board.at(Vector2.add(pos, new Vector2(0, -1))).isEmpty && board.at(Vector2.add(pos, new Vector2(0, -2))).isEmpty)
                 specialMoves.add(new Vector2(0, -2));
 
-            if (!left.outOfBounds() && !board.at(left).isEmpty) {
-                Piece leftPiece = (Piece) board.at(left);
-                if(leftPiece.movement.getClass() == Pawn.class && leftPiece.color != piece.color && leftPiece.boolProperty){
-                    Vector2 enpassant = new Vector2(-1, 1);
-                    if(piece.color == Piece.Color.WHITE) enpassant = enpassant.flip();
-                    specialMoves.add(enpassant);
-                }
-            }
-            if (!right.outOfBounds() && !board.at(right).isEmpty) {
-                Piece rightPiece = (Piece) board.at(right);
-                if(rightPiece.movement.getClass() == Pawn.class && rightPiece.color != piece.color && rightPiece.boolProperty){
-                    Vector2 enpassant = new Vector2(1, 1);
-                    if(piece.color == Piece.Color.WHITE) enpassant = enpassant.flip();
-                    specialMoves.add(enpassant);
-                }
-            }
+            if(rules.enpassant){
+                Vector2 left = Vector2.add(pos, new Vector2(-1, 0));
+                Vector2 right = Vector2.add(pos, new Vector2(1, 0));
 
+                if (!left.outOfBounds() && !board.at(left).isEmpty) {
+                    Piece leftPiece = (Piece) board.at(left);
+                    if(leftPiece.movement.getClass() == Pawn.class && leftPiece.color != piece.color && leftPiece.boolProperty){
+                        Vector2 enpassant = new Vector2(-1, 1);
+                        if(piece.color == Piece.Color.WHITE) enpassant = enpassant.flip();
+                        specialMoves.add(enpassant);
+                    }
+                }
+                if (!right.outOfBounds() && !board.at(right).isEmpty) {
+                    Piece rightPiece = (Piece) board.at(right);
+                    if(rightPiece.movement.getClass() == Pawn.class && rightPiece.color != piece.color && rightPiece.boolProperty){
+                        Vector2 enpassant = new Vector2(1, 1);
+                        if(piece.color == Piece.Color.WHITE) enpassant = enpassant.flip();
+                        specialMoves.add(enpassant);
+                    }
+                }
+
+            }
 
             return specialMoves;
         };

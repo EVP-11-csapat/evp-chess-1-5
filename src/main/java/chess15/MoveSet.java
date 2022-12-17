@@ -1,7 +1,9 @@
 package chess15;
 
+import chess15.engine.RuleSet;
+import kotlin.jvm.functions.Function3;
+
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 /**
  * Abstract class represents the set of moves that a piece can make.
@@ -11,7 +13,8 @@ public abstract class MoveSet{
     public ArrayList<Vector2> moves;
     public ArrayList<Vector2> attacks;
 
-    public BiFunction<Vector2, Board, ArrayList<Vector2>> special = (a,b) -> (null);
+    public Function3<Vector2, Board, RuleSet,ArrayList<Vector2>> special = (a, b, c) -> (null);
+
 
     public boolean attackDifferent;
     public boolean whiteDifferent;
