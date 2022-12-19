@@ -44,6 +44,12 @@ public class Board {
         }
     }
 
+    public Board clone() {
+        Board copy = new Board();
+        copy.elements = this.elements;
+        return copy;
+    }
+
     /**
      * A method to print the board to the console. Used for debugging.
      * @return A string representation of the board.

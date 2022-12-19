@@ -35,9 +35,9 @@ public class Engine implements EngineInterface {
 
         Piece piece = (Piece)board.at(from);
         if(piece.movement.getClass() == Pawn.class){
-            if((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7)){
-                //promotion
+            if(rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))){
                 UIRef.promote(from, to);
+                return;
             }
 
             if(Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
@@ -55,14 +55,20 @@ public class Engine implements EngineInterface {
 
         previousAttacks = new HashMap<>();
         previousAttacks = calculateMoveMap(true);
-        if (nextPlayer == Piece.Color.WHITE) nextPlayer = Piece.Color.BLACK;
-        else nextPlayer = Piece.Color.WHITE;
+        switchPlayer();
+        possibleMoves = calculateMoveMap(false);
+    }
+
+    public void setPiece(Vector2 position, Piece piece){
+        board.elements[position.x][position.y] = piece;
+        previousAttacks = calculateMoveMap(true);
+        switchPlayer();
         possibleMoves = calculateMoveMap(false);
     }
 
     @Override
     public Board getBoard() {
-        return board;
+        return board.clone();
     }
 
     public void reset() {
@@ -304,5 +310,10 @@ public class Engine implements EngineInterface {
 
 
         return filteredDirections;
+    }
+
+    private void switchPlayer(){
+        if (nextPlayer == Piece.Color.WHITE) nextPlayer = Piece.Color.BLACK;
+        else nextPlayer = Piece.Color.WHITE;
     }
 }

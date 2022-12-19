@@ -477,6 +477,7 @@ public class ChessController implements UIInteface {
     /**
      * @deprecated
      * @param moveToRemove
+     * @deprecated
      */
     private void removeElementFromList(Move moveToRemove) {
         moveListElement.getItems().remove(generateMoveString(moveToRemove));
@@ -672,10 +673,11 @@ public class ChessController implements UIInteface {
     }
 
     @Override
-    public void promote(Vector2 from, Vector2 to) {
+    public void promote(Vector2 pos) {
         promotionUIBase.setPrefWidth(90);
         promotionUIBase.setPrefHeight(90 * 4);
-        promotionUIBase.setLayoutX(to.x * 90);
+        promotionUIBase.setLayoutX(pos.x * 90);
+        promotionUIBase.setLayoutY(pos.y * 90);
         promotionUIBase.setStyle("-fx-background-color: #2a2a2a");
         Piece.Color pieceColor = ((Piece) engine.getBoard().at(from)).color;
         if (pieceColor == Piece.Color.WHITE) {
@@ -687,7 +689,7 @@ public class ChessController implements UIInteface {
             Piece p = PROMOTIONPIECES.get(i);
             p.color = pieceColor;
             String imagePath = "pieces/" +
-                    getPieceColorString(pieceColor) +
+                    getPieceColorString(p) +
                     "-" +
                     getPieceTypeString(p) +
                     ".png";
@@ -705,11 +707,11 @@ public class ChessController implements UIInteface {
             pieceImage.setX(0);
             pieceImage.setY(90 * i);
             pieceImage.setOnMouseClicked(event -> {
-                remove(to, null);
-                addPiece(promotionList.get(pieceImage), to);
+                remove(pos, null);
+                addPiece(promotionList.get(pieceImage), pos);
                 chessBoardPane.getChildren().remove(promotionUIBase);
                 promotionList.clear();
-                engine.getBoard().elements[to.x][to.y] = p;
+                engine.setPiece(pos, p);
             });
             promotionList.put(pieceImage, p);
             promotionUIBase.getChildren().add(pieceImage);
