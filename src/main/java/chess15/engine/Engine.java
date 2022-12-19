@@ -3,6 +3,7 @@ package chess15.engine;
 import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
+import chess15.util.WinReason;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,7 +139,7 @@ public class Engine implements EngineInterface {
             }
         }
         Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
-        if(checkmate) UIRef.endGame(winner);
+        if(checkmate) UIRef.endGame(winner, WinReason.CHECKMATE);
 
         return movemap;
     }

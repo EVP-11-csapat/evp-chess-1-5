@@ -7,6 +7,8 @@ import chess15.engine.RuleSet;
 import chess15.gui.interfaces.UIInteface;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
+import chess15.util.WinReason;
+import com.sun.source.tree.WhileLoopTree;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -22,6 +24,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,6 +37,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ChessController implements UIInteface {
+    StackPane endGameBase = new StackPane();
     Pane promotionUIBase = new Pane();
     private final ArrayList<Piece> PROMOTIONPIECES = new ArrayList<>(List.of(
             new Piece(Piece.Color.WHITE, Piece.Type.QUEEN, Queen.getInstance(), false),
@@ -134,7 +138,29 @@ public class ChessController implements UIInteface {
                 }
                 chessBoardPane.getChildren().remove(promotionUIBase);
                 promotionList.clear();
+                chessBoardPane.getChildren().remove(endGameBase);
+                endGameBase = new StackPane();
                 setUpBoard();
+            }
+        };
+
+        EventHandler<KeyEvent> checkmateHandler = e -> {
+            if (!chessBoardPane.getChildren().contains(endGameBase)) {
+                if (e.getCode() == KeyCode.C && e.isControlDown() && e.isAltDown()) {
+                    endGame(Piece.Color.WHITE, WinReason.CHECKMATE);
+                } else if (e.getCode() == KeyCode.C && !e.isControlDown() && e.isAltDown()) {
+                    endGame(Piece.Color.BLACK, WinReason.CHECKMATE);
+                }
+            }
+        };
+
+        EventHandler<KeyEvent> timeoutHandler = e -> {
+            if (!chessBoardPane.getChildren().contains(endGameBase)) {
+                if (e.getCode() == KeyCode.T && e.isControlDown() && e.isAltDown()) {
+                    endGame(Piece.Color.WHITE, WinReason.TIMEOUT);
+                } else if (e.getCode() == KeyCode.T && !e.isControlDown() && e.isAltDown()) {
+                    endGame(Piece.Color.BLACK, WinReason.TIMEOUT);
+                }
             }
         };
 
@@ -146,6 +172,8 @@ public class ChessController implements UIInteface {
                     timerThread.stop();
                 }
             });
+            main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, checkmateHandler);
+            main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, timeoutHandler);
         } else {
             main.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
@@ -156,6 +184,8 @@ public class ChessController implements UIInteface {
                             timerThread.stop();
                         }
                     });
+                    main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, checkmateHandler);
+                    main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, timeoutHandler);
                 }
             });
         }
@@ -217,7 +247,7 @@ public class ChessController implements UIInteface {
                         if (whiteTimeInMillis <= 0) {
                             isRunning = false;
                             whiteTimeRanOut = true;
-                            Platform.runLater(() -> setWinner(Piece.Color.BLACK));
+                            Platform.runLater(() -> endGame(Piece.Color.BLACK, WinReason.TIMEOUT));
                         }
 
                         Platform.runLater(() -> whiteTimerLabel.setText(formatTime(whiteTimeInMillis)));
@@ -226,7 +256,7 @@ public class ChessController implements UIInteface {
                         if (blackTimeInMillis <= 0) {
                             isRunning = false;
                             blackTimeRanOut = true;
-                            Platform.runLater(() -> setWinner(Piece.Color.WHITE));
+                            Platform.runLater(() -> endGame(Piece.Color.WHITE, WinReason.TIMEOUT));
                         }
 
                         Platform.runLater(() -> blackTimerLabel.setText(formatTime(blackTimeInMillis)));
@@ -242,10 +272,6 @@ public class ChessController implements UIInteface {
         int minutes = (int) (timeInMillis / 60000);
         int seconds = (int) ((timeInMillis / 1000) % 60);
         return String.format("%d:%02d", minutes, seconds);
-    }
-
-    private void setWinner(Piece.Color winnerColor) {
-        System.out.println("The Winner is: " + winnerColor.toString());
     }
 
     private void handleTextMove(String text) {
@@ -602,8 +628,32 @@ public class ChessController implements UIInteface {
     }
 
     @Override
-    public void endGame(Piece.Color won) {
+    public void endGame(Piece.Color won, WinReason reason) {
+        endGameBase.setPrefHeight(90 * 8);
+        endGameBase.setPrefWidth(90 * 8);
+        endGameBase.setLayoutX(0);
+        endGameBase.setLayoutY(0);
+        endGameBase.setStyle("-fx-background-color: #2a2a2a");
+        Label winLabel = new Label();
+        Label winDescriptionLabel = new Label();
+        winLabel.setText("The winner is " + (won == Piece.Color.WHITE ? "WHITE" : "BLACK"));
+        switch (reason) {
+            case TIMEOUT -> winDescriptionLabel.setText("Won by timeout");
+            case CHECKMATE -> winDescriptionLabel.setText("Won by checkmate");
+        }
 
+        winLabel.setFont(new Font("Ariel", 70));
+        winDescriptionLabel.setFont(new Font("Ariel", 40));
+        winLabel.setTextFill(Color.WHITE);
+        winDescriptionLabel.setTextFill(Color.WHITE);
+
+        VBox labelHolder = new VBox();
+        labelHolder.getChildren().addAll(winLabel, winDescriptionLabel);
+        labelHolder.setSpacing(10);
+        labelHolder.setAlignment(Pos.CENTER);
+
+        endGameBase.getChildren().add(labelHolder);
+        chessBoardPane.getChildren().add(endGameBase);
     }
 
     @Override
