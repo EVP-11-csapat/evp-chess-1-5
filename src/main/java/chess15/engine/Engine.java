@@ -145,7 +145,7 @@ public class Engine implements EngineInterface {
         Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
         if(nomoves){
             if(checkGivenby != null){UIRef.endGame(winner, WinReason.CHECKMATE);}
-            // else stalemate
+            else {UIRef.endGame(null, WinReason.STALEMATE);}
             return null;
         }
 
