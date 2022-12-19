@@ -135,6 +135,7 @@ public class ChessController implements UIInteface {
                     blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
                     whiteTimerLabel.setText(formatTime(whiteTimeInMillis));
                     blackTimerLabel.setText(formatTime(blackTimeInMillis));
+                    whiteSide = true;
                 }
                 chessBoardPane.getChildren().remove(promotionUIBase);
                 promotionList.clear();
@@ -164,6 +165,14 @@ public class ChessController implements UIInteface {
             }
         };
 
+        EventHandler<KeyEvent> drawHandler = e -> {
+            if (!chessBoardPane.getChildren().contains(endGameBase)) {
+                if (e.getCode() == KeyCode.S && e.isControlDown() && e.isAltDown()) {
+                    endGame(null, WinReason.STALEMATE);
+                }
+            }
+        };
+
         if (main.getScene() != null) {
             main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
             ((Stage) main.getScene().getWindow()).setOnCloseRequest(e -> {
@@ -174,6 +183,7 @@ public class ChessController implements UIInteface {
             });
             main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, checkmateHandler);
             main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, timeoutHandler);
+            main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, drawHandler);
         } else {
             main.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
@@ -186,6 +196,8 @@ public class ChessController implements UIInteface {
                     });
                     main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, checkmateHandler);
                     main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, timeoutHandler);
+                    main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, drawHandler);
+
                 }
             });
         }
@@ -233,7 +245,7 @@ public class ChessController implements UIInteface {
             clockPane.getChildren().add(timerHBox);
 
             // Set up timer
-            isRunning = true;
+//            isRunning = true;
             whiteSide = true;
             timerThread = new Thread(() -> {
                 while (isRunning && !Thread.currentThread().isInterrupted()) {
@@ -307,6 +319,7 @@ public class ChessController implements UIInteface {
                 }
             }
         }
+        isRunning = true;
     }
 
     private String getPieceColorString(Piece p) {
@@ -635,6 +648,7 @@ public class ChessController implements UIInteface {
 
     @Override
     public void endGame(Piece.Color won, WinReason reason) {
+        isRunning = false;
         endGameBase.setPrefHeight(90 * 8);
         endGameBase.setPrefWidth(90 * 8);
         endGameBase.setLayoutX(0);
@@ -642,10 +656,17 @@ public class ChessController implements UIInteface {
         endGameBase.setStyle("-fx-background-color: #2a2a2a");
         Label winLabel = new Label();
         Label winDescriptionLabel = new Label();
-        winLabel.setText("The winner is " + (won == Piece.Color.WHITE ? "WHITE" : "BLACK"));
+
+        if (won != null) {
+            winLabel.setText("The winner is " + (won == Piece.Color.WHITE ? "WHITE" : "BLACK"));
+        } else {
+            winLabel.setText("DRAW");
+        }
+
         switch (reason) {
             case TIMEOUT -> winDescriptionLabel.setText("Won by timeout");
             case CHECKMATE -> winDescriptionLabel.setText("Won by checkmate");
+            case STALEMATE -> winDescriptionLabel.setText("Drawn by stalemate");
         }
 
         winLabel.setFont(new Font("Ariel", 70));
