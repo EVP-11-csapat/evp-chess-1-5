@@ -314,6 +314,11 @@ public class ChessController implements UIInteface {
         else return "black";
     }
 
+    private String getPieceColorString(Piece.Color color) {
+        if (color == Piece.Color.WHITE) return "white";
+        else return "black";
+    }
+
     private String getPieceTypeString(Piece p) {
         switch (p.look) {
             case KING -> {
@@ -667,16 +672,22 @@ public class ChessController implements UIInteface {
     }
 
     @Override
-    public void promote(Vector2 pos) {
+    public void promote(Vector2 from, Vector2 to) {
         promotionUIBase.setPrefWidth(90);
         promotionUIBase.setPrefHeight(90 * 4);
-        promotionUIBase.setLayoutX(pos.x * 90);
-        promotionUIBase.setLayoutY(pos.y * 90);
+        promotionUIBase.setLayoutX(to.x * 90);
         promotionUIBase.setStyle("-fx-background-color: #2a2a2a");
+        Piece.Color pieceColor = ((Piece) engine.getBoard().at(from)).color;
+        if (pieceColor == Piece.Color.WHITE) {
+            promotionUIBase.setLayoutY(to.y * 90);
+        } else {
+            promotionUIBase.setLayoutY((to.y - 3) * 90);
+        }
         for (int i = 0; i < 4; i++) {
             Piece p = PROMOTIONPIECES.get(i);
+            p.color = pieceColor;
             String imagePath = "pieces/" +
-                    getPieceColorString(p) +
+                    getPieceColorString(pieceColor) +
                     "-" +
                     getPieceTypeString(p) +
                     ".png";
@@ -694,11 +705,11 @@ public class ChessController implements UIInteface {
             pieceImage.setX(0);
             pieceImage.setY(90 * i);
             pieceImage.setOnMouseClicked(event -> {
-                remove(pos, null);
-                addPiece(promotionList.get(pieceImage), pos);
+                remove(to, null);
+                addPiece(promotionList.get(pieceImage), to);
                 chessBoardPane.getChildren().remove(promotionUIBase);
                 promotionList.clear();
-                engine.getBoard().elements[pos.x][pos.y] = p;
+                engine.getBoard().elements[to.x][to.y] = p;
             });
             promotionList.put(pieceImage, p);
             promotionUIBase.getChildren().add(pieceImage);

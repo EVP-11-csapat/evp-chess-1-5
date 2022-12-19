@@ -37,7 +37,7 @@ public class Engine implements EngineInterface {
         if(piece.movement.getClass() == Pawn.class){
             if((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7)){
                 //promotion
-                UIRef.promote(to);
+                UIRef.promote(from, to);
             }
 
             if(Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
