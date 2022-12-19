@@ -673,11 +673,10 @@ public class ChessController implements UIInteface {
     }
 
     @Override
-    public void promote(Vector2 pos) {
+    public void promote(Vector2 from, Vector2 to) {
         promotionUIBase.setPrefWidth(90);
         promotionUIBase.setPrefHeight(90 * 4);
-        promotionUIBase.setLayoutX(pos.x * 90);
-        promotionUIBase.setLayoutY(pos.y * 90);
+        promotionUIBase.setLayoutX(to.x * 90);
         promotionUIBase.setStyle("-fx-background-color: #2a2a2a");
         Piece.Color pieceColor = ((Piece) engine.getBoard().at(from)).color;
         if (pieceColor == Piece.Color.WHITE) {
@@ -707,11 +706,11 @@ public class ChessController implements UIInteface {
             pieceImage.setX(0);
             pieceImage.setY(90 * i);
             pieceImage.setOnMouseClicked(event -> {
-                remove(pos, null);
-                addPiece(promotionList.get(pieceImage), pos);
+                remove(to, null);
+                addPiece(promotionList.get(pieceImage), to);
                 chessBoardPane.getChildren().remove(promotionUIBase);
                 promotionList.clear();
-                engine.setPiece(pos, p);
+                engine.setPiece(to, p);
             });
             promotionList.put(pieceImage, p);
             promotionUIBase.getChildren().add(pieceImage);
