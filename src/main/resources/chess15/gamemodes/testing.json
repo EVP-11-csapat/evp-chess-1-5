@@ -1,0 +1,36 @@
+{
+  "pieces": [
+    {
+      "row": 0,
+      "column": 4,
+      "color": "black",
+      "look": "king",
+      "moves": "king",
+      "isKing": true
+    },
+    {
+      "row": 1,
+      "column": 3,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 7,
+      "column": 4,
+      "color": "white",
+      "look": "king",
+      "moves": "king",
+      "isKing": true
+    },
+    {
+      "row": 6,
+      "column": 4,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    }
+  ]
+}

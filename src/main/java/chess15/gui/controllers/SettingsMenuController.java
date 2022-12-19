@@ -2,6 +2,7 @@ package chess15.gui.controllers;
 
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.gamemode.Testing;
 import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,8 @@ public class SettingsMenuController {
     private Button fastpacedButton;
     @FXML
     private Button classicalButton;
+    @FXML
+    private Button testingButton;
 
     private String selectedGameMode = "";
     private boolean gameTimerEnabled = false;
@@ -47,6 +50,7 @@ public class SettingsMenuController {
 
     private String IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
     private String IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
+    private String IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
     /**
@@ -56,13 +60,28 @@ public class SettingsMenuController {
         if (selectedGameMode.equals("classical")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+
             classicalButton.setStyle("-fx-background-color: #5A5A5A;");
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
+            testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
         } else if (selectedGameMode.equals("fastpaced")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+            IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
             fastpacedButton.setStyle("-fx-background-color: #5A5A5A;");
+            testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+        } else if (selectedGameMode.equals("testing")) {
+            IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+
+            classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
+            fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
+            testingButton.setStyle("-fx-background-color: #5A5A5A;");
+
         }
     }
 
@@ -102,6 +121,10 @@ public class SettingsMenuController {
         fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
         fastpacedButton.setOnMouseEntered(e -> fastpacedButton.setStyle(HOVERED_BUTTON_STYLE));
         fastpacedButton.setOnMouseExited(e -> fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE));
+
+        testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+        testingButton.setOnMouseEntered(e -> testingButton.setStyle(HOVERED_BUTTON_STYLE));
+        testingButton.setOnMouseExited(e -> testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE));
 
         minutesSpinner.setDisable(true);
         secondsSpinner.setDisable(true);
@@ -146,6 +169,20 @@ public class SettingsMenuController {
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         playButton.setDisable(false);
+    }
+
+    @FXML
+    protected void onTestingSelected() {
+        selectedGameMode = "testing";
+        disableEverything();
+        setSelectedGameModeButton();
+        System.out.println("Classical selected");
+        playButton.setText("Play Classical");
+        timerCheckBox.setDisable(false);
+        playButton.setDisable(false);
+        enpassantCheckBox.setDisable(false);
+        promotionCheckBox.setDisable(false);
+        castlingCheckBox.setDisable(false);
     }
 
     /**
@@ -199,6 +236,7 @@ public class SettingsMenuController {
         if (!selectedGameMode.equals("")) {
             RuleSet rules = RuleSet.getInstance();
             if (Objects.equals(selectedGameMode, "classical")) rules.gamemode = new Classical();
+            if (Objects.equals(selectedGameMode, "testing")) rules.gamemode = new Testing();
             rules.timer = gameTimerEnabled;
             rules.startTime = gameTimerMinutes;
             rules.timeDelta = gameTimerSeconds;

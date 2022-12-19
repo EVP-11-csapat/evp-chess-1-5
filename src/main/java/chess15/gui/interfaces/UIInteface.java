@@ -6,4 +6,6 @@ public interface UIInteface {
     void endGame(Piece.Color won);
     void setCheck(Vector2 checkCoord);
     void remove(Vector2 pieceToRemove, Piece taken); // Temp
+    void promote(Vector2 pos);
+    void addPiece(Piece piece, Vector2 pos);
 }

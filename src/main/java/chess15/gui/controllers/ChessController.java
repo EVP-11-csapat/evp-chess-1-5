@@ -34,8 +34,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ChessController implements UIInteface {
+    Pane promotionUIBase = new Pane();
+    private final ArrayList<Piece> PROMOTIONPIECES = new ArrayList<>(List.of(
+            new Piece(Piece.Color.WHITE, Piece.Type.QUEEN, Queen.getInstance(), false),
+            new Piece(Piece.Color.WHITE, Piece.Type.ROOK, Rook.getInstance(), false),
+            new Piece(Piece.Color.WHITE, Piece.Type.BISHOP, Bishop.getInstance(), false),
+            new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Knight.getInstance(), false)
+    ));
+    private HashMap<ImageView, Piece> promotionList = new HashMap<>();
     private Boolean aditionalString = true;
-
     private HashMap<Vector2, ImageView> pieces = new HashMap<>();
     private HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
     private ArrayList<Piece> takenPieces = new ArrayList<>();
@@ -119,10 +126,14 @@ public class ChessController implements UIInteface {
                 pieces.clear();
                 takenPieces = new ArrayList<>();
                 takenList = new HashMap<>();
-                whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
-                blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
-                whiteTimerLabel.setText(formatTime(whiteTimeInMillis));
-                blackTimerLabel.setText(formatTime(blackTimeInMillis));
+                if (RuleSet.getInstance().timer) {
+                    whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+                    blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+                    whiteTimerLabel.setText(formatTime(whiteTimeInMillis));
+                    blackTimerLabel.setText(formatTime(blackTimeInMillis));
+                }
+                chessBoardPane.getChildren().remove(promotionUIBase);
+                promotionList.clear();
                 setUpBoard();
             }
         };
@@ -603,5 +614,54 @@ public class ChessController implements UIInteface {
     @Override
     public void remove(Vector2 pieceToRemove, Piece taken) {
         removePiece(pieceToRemove, taken);
+    }
+
+    @Override
+    public void promote(Vector2 pos) {
+        promotionUIBase.setPrefWidth(90);
+        promotionUIBase.setPrefHeight(90 * 4);
+        promotionUIBase.setLayoutX(pos.x * 90);
+        promotionUIBase.setLayoutY(pos.y * 90);
+        promotionUIBase.setStyle("-fx-background-color: #2a2a2a");
+        for (int i = 0; i < 4; i++) {
+            Piece p = PROMOTIONPIECES.get(i);
+            String imagePath = "pieces/" +
+                    getPieceColorString(p) +
+                    "-" +
+                    getPieceTypeString(p) +
+                    ".png";
+
+            Image image = null;
+            try {
+                image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ImageView pieceImage = new ImageView();
+            pieceImage.setImage(image);
+            pieceImage.setFitHeight(90);
+            pieceImage.setFitWidth(90);
+            pieceImage.setX(0);
+            pieceImage.setY(90 * i);
+            pieceImage.setOnMouseClicked(event -> {
+                remove(pos, null);
+                addPiece(promotionList.get(pieceImage), pos);
+                chessBoardPane.getChildren().remove(promotionUIBase);
+                promotionList.clear();
+                engine.getBoard().elements[pos.x][pos.y] = p;
+            });
+            promotionList.put(pieceImage, p);
+            promotionUIBase.getChildren().add(pieceImage);
+        }
+        chessBoardPane.getChildren().add(promotionUIBase);
+    }
+
+    @Override
+    public void addPiece(Piece piece, Vector2 pos) {
+        try {
+            createPiece(piece, pos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
