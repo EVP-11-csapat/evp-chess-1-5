@@ -133,17 +133,19 @@ public class Engine implements EngineInterface {
             }
         }
 
-        //could also be a stalemate,
-        //TODO: Evaluate checkmate and stalemate
-        boolean checkmate = true;
+        boolean nomoves = true;
         for (Map.Entry<Vector2, ArrayList<Vector2>> entry : movemap.entrySet()) {
             if (!entry.getValue().isEmpty()) {
-                checkmate = false;
+                nomoves = false;
                 break;
             }
         }
         Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
-        if(checkmate) UIRef.endGame(winner, WinReason.CHECKMATE);
+        if(nomoves){
+            if(checkGivenby != null){UIRef.endGame(winner, WinReason.CHECKMATE);}
+            // else stalemate
+            return null;
+        }
 
         return movemap;
     }
