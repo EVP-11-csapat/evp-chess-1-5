@@ -295,7 +295,7 @@ public class ChessController implements UIInteface {
             for (int j = 0; j < 8; j++) {
                 BoardElement element = board.elements[j][i];
                 Piece piece = null;
-                if (!(element instanceof Piece))  continue;
+                if (!(element instanceof Piece)) continue;
                 piece = (Piece) element;
                 Vector2 piecePos = new Vector2(j, i);
 
@@ -394,7 +394,7 @@ public class ChessController implements UIInteface {
     }
 
     private void addClickEventToPiece(Vector2 pos, ImageView piece) {
-        System.out.println("Creating click listener for: " + pos );
+        System.out.println("Creating click listener for: " + pos);
         piece.setOnMousePressed(pressedHandler);
     }
 
@@ -470,8 +470,8 @@ public class ChessController implements UIInteface {
     }
 
     /**
-     * @deprecated
      * @param moveToRemove
+     * @deprecated
      */
     private void removeElementFromList(Move moveToRemove) {
         moveListElement.getItems().remove(generateMoveString(moveToRemove));
@@ -698,7 +698,7 @@ public class ChessController implements UIInteface {
                 addPiece(promotionList.get(pieceImage), pos);
                 chessBoardPane.getChildren().remove(promotionUIBase);
                 promotionList.clear();
-                engine.getBoard().elements[pos.x][pos.y] = p;
+                engine.setPiece(pos, p);
             });
             promotionList.put(pieceImage, p);
             promotionUIBase.getChildren().add(pieceImage);
