@@ -8,6 +8,7 @@ import chess15.util.WinReason;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class Engine implements EngineInterface {
 
@@ -24,6 +25,38 @@ public class Engine implements EngineInterface {
 
     public ArrayList<Vector2> getMoves(Vector2 position) {
         return possibleMoves.getOrDefault(position, new ArrayList<>());
+    }
+
+    public Vector2[] getRandomMove(){
+        Vector2[] move = new Vector2[2];
+
+        int totalMoves = 0;
+        ArrayList<Integer> lengths = new ArrayList<>();
+        ArrayList<Vector2> keys = new ArrayList<>();
+
+        for (Map.Entry<Vector2, ArrayList<Vector2>> entry : possibleMoves.entrySet()) {
+            int moveCount = entry.getValue().size();
+            keys.add(entry.getKey());
+            lengths.add(moveCount);
+            totalMoves += moveCount;
+        }
+
+        int randomIndex = new Random().nextInt(totalMoves);
+        int fromIndex = 0;
+
+        for (Integer length : lengths) {
+            if(randomIndex < length){
+                break;
+            }
+            randomIndex -= length;
+            fromIndex++;
+        }
+        Vector2 from = keys.get(fromIndex);
+
+        move[0] = from;
+        move[1] = possibleMoves.get(from).get(randomIndex);
+
+        return move;
     }
 
     public void move(Vector2 from, Vector2 to) {
