@@ -2,6 +2,14 @@
   "pieces": [
     {
       "row": 0,
+      "column": 0,
+      "color": "black",
+      "look": "rook",
+      "moves": "rook",
+      "isKing": false
+    },
+    {
+      "row": 0,
       "column": 4,
       "color": "black",
       "look": "king",
@@ -30,6 +38,14 @@
       "color": "white",
       "look": "pawn",
       "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 7,
+      "column": 7,
+      "color": "white",
+      "look": "rook",
+      "moves": "rook",
       "isKing": false
     }
   ]
