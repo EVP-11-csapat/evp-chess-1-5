@@ -116,10 +116,9 @@ public class Engine implements EngineInterface {
     }
 
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
-        if (pieces.size() == 1) {
-            selectPieces();
-            if (pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
-        } else selectPieces();
+        pieces = selectPieces(nextPlayer);
+        if (selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
+
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
         int last = pieces.size() - 1;
@@ -226,8 +225,8 @@ public class Engine implements EngineInterface {
         return moves;
     }
 
-    private void selectPieces() {
-        pieces = new ArrayList<>();
+    private ArrayList<Vector2> selectPieces(Piece.Color color) {
+        ArrayList<Vector2> selectedPieces = new ArrayList<>();
         Vector2 king = null;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -235,15 +234,16 @@ public class Engine implements EngineInterface {
                 BoardElement target = board.at(position);
                 if (!target.isEmpty) {
                     Piece piece = ((Piece) target);
-                    if (piece.color == nextPlayer) {
+                    if (piece.color == color) {
                         if (piece.isKing) king = position;
-                        else pieces.add(position);
+                        else selectedPieces.add(position);
                     } else piece.pin = null;
 
                 }
             }
         }
-        pieces.add(king);
+        selectedPieces.add(king);
+        return selectedPieces;
     }
 
 
@@ -398,7 +398,11 @@ public class Engine implements EngineInterface {
     }
 
     private void switchPlayer() {
-        if (nextPlayer == Piece.Color.WHITE) nextPlayer = Piece.Color.BLACK;
-        else nextPlayer = Piece.Color.WHITE;
+        nextPlayer = switchColor(nextPlayer);
+    }
+
+    private Piece.Color switchColor(Piece.Color color){
+        if(color == Piece.Color.WHITE) return Piece.Color.BLACK;
+        else return Piece.Color.WHITE;
     }
 }
