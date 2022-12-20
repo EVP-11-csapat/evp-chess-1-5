@@ -28,36 +28,66 @@ public class Engine implements EngineInterface {
 
     public void move(Vector2 from, Vector2 to) {
         pieces.forEach(p -> {
-            if(((Piece)board.at(p)).movement.getClass() == Pawn.class) ((Piece)board.at(p)).boolProperty = false;
+            if (((Piece) board.at(p)).movement.getClass() == Pawn.class) ((Piece) board.at(p)).boolProperty = false;
         });
+        Piece piece = (Piece) board.at(from);
 
-        Piece piece = (Piece)board.at(from);
-        if(piece.movement.getClass() == Pawn.class){
-            if(rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))){
+
+        if (piece.movement.getClass() == Pawn.class) {
+            if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
                 UIRef.promote(from, to);
                 return;
             }
 
-            if(Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
-            if(from.x != to.x && board.at(to).isEmpty){
+            if (Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
+            if (from.x != to.x && board.at(to).isEmpty) {
                 System.out.println("en passant");
                 Vector2 passed = new Vector2(to.x, from.y);
 
-                UIRef.remove(passed, (Piece)board.at(passed));
+                UIRef.remove(passed, (Piece) board.at(passed));
                 board.elements[passed.x][passed.y] = new BoardElement();
             }
         }
+        if (piece.movement.getClass() == King.class) {
+            piece.boolProperty = true;
+
+            if (Math.abs(to.x - from.x) > 1) {
+                int kingOffset = (to.x > from.x) ? 2 : -2;
+                int rookOriginColumn = (to.x > from.x) ? 7 : 0;
+                int rookOffset = kingOffset / 2;
+
+                Vector2 rookOrigin = new Vector2(rookOriginColumn, from.y);
+
+                Vector2 kingpos = new Vector2(from.x + kingOffset, from.y);
+                Vector2 rookpos = new Vector2(from.x + rookOffset, from.y);
+
+                board.elements[kingpos.x][kingpos.y] = board.at(from);
+                board.elements[rookpos.x][rookpos.y] = board.at(rookOrigin);
+                UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
+                board.elements[rookOrigin.x][rookOrigin.y] = new BoardElement();
+
+                UIRef.remove(from, null);
+                UIRef.remove(rookOrigin, null);
+            }
+        }
+
+        if (piece.movement.getClass() == Rook.class) piece.boolProperty = true;
+
 
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
 
+
         previousAttacks = new HashMap<>();
         previousAttacks = calculateMoveMap(true);
+
         switchPlayer();
+
         possibleMoves = calculateMoveMap(false);
+
     }
 
-    public void setPiece(Vector2 position, Piece piece){
+    public void setPiece(Vector2 position, Piece piece) {
         board.elements[position.x][position.y] = piece;
         previousAttacks = calculateMoveMap(true);
         switchPlayer();
@@ -86,10 +116,10 @@ public class Engine implements EngineInterface {
     }
 
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
-        if(pieces.size() == 1){
+        if (pieces.size() == 1) {
             selectPieces();
-            if(pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
-        }else selectPieces();
+            if (pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
+        } else selectPieces();
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
         int last = pieces.size() - 1;
@@ -110,6 +140,8 @@ public class Engine implements EngineInterface {
                 kingMoves.remove(pos);
             }
         }
+        kingMoves.addAll(castlingMoves());
+
         movemap.put(kingPos, kingMoves);
 
         if (checkAvoidable) {
@@ -125,7 +157,7 @@ public class Engine implements EngineInterface {
                         for (int k = 1; k < 8; k++) {
                             Vector2 offset = checkVector.scaleBy(k);
                             Vector2 candidate = Vector2.add(checkGivenby, offset);
-                            if(candidate.equals(kingPos)) break;
+                            if (candidate.equals(kingPos)) break;
                             else if (rawMoves.contains(candidate)) moves.add(candidate);
                         }
                     }
@@ -144,9 +176,12 @@ public class Engine implements EngineInterface {
             }
         }
         Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
-        if(nomoves){
-            if(checkGivenby != null){UIRef.endGame(winner, WinReason.CHECKMATE);}
-            else {UIRef.endGame(null, WinReason.STALEMATE);}
+        if (nomoves) {
+            if (checkGivenby != null) {
+                UIRef.endGame(winner, WinReason.CHECKMATE);
+            } else {
+                UIRef.endGame(null, WinReason.STALEMATE);
+            }
             return null;
         }
 
@@ -161,7 +196,7 @@ public class Engine implements EngineInterface {
         boolean isAttackDifferent = p.movement.attackDifferent;
 
         ArrayList<Vector2> special = p.movement.special.invoke(position, board, rules);
-        if (special != null){
+        if (special != null) {
             special = filterDirections(special, p.pin);
             special.forEach(dir -> moves.add(Vector2.add(position, dir)));
         }
@@ -220,7 +255,7 @@ public class Engine implements EngineInterface {
     private boolean evalMove(Vector2 pos, boolean isAttack, boolean onlyAttack, boolean forceAttack) {
         if (pos.outOfBounds()) return false;
         if (!board.at(pos).isEmpty) {
-            if(forceAttack) return true;
+            if (forceAttack) return true;
             if (!isAttack) return false;
             Piece target = (Piece) board.at(pos);
             return target.color != nextPlayer;
@@ -240,9 +275,9 @@ public class Engine implements EngineInterface {
             if (candidate.outOfBounds()) return moves;
 
             boolean empty = board.at(candidate).isEmpty;
-            if(!empty && forceAttack){
-                Piece potentialKing = (Piece)board.at(candidate);
-                if(potentialKing.isKing && potentialKing.color != nextPlayer) empty = true;
+            if (!empty && forceAttack) {
+                Piece potentialKing = (Piece) board.at(candidate);
+                if (potentialKing.isKing && potentialKing.color != nextPlayer) empty = true;
             }
 
             if (!allowAttack && !empty) return moves;
@@ -279,14 +314,13 @@ public class Engine implements EngineInterface {
         return moves;
     }
 
-    private ArrayList<Vector2> orient(ArrayList<Vector2> rawDirections, boolean whiteDifferent, Piece.Color color){
+    private ArrayList<Vector2> orient(ArrayList<Vector2> rawDirections, boolean whiteDifferent, Piece.Color color) {
         System.out.println("\n");
-        if(whiteDifferent && color == Piece.Color.WHITE){
+        if (whiteDifferent && color == Piece.Color.WHITE) {
             ArrayList<Vector2> directions = new ArrayList<>();
             rawDirections.forEach(direction -> directions.add(direction.flip()));
             return directions;
-        }
-        else return rawDirections;
+        } else return rawDirections;
 
     }
 
@@ -308,7 +342,62 @@ public class Engine implements EngineInterface {
         return filteredDirections;
     }
 
-    private void switchPlayer(){
+    ArrayList<Vector2> castlingMoves() {
+        ArrayList<Vector2> castlingMoves = new ArrayList<>();
+        int row = 0;
+        if (nextPlayer == Piece.Color.WHITE) row = 7;
+
+        Vector2 kingPos = new Vector2(4, row);
+        Vector2 leftRookPos = new Vector2(0, row);
+        Vector2 rightRookPos = new Vector2(7, row);
+
+        if (!board.at(kingPos).isEmpty) {
+            Piece king = ((Piece) board.at(kingPos));
+            if (king.movement.getClass() == King.class && !king.boolProperty) {
+
+                // long
+                if (!board.at(leftRookPos).isEmpty) {
+                    Piece leftRook = ((Piece) board.at(leftRookPos));
+                    if (leftRook.movement.getClass() == Rook.class && !leftRook.boolProperty) {
+                        if (board.at(new Vector2(1, row)).isEmpty && board.at(new Vector2(2, row)).isEmpty && board.at(new Vector2(3, row)).isEmpty) {
+                            boolean castlingPossible = true;
+                            for (Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()) {
+                                for (int i = 2; i < 5; i++) {
+                                    if (entry.getValue().contains(new Vector2(i, row))) {
+                                        castlingPossible = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (castlingPossible) castlingMoves.add(new Vector2(2, row));
+                        }
+                    }
+                }
+
+                if (!board.at(rightRookPos).isEmpty) {
+                    Piece rightRook = ((Piece) board.at(rightRookPos));
+                    if (rightRook.movement.getClass() == Rook.class && !rightRook.boolProperty) {
+                        if (board.at(new Vector2(5, row)).isEmpty && board.at(new Vector2(6, row)).isEmpty) {
+                            boolean castlingPossible = true;
+                            for (Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()) {
+                                for (int i = 4; i < 7; i++) {
+                                    if (entry.getValue().contains(new Vector2(i, row))) {
+                                        castlingPossible = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (castlingPossible) castlingMoves.add(new Vector2(6, row));
+                        }
+                    }
+                }
+            }
+        }
+
+        return castlingMoves;
+    }
+
+    private void switchPlayer() {
         if (nextPlayer == Piece.Color.WHITE) nextPlayer = Piece.Color.BLACK;
         else nextPlayer = Piece.Color.WHITE;
     }
