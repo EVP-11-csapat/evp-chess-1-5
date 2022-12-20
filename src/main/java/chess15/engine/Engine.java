@@ -88,7 +88,10 @@ public class Engine implements EngineInterface {
     }
 
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
-        selectPieces();
+        if(pieces.size() == 1){
+            selectPieces();
+            if(pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
+        }else selectPieces();
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
         int last = pieces.size() - 1;
