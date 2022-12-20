@@ -139,9 +139,10 @@ public class ChessController implements UIInteface {
             Constants.whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
             Constants.blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
 
-            TimerInit.initStyles(this);
+            if (!(RuleSet.getInstance().gamemode instanceof Fastpaced)) TimerInit.initStyles(this);
 
-            TimerInit.initThread(this, engine);
+            if (RuleSet.getInstance().gamemode instanceof Fastpaced) TimerInit.initFastPacedThread(this, engine);
+            else TimerInit.initThread(this);
         }
     }
 
@@ -516,7 +517,7 @@ public class ChessController implements UIInteface {
         updateClickEventToPiece(to);
 
         // Change the timer to the other color
-        if (RuleSet.getInstance().timer) {
+        if (RuleSet.getInstance().timer && !(RuleSet.getInstance().gamemode instanceof Fastpaced)) {
             handleTimerUpdate(piece.color);
         }
     }
@@ -545,6 +546,7 @@ public class ChessController implements UIInteface {
      */
     @Override
     public void promote(Vector2 from, Vector2 to) {
+        Constants.pausedForPromotion = true;
         // Prepare the promotion UI base
         Constants.promotionUIBase.setPrefWidth(90);
         Constants.promotionUIBase.setPrefHeight(90 * 4);
@@ -589,6 +591,8 @@ public class ChessController implements UIInteface {
                 chessBoardPane.getChildren().remove(Constants.promotionUIBase);
                 Constants.promotionList.clear();
                 engine.setPiece(to, p);
+                Constants.pausedForPromotion = false;
+                Constants.fastPacedCounter = 0;
             });
 
             Constants.promotionList.put(pieceImage, p);

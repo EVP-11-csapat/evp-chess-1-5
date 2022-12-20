@@ -74,7 +74,7 @@ public class TimerInit {
      * Initializes the timer thread used for counting down
      * @param chessController The {@link ChessController} is used for access
      */
-    public static void initThread(ChessController chessController, EngineInterface engine) {
+    public static void initThread(ChessController chessController) {
         Constants.whiteSide = true;
 
         Constants.timerThread = new Thread(() -> {
@@ -83,15 +83,6 @@ public class TimerInit {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
-
-                if (RuleSet.getInstance().gamemode instanceof Fastpaced) {
-                    Constants.fastPacedCounter += 10;
-                    if (Constants.fastPacedCounter >= Constants.FASTPACEDTIMEOUT) { // Fire every 2 seconds
-                        Constants.fastPacedCounter = 0;
-                        Vector2[] randomPair = engine.getRandomMove();
-                        Platform.runLater(() -> chessController.movePiece(randomPair[0], randomPair[1]));
-                    }
                 }
 
                 if (Constants.whiteSide) {
@@ -113,6 +104,34 @@ public class TimerInit {
                     }
 
                     Platform.runLater(() -> Constants.blackTimerLabel.setText(TimerInit.formatTime(Constants.blackTimeInMillis)));
+                }
+            }
+        });
+
+        Constants.timerThread.start();
+    }
+
+    /**
+     * Initializes the timer thread used for fast-paced mode
+     * @param chessController The {@link ChessController} is used for access
+     * @param engine The {@link EngineInterface} is used for random moves
+     */
+    public static void initFastPacedThread(ChessController chessController, EngineInterface engine) {
+        Constants.timerThread = new Thread(() -> {
+            while (Constants.isRunning && !Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (!Constants.pausedForPromotion) {
+                    Constants.fastPacedCounter += 10;
+                    if (Constants.fastPacedCounter >= Constants.FASTPACEDTIMEOUT) { // Fire every 2 seconds
+                        Constants.fastPacedCounter = 0;
+                        Vector2[] randomPair = engine.getRandomMove();
+                        Platform.runLater(() -> chessController.movePiece(randomPair[0], randomPair[1]));
+                    }
                 }
             }
         });
