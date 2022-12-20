@@ -1,7 +1,10 @@
 package chess15.gui.util;
 
 import chess15.Piece;
+import chess15.Vector2;
+import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
+import chess15.gamemode.Fastpaced;
 import chess15.gui.controllers.ChessController;
 import chess15.util.WinReason;
 import javafx.application.Platform;
@@ -71,7 +74,7 @@ public class TimerInit {
      * Initializes the timer thread used for counting down
      * @param chessController The {@link ChessController} is used for access
      */
-    public static void initThread(ChessController chessController) {
+    public static void initThread(ChessController chessController, EngineInterface engine) {
         Constants.whiteSide = true;
 
         Constants.timerThread = new Thread(() -> {
@@ -82,8 +85,18 @@ public class TimerInit {
                     e.printStackTrace();
                 }
 
+                if (RuleSet.getInstance().gamemode instanceof Fastpaced) {
+                    Constants.fastPacedCounter += 10;
+                    if (Constants.fastPacedCounter >= Constants.FASTPACEDTIMEOUT) { // Fire every 2 seconds
+                        Constants.fastPacedCounter = 0;
+                        Vector2[] randomPair = engine.getRandomMove();
+                        Platform.runLater(() -> chessController.movePiece(randomPair[0], randomPair[1]));
+                    }
+                }
+
                 if (Constants.whiteSide) {
                     Constants.whiteTimeInMillis -= 10;
+
                     if (Constants.whiteTimeInMillis <= 0) {
                         Constants.isRunning = false;
                         Constants.whiteTimeRanOut = true;

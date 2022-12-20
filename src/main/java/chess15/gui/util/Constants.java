@@ -18,6 +18,7 @@ import java.util.HashMap;
  */
 public class Constants {
     // Timer Variables
+    public static final int FASTPACEDTIMEOUT = 2000;
     public static HBox timerHBox;
     public static Label whiteTimerLabel;
     public static Label blackTimerLabel;
@@ -30,6 +31,7 @@ public class Constants {
     public static boolean isRunning;
     public static long whiteTimeInMillis;
     public static long blackTimeInMillis;
+    public static int fastPacedCounter;
 
     // Chess Variables
     public static HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();

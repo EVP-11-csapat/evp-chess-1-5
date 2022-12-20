@@ -27,6 +27,7 @@ public class Engine implements EngineInterface {
         return possibleMoves.getOrDefault(position, new ArrayList<>());
     }
 
+    @Override
     public Vector2[] getRandomMove(){
         Vector2[] move = new Vector2[2];
 

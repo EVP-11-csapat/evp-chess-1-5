@@ -4,6 +4,7 @@ import chess15.*;
 import chess15.engine.Engine;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
+import chess15.gamemode.Fastpaced;
 import chess15.gui.interfaces.UIInteface;
 import chess15.gui.util.Constants;
 import chess15.gui.util.General;
@@ -140,7 +141,7 @@ public class ChessController implements UIInteface {
 
             TimerInit.initStyles(this);
 
-            TimerInit.initThread(this);
+            TimerInit.initThread(this, engine);
         }
     }
 
@@ -471,7 +472,11 @@ public class ChessController implements UIInteface {
      * @param from The {@link Vector2} from position. The origin of the piece
      * @param to The {@link Vector2} to position. The Position we want to put the piece to
      */
-    private void movePiece(Vector2 from, Vector2 to) {
+    public void movePiece(Vector2 from, Vector2 to) {
+        if (RuleSet.getInstance().gamemode instanceof Fastpaced) {
+            Constants.fastPacedCounter = 0;
+            removePosibleMoves();
+        }
         ImageView pieceView = Constants.pieces.get(from);
         Piece piece = (Piece) engine.getBoard().getElement(from);
 

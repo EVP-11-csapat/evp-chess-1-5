@@ -12,4 +12,5 @@ public interface EngineInterface {
     void reset();
     Board getBoard();
     void setPiece(Vector2 position, Piece piece);
+    Vector2[] getRandomMove();
 }

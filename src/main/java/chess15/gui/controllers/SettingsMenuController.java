@@ -2,6 +2,7 @@ package chess15.gui.controllers;
 
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.gamemode.Fastpaced;
 import chess15.gamemode.Testing;
 import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
@@ -165,6 +166,13 @@ public class SettingsMenuController {
         setSelectedGameModeButton();
         System.out.println("Fast-paced selected");
         playButton.setText("Play Fast-Paced");
+        timerCheckBox.setDisable(true);
+        timerCheckBox.setSelected(true);
+        gameTimerEnabled = true;
+        gameTimerMinutes = 90;
+        gameTimerSeconds = 0;
+        minutesSpinner.getValueFactory().setValue(90);
+        secondsSpinner.getValueFactory().setValue(0);
         castlingCheckBox.setDisable(false);
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
@@ -236,6 +244,7 @@ public class SettingsMenuController {
         if (!selectedGameMode.equals("")) {
             RuleSet rules = RuleSet.getInstance();
             if (Objects.equals(selectedGameMode, "classical")) rules.gamemode = new Classical();
+            if (Objects.equals(selectedGameMode, "fastpaced")) rules.gamemode = new Fastpaced();
             if (Objects.equals(selectedGameMode, "testing")) rules.gamemode = new Testing();
             rules.timer = gameTimerEnabled;
             rules.startTime = gameTimerMinutes;
