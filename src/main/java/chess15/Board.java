@@ -7,8 +7,6 @@ import java.util.Arrays;
  */
 public class Board {
     public BoardElement[][] elements = new BoardElement[8][8];
-    public Vector2 blackKing;
-    public Vector2 whiteKing;
 
     /**
      * Converts the column and row coordinates, to the coordinate system used by our board.
