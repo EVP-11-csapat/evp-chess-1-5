@@ -19,6 +19,7 @@ import java.util.HashMap;
 public class Constants {
     // Timer Variables
     public static final int FASTPACEDTIMEOUT = 2000;
+    public static boolean pausedForPromotion = false;
     public static HBox timerHBox;
     public static Label whiteTimerLabel;
     public static Label blackTimerLabel;
