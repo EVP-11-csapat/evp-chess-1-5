@@ -82,31 +82,33 @@ public class Engine implements EngineInterface {
                 board.elements[passed.x][passed.y] = new BoardElement();
             }
         }
-        if (piece.movement.getClass() == King.class) {
-            piece.boolProperty = true;
 
-            if (Math.abs(to.x - from.x) > 1) {
-                int kingOffset = (to.x > from.x) ? 2 : -2;
-                int rookOriginColumn = (to.x > from.x) ? 7 : 0;
-                int rookOffset = kingOffset / 2;
+        if(rules.castling){
+            if (piece.movement.getClass() == King.class) {
+                piece.boolProperty = true;
 
-                Vector2 rookOrigin = new Vector2(rookOriginColumn, from.y);
+                if (Math.abs(to.x - from.x) > 1) {
+                    int kingOffset = (to.x > from.x) ? 2 : -2;
+                    int rookOriginColumn = (to.x > from.x) ? 7 : 0;
+                    int rookOffset = kingOffset / 2;
 
-                Vector2 kingpos = new Vector2(from.x + kingOffset, from.y);
-                Vector2 rookpos = new Vector2(from.x + rookOffset, from.y);
+                    Vector2 rookOrigin = new Vector2(rookOriginColumn, from.y);
 
-                board.elements[kingpos.x][kingpos.y] = board.at(from);
-                board.elements[rookpos.x][rookpos.y] = board.at(rookOrigin);
-                UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
-                board.elements[rookOrigin.x][rookOrigin.y] = new BoardElement();
+                    Vector2 kingpos = new Vector2(from.x + kingOffset, from.y);
+                    Vector2 rookpos = new Vector2(from.x + rookOffset, from.y);
 
-                UIRef.remove(from, null);
-                UIRef.remove(rookOrigin, null);
+                    board.elements[kingpos.x][kingpos.y] = board.at(from);
+                    board.elements[rookpos.x][rookpos.y] = board.at(rookOrigin);
+                    UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
+                    board.elements[rookOrigin.x][rookOrigin.y] = new BoardElement();
+
+                    UIRef.remove(from, null);
+                    UIRef.remove(rookOrigin, null);
+                }
             }
+
+            if (piece.movement.getClass() == Rook.class) piece.boolProperty = true;
         }
-
-        if (piece.movement.getClass() == Rook.class) piece.boolProperty = true;
-
 
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
