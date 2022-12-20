@@ -47,7 +47,6 @@ public class MainMenuController {
      */
     @FXML
     protected void onMultiplayerButtonPressed() throws IOException {
-        System.out.println("Multiplayer button pressed");
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("settingsMenu.fxml")));
 //        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/settingsMenu.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
