@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 public class Engine implements EngineInterface {
 
     public Board board;
@@ -238,8 +236,6 @@ public class Engine implements EngineInterface {
 
         Vector2 candidate = Vector2.add(pos, direction);
 
-        boolean stoppedOnce = false;
-
         for (int i = 0; i < 9; i++) {
             if (candidate.outOfBounds()) return moves;
 
@@ -255,12 +251,7 @@ public class Engine implements EngineInterface {
             else {
                 target = (Piece) board.at(candidate);
                 targetpos = candidate;
-                if(forceAttack){
-                    if(stoppedOnce) return moves;
-                    else stoppedOnce = true;
-                }else{
-                    if (target.color == nextPlayer) return moves;
-                }
+                if (target.color == nextPlayer) return moves;
                 moves.add(candidate);
                 break;
             }
