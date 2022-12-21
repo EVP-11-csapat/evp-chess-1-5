@@ -11,6 +11,7 @@ import chess15.gui.interfaces.UIInteface;
 import chess15.gui.util.Constants;
 import chess15.gui.util.General;
 import chess15.gui.util.TimerInit;
+import chess15.util.CustomFormatter;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
 import chess15.util.WinReason;
@@ -31,7 +32,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.FileHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -112,6 +116,16 @@ public class ChessController implements UIInteface {
             }
         };
 
+        // Development command to force stalemate ending
+        EventHandler<KeyEvent> warnErrTrigger = e -> {
+            if (e.getCode() == KeyCode.E && e.isAltDown()) {
+                Constants.logger.severe("Manual error triggered");
+            }
+            if (e.getCode() == KeyCode.W && e.isAltDown()) {
+                Constants.logger.warning("Manual warning triggered");
+            }
+        };
+
         // Hook the handlers to the Key Pressed Event
         if (main.getScene() != null) {
             main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
@@ -120,7 +134,9 @@ public class ChessController implements UIInteface {
                     General.threadStop();
                 }
             });
-            General.addEventHandlers(main.getScene(), checkmateHandler, timeoutHandler, drawHandler);
+            if (Constants.DEVMODE)
+                General.addEventHandlers(main.getScene(), checkmateHandler, timeoutHandler,
+                        drawHandler, warnErrTrigger);
         } else {
             main.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
@@ -130,7 +146,9 @@ public class ChessController implements UIInteface {
                             General.threadStop();
                         }
                     });
-                    General.addEventHandlers(main.getScene(), checkmateHandler, timeoutHandler, drawHandler);
+                    if (Constants.DEVMODE)
+                        General.addEventHandlers(main.getScene(), checkmateHandler, timeoutHandler,
+                                drawHandler, warnErrTrigger);
                 }
             });
         }
@@ -149,6 +167,19 @@ public class ChessController implements UIInteface {
 
             if (RuleSet.getInstance().gamemode instanceof Fastpaced) TimerInit.initFastPacedThread(this, engine);
             else TimerInit.initThread(this);
+        }
+        if (Constants.DEVMODE) {
+            Constants.logger.setUseParentHandlers(false);
+            try {
+                Constants.logFileHandler = new FileHandler(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".log");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Constants.logFileHandler.setFormatter(new CustomFormatter());
+            Constants.logger.addHandler(Constants.logFileHandler);
+            Constants.logger.info("Starting game");
+            Constants.logger.info("With Rules: " + RuleSet.getInstance().toString());
+            Constants.logger.info("Starting game");
         }
     }
 
@@ -208,6 +239,9 @@ public class ChessController implements UIInteface {
         addClickEventToPiece(pieceImage);
         // Adds the piece to the board as an image
         chessBoardPane.getChildren().add(pieceImage);
+
+        if (Constants.DEVMODE)
+            Constants.logger.info("Piece added: " + piece.toString() + " at: " + pos.toString());
     }
 
     /**
@@ -363,6 +397,8 @@ public class ChessController implements UIInteface {
         Constants.takenList.put(piece, pieceImage);
         if (piece.color == Piece.Color.WHITE) Constants.whiteTaken.getChildren().add(pieceImage);
         else Constants.blackTaken.getChildren().add(pieceImage);
+
+
     }
 
     /**
@@ -449,7 +485,10 @@ public class ChessController implements UIInteface {
      */
     private void updateMoveList(Move moveToAdd) {
         Constants.playedMoves.add(moveToAdd);
-        moveListElement.getItems().add(generateMoveString(moveToAdd));
+        String moveString = generateMoveString(moveToAdd);
+        moveListElement.getItems().add(moveString);
+        if (Constants.DEVMODE)
+            Constants.logger.info("Move String added: " + moveString);
         moveListElement.scrollTo(moveListElement.getItems().size());
     }
 
@@ -466,6 +505,8 @@ public class ChessController implements UIInteface {
             System.out.println("Pattern FOUND");
             System.out.println(text);
             //TODO: Parse to move and call move method
+            if (Constants.DEVMODE)
+                Constants.logger.info("Text move issued: " + text);
             inputText.clear();
         } else {
             System.out.println("Pattern NOT FOUND");
@@ -531,6 +572,9 @@ public class ChessController implements UIInteface {
             Vector2[] fromtopair = alg.move(engine.getBoard());
             movePiece(fromtopair[0], fromtopair[1]);
         }
+        if (Constants.DEVMODE)
+            Constants.logger.info("Piece: " + piece.toString() + "\n\t\t Moved from: " + from.toString() +
+                    " to: " + to.toString());
     }
 
     /**
@@ -546,7 +590,11 @@ public class ChessController implements UIInteface {
         if (taken != null) {
             Constants.takenPieces.add(taken);
             handleTakenList();
+            if (Constants.DEVMODE)
+                Constants.logger.info("Piece added to TAKEN LIST: " + piece.toString());
         }
+        if (Constants.DEVMODE)
+            Constants.logger.info("Piece removed at: " + pieceToRemove);
     }
 
     /**
@@ -604,12 +652,16 @@ public class ChessController implements UIInteface {
                 engine.setPiece(to, p);
                 Constants.pausedForPromotion = false;
                 Constants.fastPacedCounter = 0;
+                if (Constants.DEVMODE)
+                    Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
             });
 
             Constants.promotionList.put(pieceImage, p);
             Constants.promotionUIBase.getChildren().add(pieceImage);
         }
         chessBoardPane.getChildren().add(Constants.promotionUIBase);
+        if (Constants.DEVMODE)
+            Constants.logger.info("Promotion dialog prompted at: " + to.toString());
     }
 
     // End Game Method
@@ -657,6 +709,8 @@ public class ChessController implements UIInteface {
 
         Constants.endGameBase.getChildren().add(labelHolder);
         chessBoardPane.getChildren().add(Constants.endGameBase);
+        if (Constants.DEVMODE)
+            Constants.logger.info("Game ended with reason: " + winDescriptionLabel + " the winner is: " + winLabel);
     }
 
     /**

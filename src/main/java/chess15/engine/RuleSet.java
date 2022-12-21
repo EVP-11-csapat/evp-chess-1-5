@@ -31,6 +31,7 @@ public class RuleSet {
                 ", enpassant=" + enpassant +
                 ", promotion=" + promotion +
                 ", gamemode=" + gamemode +
+                ", isAiGame=" + isAiGame +
                 '}';
     }
 }

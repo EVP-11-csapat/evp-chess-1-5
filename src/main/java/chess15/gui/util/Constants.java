@@ -3,6 +3,7 @@ package chess15.gui.util;
 import chess15.Board;
 import chess15.Piece;
 import chess15.Vector2;
+import chess15.gui.controllers.ChessController;
 import chess15.util.Move;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -10,8 +11,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 /**
  * Stores all the constants that we use
@@ -46,4 +52,9 @@ public class Constants {
     public static Pane promotionUIBase = new Pane();
     public static StackPane endGameBase = new StackPane();
     public static ArrayList<Move> playedMoves = new ArrayList<>();
+
+    // DevMode
+    public static final boolean DEVMODE = true;
+    public static final Logger logger = Logger.getLogger(ChessController.class.getName());
+    public static FileHandler logFileHandler;
 }

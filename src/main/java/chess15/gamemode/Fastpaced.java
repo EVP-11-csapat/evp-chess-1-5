@@ -14,6 +14,6 @@ public class Fastpaced extends Gamemode {
 
     @Override
     public String toString() {
-        return "classical";
+        return "fast-paced";
     }
 }

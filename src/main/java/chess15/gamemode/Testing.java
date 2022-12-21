@@ -15,6 +15,6 @@ public class Testing extends Gamemode{
 
     @Override
     public String toString() {
-        return "classical";
+        return "testing";
     }
 }
