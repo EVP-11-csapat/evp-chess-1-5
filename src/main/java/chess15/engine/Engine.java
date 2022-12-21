@@ -71,9 +71,9 @@ public class Engine implements EngineInterface {
             if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
                 if(UIRef != null) UIRef.promote(from, to);
                 else {
-                    board.elements[from.x][from.y] = new BoardElement();
                     board.elements[to.x][to.y] = new Piece(nextPlayer, Piece.Type.QUEEN ,Queen.getInstance(), false);
                 }
+                board.elements[from.x][from.y] = new BoardElement();
                 return;
             }
 
