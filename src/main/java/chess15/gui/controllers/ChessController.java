@@ -102,6 +102,8 @@ public class ChessController implements UIInteface {
             if (!chessBoardPane.getChildren().contains(Constants.endGameBase)) {
                 if (e.getCode() == KeyCode.S && e.isControlDown() && e.isAltDown()) {
                     endGame(null, WinReason.STALEMATE);
+                } else if (e.getCode() == KeyCode.S && !e.isControlDown() && e.isAltDown()) {
+                    endGame(null, WinReason.NOMATERIAL);
                 }
             }
         };

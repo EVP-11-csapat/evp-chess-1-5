@@ -181,7 +181,8 @@ public class Engine implements EngineInterface {
                 kingMoves.remove(pos);
             }
         }
-        kingMoves.addAll(castlingMoves());
+
+        if (rules.castling) kingMoves.addAll(castlingMoves());
 
         movemap.put(kingPos, kingMoves);
 

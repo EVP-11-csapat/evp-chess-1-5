@@ -48,7 +48,8 @@ For readability, the following will be used to represent a coordinate
 ## Development Commands
 
  - `<Ctrl> + <Alt> + <R>` - Reload the chess board
- - `<Ctrl> + <Alt> + <S>` - End game with stalemate (draw)
+- `<Ctrl> + <Alt> + <S>` - End game with stalemate (draw)
+- `<Alt> + <S>` - End game with draw by lack of material (draw)
  - `<Ctrl> + <Alt> + <C>` - End game with checkmate (white wins)
  - `<Alt> + <C>` - End game with checkmate (black wins)
  - `<Ctrl> + <Alt> + <T>` - End game with time out (white wins)
