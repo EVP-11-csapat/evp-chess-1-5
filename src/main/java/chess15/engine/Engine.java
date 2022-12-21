@@ -143,10 +143,12 @@ public class Engine implements EngineInterface {
 
     public void reset() {
         board = gamemode.startState();
-        nextPlayer = Piece.Color.WHITE;
         possibleMoves = new HashMap<>();
         previousAttacks = new HashMap<>();
         pieces = new ArrayList<>();
+        nextPlayer = Piece.Color.BLACK;
+        previousAttacks = calculateMoveMap(true);
+        nextPlayer = Piece.Color.WHITE;
         possibleMoves = calculateMoveMap(false);
     }
 
@@ -155,6 +157,20 @@ public class Engine implements EngineInterface {
         this.rules = rules;
         UIRef = uiRef;
         reset();
+    }
+
+    public Engine(RuleSet rules, Board board, Piece.Color playerToMove){
+        gamemode = null;
+        UIRef = null;
+        this.rules = rules;
+        this.board = board;
+        possibleMoves = new HashMap<>();
+        previousAttacks = new HashMap<>();
+        pieces = new ArrayList<>();
+        nextPlayer = switchColor(playerToMove);
+        previousAttacks = calculateMoveMap(true);
+        nextPlayer = playerToMove;
+        possibleMoves = calculateMoveMap(false);
     }
 
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
