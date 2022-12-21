@@ -107,7 +107,6 @@ public class Engine implements EngineInterface {
                     board.elements[rookOrigin.x][rookOrigin.y] = new BoardElement();
 
                     if(UIRef != null){
-                        UIRef.remove(from, null);
                         UIRef.remove(rookOrigin, null);
                     }
                 }
