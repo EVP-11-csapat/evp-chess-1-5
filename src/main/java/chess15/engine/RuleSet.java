@@ -14,6 +14,7 @@ public class RuleSet {
     public boolean promotion;   //true if enabled
 
     public Gamemode gamemode;   //gamemode reference
+    public boolean isAiGame = false;
 
     public static RuleSet getInstance() {
         if (instance == null) instance = new RuleSet();
@@ -30,6 +31,7 @@ public class RuleSet {
                 ", enpassant=" + enpassant +
                 ", promotion=" + promotion +
                 ", gamemode=" + gamemode +
+                ", isAiGame=" + isAiGame +
                 '}';
     }
 }

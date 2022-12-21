@@ -20,7 +20,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return bestMove;
     }
 
-    ChessAlgorithm(RuleSet rules, Piece.Color player) {
+    public ChessAlgorithm(RuleSet rules, Piece.Color player) {
         this.rules = rules;
         this.color = player;
     }
