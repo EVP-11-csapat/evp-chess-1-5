@@ -64,7 +64,8 @@ public class MainMenuController {
         rules.gamemode = new Classical();
         rules.startTime = 1;
         rules.timeDelta = 5;
-        rules.timer = true;
+        rules.timer = false;
+        rules.isAiGame = true;
 
         System.out.println(ResourceGrabber.getInstance().getClass().getResource("chess.fxml").toURI().toString());
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));

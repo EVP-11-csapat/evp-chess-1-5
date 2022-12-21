@@ -1,6 +1,8 @@
 package chess15.gui.controllers;
 
 import chess15.*;
+import chess15.algorithm.AlgorithmInterface;
+import chess15.algorithm.ChessAlgorithm;
 import chess15.engine.Engine;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
@@ -46,6 +48,7 @@ public class ChessController implements UIInteface {
             new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Knight.getInstance(), false)
     ));
     private EngineInterface engine;
+    private AlgorithmInterface alg;
     @FXML
     public Pane chessBoardPane;
     @FXML
@@ -67,6 +70,7 @@ public class ChessController implements UIInteface {
      */
     public void initialize() {
         engine = new Engine(RuleSet.getInstance(), this);
+        if (RuleSet.getInstance().isAiGame) alg = new ChessAlgorithm(RuleSet.getInstance(), Piece.Color.BLACK);
         Constants.board = engine.getBoard();
         setUpBoard();
 
@@ -521,6 +525,11 @@ public class ChessController implements UIInteface {
         // Change the timer to the other color
         if (RuleSet.getInstance().timer && !(RuleSet.getInstance().gamemode instanceof Fastpaced)) {
             handleTimerUpdate(piece.color);
+        }
+
+        if (RuleSet.getInstance().isAiGame && piece.color == Piece.Color.WHITE) {
+            Vector2[] fromtopair = alg.move(engine.getBoard());
+            movePiece(fromtopair[0], fromtopair[1]);
         }
     }
 
