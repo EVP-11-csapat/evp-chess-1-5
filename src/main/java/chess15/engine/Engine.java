@@ -345,7 +345,10 @@ public class Engine implements EngineInterface {
             else {
                 target = (Piece) board.at(candidate);
                 targetpos = candidate;
-                if (target.color == nextPlayer) return moves;
+                if (target.color == nextPlayer){
+                    if(forceAttack) moves.add(candidate);
+                    return moves;
+                }
                 moves.add(candidate);
                 break;
             }
