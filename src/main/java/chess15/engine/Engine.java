@@ -69,7 +69,11 @@ public class Engine implements EngineInterface {
 
         if (piece.movement.getClass() == Pawn.class) {
             if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
-                UIRef.promote(from, to);
+                if(UIRef != null) UIRef.promote(from, to);
+                else {
+                    board.elements[from.x][from.y] = new BoardElement();
+                    board.elements[to.x][to.y] = new Piece(nextPlayer, Piece.Type.QUEEN ,Queen.getInstance(), false);
+                }
                 return;
             }
 
@@ -78,7 +82,7 @@ public class Engine implements EngineInterface {
                 System.out.println("en passant");
                 Vector2 passed = new Vector2(to.x, from.y);
 
-                UIRef.remove(passed, (Piece) board.at(passed));
+                if(UIRef != null) UIRef.remove(passed, (Piece) board.at(passed));
                 board.elements[passed.x][passed.y] = new BoardElement();
             }
         }
@@ -99,11 +103,13 @@ public class Engine implements EngineInterface {
 
                     board.elements[kingpos.x][kingpos.y] = board.at(from);
                     board.elements[rookpos.x][rookpos.y] = board.at(rookOrigin);
-                    UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
+                    if(UIRef != null) UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
                     board.elements[rookOrigin.x][rookOrigin.y] = new BoardElement();
 
-                    UIRef.remove(from, null);
-                    UIRef.remove(rookOrigin, null);
+                    if(UIRef != null){
+                        UIRef.remove(from, null);
+                        UIRef.remove(rookOrigin, null);
+                    }
                 }
             }
 
@@ -153,7 +159,7 @@ public class Engine implements EngineInterface {
 
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
         pieces = selectPieces(nextPlayer);
-        if (selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
+        if (UIRef != null && selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
 
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
@@ -211,7 +217,7 @@ public class Engine implements EngineInterface {
             }
         }
         Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
-        if (nomoves) {
+        if (nomoves && UIRef != null) {
             if (checkGivenby != null) {
                 UIRef.endGame(winner, WinReason.CHECKMATE);
             } else {
