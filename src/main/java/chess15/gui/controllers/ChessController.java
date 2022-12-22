@@ -624,7 +624,8 @@ public class ChessController implements UIInteface {
 
         // Call the move on the backend
         engine.move(from, to);
-        updateClickEventToPiece(to);
+        if (!RuleSet.getInstance().isAiGame || piece.color != Piece.Color.BLACK)
+            updateClickEventToPiece(to);
 
         // Change the timer to the other color
         if (RuleSet.getInstance().timer && !(RuleSet.getInstance().gamemode instanceof Fastpaced)) {
