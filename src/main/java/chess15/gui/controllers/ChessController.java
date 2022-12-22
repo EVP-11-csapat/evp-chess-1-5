@@ -241,7 +241,8 @@ public class ChessController implements UIInteface {
         // Add the piece to the pieces list for later use
         Constants.pieces.put(pos, pieceImage);
         // Adds the event listener for click
-        addClickEventToPiece(pieceImage);
+        if (!RuleSet.getInstance().isAiGame || piece.color != Piece.Color.BLACK)
+            addClickEventToPiece(pieceImage);
         // Adds the piece to the board as an image
         chessBoardPane.getChildren().add(pieceImage);
 
