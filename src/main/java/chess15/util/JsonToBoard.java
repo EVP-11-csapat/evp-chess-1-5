@@ -26,9 +26,9 @@ public class JsonToBoard {
         JSONParser parser = new JSONParser();
 
         try {
-            System.out.println(json);
+//            System.out.println(json);
             URL url = GameGrabber.getInstance().getClass().getResource(json);
-            System.out.println(url.toString());
+//            System.out.println(url.toString());
 //            File file = new File(url.getPath());
 //            Object obj = parser.parse(new FileReader(file));
             Object obj = parser.parse(new FileReader(url.getFile()));

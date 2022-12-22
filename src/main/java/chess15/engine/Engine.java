@@ -3,6 +3,7 @@ package chess15.engine;
 import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
+import chess15.util.BoardVisualizer;
 import chess15.util.WinReason;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Engine implements EngineInterface {
     }
 
     @Override
-    public Vector2[] getRandomMove(){
+    public Vector2[] getRandomMove() {
         Vector2[] move = new Vector2[2];
 
         int totalMoves = 0;
@@ -46,7 +47,7 @@ public class Engine implements EngineInterface {
         int fromIndex = 0;
 
         for (Integer length : lengths) {
-            if(randomIndex < length){
+            if (randomIndex < length) {
                 break;
             }
             randomIndex -= length;
@@ -60,6 +61,10 @@ public class Engine implements EngineInterface {
         return move;
     }
 
+    public ArrayList<Vector2> getPieces() {
+        return pieces;
+    }
+
     public void move(Vector2 from, Vector2 to) {
         pieces.forEach(p -> {
             if (((Piece) board.at(p)).movement.getClass() == Pawn.class) ((Piece) board.at(p)).boolProperty = false;
@@ -69,9 +74,9 @@ public class Engine implements EngineInterface {
 
         if (piece.movement.getClass() == Pawn.class) {
             if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
-                if(UIRef != null) UIRef.promote(from, to);
+                if (UIRef != null) UIRef.promote(from, to);
                 else {
-                    board.elements[to.x][to.y] = new Piece(nextPlayer, Piece.Type.QUEEN ,Queen.getInstance(), false);
+                    board.elements[to.x][to.y] = new Piece(nextPlayer, Piece.Type.QUEEN, Queen.getInstance(), false);
                 }
                 board.elements[from.x][from.y] = new BoardElement();
                 return;
@@ -82,12 +87,12 @@ public class Engine implements EngineInterface {
                 System.out.println("en passant");
                 Vector2 passed = new Vector2(to.x, from.y);
 
-                if(UIRef != null) UIRef.remove(passed, (Piece) board.at(passed));
+                if (UIRef != null) UIRef.remove(passed, (Piece) board.at(passed));
                 board.elements[passed.x][passed.y] = new BoardElement();
             }
         }
 
-        if(rules.castling){
+        if (rules.castling) {
             if (piece.movement.getClass() == King.class) {
                 piece.boolProperty = true;
 
@@ -103,10 +108,10 @@ public class Engine implements EngineInterface {
 
                     board.elements[kingpos.x][kingpos.y] = board.at(from);
                     board.elements[rookpos.x][rookpos.y] = board.at(rookOrigin);
-                    if(UIRef != null) UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
+                    if (UIRef != null) UIRef.addPiece((Piece) board.at(rookOrigin), rookpos);
                     board.elements[rookOrigin.x][rookOrigin.y] = new BoardElement();
 
-                    if(UIRef != null){
+                    if (UIRef != null) {
                         UIRef.remove(rookOrigin, null);
                     }
                 }
@@ -137,7 +142,7 @@ public class Engine implements EngineInterface {
 
     @Override
     public Board getBoard() {
-        return board.clone();
+        return new Board(board);
     }
 
     public void reset() {
@@ -151,6 +156,18 @@ public class Engine implements EngineInterface {
         possibleMoves = calculateMoveMap(false);
     }
 
+    public Engine(Engine original) {
+        gamemode = null;
+        UIRef = null;
+        this.rules = original.rules;
+        this.board = new Board(original.board);
+        pieces = new ArrayList<>(original.pieces);
+        nextPlayer = original.nextPlayer;
+        previousAttacks = new HashMap<>(original.previousAttacks);
+        possibleMoves = new HashMap<>(original.possibleMoves);
+
+    }
+
     public Engine(RuleSet rules, UIInteface uiRef) {
         this.gamemode = rules.gamemode;
         this.rules = rules;
@@ -158,7 +175,7 @@ public class Engine implements EngineInterface {
         reset();
     }
 
-    public Engine(RuleSet rules, Board board, Piece.Color playerToMove){
+    public Engine(RuleSet rules, Board board, Piece.Color playerToMove) {
         gamemode = null;
         UIRef = null;
         this.rules = rules;
@@ -172,9 +189,15 @@ public class Engine implements EngineInterface {
         possibleMoves = calculateMoveMap(false);
     }
 
+    public static Piece.Color switchColor(Piece.Color color) {
+        if (color == Piece.Color.WHITE) return Piece.Color.BLACK;
+        else return Piece.Color.WHITE;
+    }
+
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
         pieces = selectPieces(nextPlayer);
-        if (UIRef != null && selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1) UIRef.endGame(null, WinReason.NOMATERIAL);
+        if (UIRef != null && selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1)
+            UIRef.endGame(null, WinReason.NOMATERIAL);
 
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
@@ -202,6 +225,7 @@ public class Engine implements EngineInterface {
         movemap.put(kingPos, kingMoves);
 
         if (checkAvoidable) {
+
             for (int i = 0; i < last; i++) {
                 Vector2 pos = pieces.get(i);
                 ArrayList<Vector2> rawMoves = calculateMoves(pos, onlyAttacks);
@@ -232,7 +256,7 @@ public class Engine implements EngineInterface {
                 break;
             }
         }
-        Piece.Color winner = (nextPlayer == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
+        Piece.Color winner = switchColor(nextPlayer);
         if (nomoves && UIRef != null) {
             if (checkGivenby != null) {
                 UIRef.endGame(winner, WinReason.CHECKMATE);
@@ -344,8 +368,8 @@ public class Engine implements EngineInterface {
             else {
                 target = (Piece) board.at(candidate);
                 targetpos = candidate;
-                if (target.color == nextPlayer){
-                    if(forceAttack) moves.add(candidate);
+                if (target.color == nextPlayer) {
+                    if (forceAttack) moves.add(candidate);
                     return moves;
                 }
                 moves.add(candidate);
@@ -376,7 +400,6 @@ public class Engine implements EngineInterface {
     }
 
     private ArrayList<Vector2> orient(ArrayList<Vector2> rawDirections, boolean whiteDifferent, Piece.Color color) {
-        System.out.println("\n");
         if (whiteDifferent && color == Piece.Color.WHITE) {
             ArrayList<Vector2> directions = new ArrayList<>();
             rawDirections.forEach(direction -> directions.add(direction.flip()));
@@ -460,10 +483,5 @@ public class Engine implements EngineInterface {
 
     private void switchPlayer() {
         nextPlayer = switchColor(nextPlayer);
-    }
-
-    private Piece.Color switchColor(Piece.Color color){
-        if(color == Piece.Color.WHITE) return Piece.Color.BLACK;
-        else return Piece.Color.WHITE;
     }
 }

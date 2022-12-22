@@ -27,6 +27,16 @@ public class Piece extends BoardElement{
         this.isKing = isKing;
     }
 
+    public Piece(Piece original){
+        this.isEmpty = false;
+        this.color = original.color;
+        this.movement = original.movement;
+        this.look = original.look;
+        this.isKing = original.isKing;
+        this.pin = original.pin;
+        this.boolProperty = original.boolProperty;
+    }
+
     /**
      * Enum that represents the look of the piece
      */

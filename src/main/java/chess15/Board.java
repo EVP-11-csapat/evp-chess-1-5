@@ -1,5 +1,7 @@
 package chess15;
 
+import chess15.util.BoardVisualizer;
+
 import java.util.Arrays;
 
 /**
@@ -42,10 +44,16 @@ public class Board {
         }
     }
 
-    public Board clone() {
-        Board copy = new Board();
-        copy.elements = this.elements;
-        return copy;
+    public Board(Board original){
+        elements = new BoardElement[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                BoardElement toCopy = original.elements[i][j];
+
+                if(toCopy instanceof Piece) elements[i][j] = new Piece((Piece)toCopy);
+                else elements[i][j] = new BoardElement();
+            }
+        }
     }
 
     /**
