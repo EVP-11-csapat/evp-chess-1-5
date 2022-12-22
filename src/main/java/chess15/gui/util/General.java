@@ -50,6 +50,7 @@ public class General {
             engine.reset();
             Constants.board = engine.getBoard();
             chessController.removePosibleMoves();
+            chessController.removeFromTo();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     chessController.remove(new Vector2(j, i), null);

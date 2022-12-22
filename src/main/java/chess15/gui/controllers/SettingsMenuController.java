@@ -3,6 +3,7 @@ package chess15.gui.controllers;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
 import chess15.gamemode.Fastpaced;
+import chess15.gamemode.PawnAttack;
 import chess15.gamemode.Testing;
 import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
@@ -43,6 +44,7 @@ public class SettingsMenuController {
     private Button fastpacedButton;
     private Button classicalButton;
     private Button testingButton;
+    private Button pawnAttackButton;
     @FXML
     private ScrollPane gamemodesScroll;
 
@@ -59,6 +61,7 @@ public class SettingsMenuController {
     private String IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
     private String IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
     private String IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+    private String IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
     private int height = 619;
@@ -72,27 +75,42 @@ public class SettingsMenuController {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle("-fx-background-color: #5A5A5A;");
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
             testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+            pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
         } else if (selectedGameMode.equals("fastpaced")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
             fastpacedButton.setStyle("-fx-background-color: #5A5A5A;");
             testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+            pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
         } else if (selectedGameMode.equals("testing")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+            IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
             testingButton.setStyle("-fx-background-color: #5A5A5A;");
+            pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+        } else if (selectedGameMode.equals("pawnattack")) {
+            IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
+            classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
+            fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
+            testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+            pawnAttackButton.setStyle("-fx-background-color: #5A5A5A;");
         }
     }
 
@@ -115,7 +133,7 @@ public class SettingsMenuController {
         button.setPrefHeight(150);
         button.setPrefWidth(678);
         button.setAlignment(Pos.CENTER_LEFT);
-        button.setLayoutY(150 * index);
+        button.setLayoutY(158 * index);
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.TOP_LEFT);
@@ -161,7 +179,7 @@ public class SettingsMenuController {
 
         button.setGraphic(buttonBox);
 
-        calcHeight += 150;
+        calcHeight += 158;
         bgPane.getChildren().add(button);
         return button;
     }
@@ -190,10 +208,23 @@ public class SettingsMenuController {
                 "Made for testing", 2);
         testingButton.setOnMousePressed(e -> onTestingSelected());
 
+        pawnAttackButton =  setUpButton("fastpaced", "Pawn attack",
+                "Just a bunch of pawns and their king", 3);
+        pawnAttackButton.setOnMousePressed(e -> onPawnAttackSelected());
+
+
         // Set button background onto scroll pane
         if (calcHeight > height) height = calcHeight;
         bgPane.setPrefHeight(height);
         gamemodesScroll.setContent(bgPane);
+        gamemodesScroll.setFitToWidth(true);
+
+        // Set scroll speed
+        final double SPEED = 0.01;
+        gamemodesScroll.getContent().setOnScroll(scrollEvent -> {
+            double deltaY = scrollEvent.getDeltaY() * SPEED;
+            gamemodesScroll.setVvalue(gamemodesScroll.getVvalue() - deltaY);
+        });
 
         minutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
             gameTimerMinutes = newVal;
@@ -215,6 +246,10 @@ public class SettingsMenuController {
         testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
         testingButton.setOnMouseEntered(e -> testingButton.setStyle(HOVERED_BUTTON_STYLE));
         testingButton.setOnMouseExited(e -> testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE));
+
+        pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+        pawnAttackButton.setOnMouseEntered(e -> pawnAttackButton.setStyle(HOVERED_BUTTON_STYLE));
+        pawnAttackButton.setOnMouseExited(e -> pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE));
 
         minutesSpinner.setDisable(true);
         secondsSpinner.setDisable(true);
@@ -242,6 +277,21 @@ public class SettingsMenuController {
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         castlingCheckBox.setDisable(false);
+    }
+
+    protected void onPawnAttackSelected() {
+        selectedGameMode = "pawnattack";
+        disableEverything();
+        setSelectedGameModeButton();
+        System.out.println("Pawn attack selected");
+        playButton.setText("Play Pawn attack");
+        timerCheckBox.setDisable(false);
+        playButton.setDisable(false);
+        enpassantCheckBox.setDisable(false);
+        promotionCheckBox.setDisable(false);
+        isCastlingEnabled = false;
+        castlingCheckBox.setSelected(false);
+        castlingCheckBox.setDisable(true);
     }
 
     /**
@@ -335,6 +385,7 @@ public class SettingsMenuController {
             if (Objects.equals(selectedGameMode, "classical")) rules.gamemode = new Classical();
             if (Objects.equals(selectedGameMode, "fastpaced")) rules.gamemode = new Fastpaced();
             if (Objects.equals(selectedGameMode, "testing")) rules.gamemode = new Testing();
+            if (Objects.equals(selectedGameMode, "pawnattack")) rules.gamemode = new PawnAttack();
             rules.timer = gameTimerEnabled;
             rules.startTime = gameTimerMinutes;
             rules.timeDelta = gameTimerSeconds;
