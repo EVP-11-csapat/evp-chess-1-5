@@ -35,8 +35,9 @@ public class Board {
     }
 
     /**
-     * Initializez the board with empty elements.
+     * Initializes the board with empty elements.
      */
+
     public Board()
     {
         for (BoardElement[] row : elements) {

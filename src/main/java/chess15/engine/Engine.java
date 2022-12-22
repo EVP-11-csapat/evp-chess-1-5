@@ -4,6 +4,7 @@ import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
 import chess15.util.BoardVisualizer;
+import chess15.util.PiecePoints;
 import chess15.util.WinReason;
 
 import java.util.ArrayList;
@@ -84,7 +85,6 @@ public class Engine implements EngineInterface {
 
             if (Math.abs(from.y - to.y) == 2) piece.boolProperty = true;
             if (from.x != to.x && board.at(to).isEmpty) {
-                System.out.println("en passant");
                 Vector2 passed = new Vector2(to.x, from.y);
 
                 if (UIRef != null) UIRef.remove(passed, (Piece) board.at(passed));
@@ -143,6 +143,14 @@ public class Engine implements EngineInterface {
     @Override
     public Board getBoard() {
         return new Board(board);
+    }
+
+    public int score(){
+        int sum = 0;
+        for (Vector2 piece : pieces) {
+            sum += PiecePoints.evaluate(((Piece)board.at(piece)));
+        }
+        return sum;
     }
 
     public void reset() {

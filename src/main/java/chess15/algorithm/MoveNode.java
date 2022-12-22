@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class MoveNode {
     Vector2[] move;
-    Board board;
+    int score;
     Piece.Color player;
 
     ArrayList<MoveNode> nextMoves;
