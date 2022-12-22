@@ -7,10 +7,16 @@ import chess15.gamemode.Testing;
 import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Spinner;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,12 +40,13 @@ public class SettingsMenuController {
     private CheckBox enpassantCheckBox;
     @FXML
     private CheckBox promotionCheckBox;
-    @FXML
     private Button fastpacedButton;
-    @FXML
     private Button classicalButton;
-    @FXML
     private Button testingButton;
+    @FXML
+    private ScrollPane gamemodesScroll;
+
+    private Pane bgPane;
 
     private String selectedGameMode = "";
     private boolean gameTimerEnabled = false;
@@ -53,6 +60,9 @@ public class SettingsMenuController {
     private String IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
     private String IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+
+    private int height = 619;
+    private int calcHeight = 0;
 
     /**
      * Sets the gamemode to what the user pressed to be later used in the game.
@@ -100,12 +110,90 @@ public class SettingsMenuController {
         promotionCheckBox.setDisable(true);
     }
 
+    private Button setUpButton(String imageName, String title, String description, int index) {
+        Button button = new Button();
+        button.setPrefHeight(150);
+        button.setPrefWidth(678);
+        button.setAlignment(Pos.CENTER_LEFT);
+        button.setLayoutY(150 * index);
+
+        HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.TOP_LEFT);
+
+        ImageView icon = new ImageView(String.valueOf(ResourceGrabber.class.getResource("../images/" + imageName + ".png")));
+        icon.setFitHeight(150);
+        icon.setFitWidth(150);
+
+        Separator separator1 = new Separator();
+        separator1.setOpacity(0);
+        separator1.setPrefWidth(33);
+        separator1.setPrefHeight(150);
+
+        VBox textVBox = new VBox();
+        textVBox.setAlignment(Pos.TOP_LEFT);
+        textVBox.setPrefHeight(150);
+        textVBox.setPrefWidth(452);
+
+        Label titleLabel = new Label();
+        titleLabel.setText(title);
+        titleLabel.setFont(new Font("System", 45));
+        titleLabel.setTextFill(Paint.valueOf("#cdcdcd"));
+        titleLabel.setAlignment(Pos.CENTER_LEFT);
+
+        Separator separator2 = new Separator();
+        separator2.setOpacity(0);
+        separator2.setOrientation(Orientation.HORIZONTAL);
+        separator2.setPrefWidth(200);
+
+        Label descriptionLabel = new Label();
+        descriptionLabel.setText(description);
+        descriptionLabel.setFont(new Font("System", 19));
+        descriptionLabel.setTextFill(Paint.valueOf("#cdcdcd"));
+        descriptionLabel.setAlignment(Pos.CENTER_LEFT);
+
+        textVBox.getChildren().add(titleLabel);
+        textVBox.getChildren().add(separator2);
+        textVBox.getChildren().add(descriptionLabel);
+
+        buttonBox.getChildren().add(icon);
+        buttonBox.getChildren().add(separator1);
+        buttonBox.getChildren().add(textVBox);
+
+        button.setGraphic(buttonBox);
+
+        calcHeight += 150;
+        bgPane.getChildren().add(button);
+        return button;
+    }
+
     /**
      * Initializes the settings menu.
      * Sets up the styles and disables everything.
      */
     public void initialize() {
         System.out.println("Settings menu loaded");
+
+        // Set up button background pane
+        bgPane = new Pane();
+        bgPane.setStyle("-fx-background-color: #2A2A2A;");
+
+        // Create buttons
+        classicalButton =  setUpButton("classical", "Classical",
+                "Just a standard game of chess. \nWith regular rules and a timer.", 0);
+        classicalButton.setOnMousePressed(e -> onClassicalSelected());
+
+        fastpacedButton =  setUpButton("fastpaced", "Fast-Paced",
+                "No time to think! \nEvery 2 seconds a random move is made.", 1);
+        fastpacedButton.setOnMousePressed(e -> onFastpacedSelected());
+
+        testingButton =  setUpButton("fastpaced", "Testing",
+                "Made for testing", 2);
+        testingButton.setOnMousePressed(e -> onTestingSelected());
+
+        // Set button background onto scroll pane
+        if (calcHeight > height) height = calcHeight;
+        bgPane.setPrefHeight(height);
+        gamemodesScroll.setContent(bgPane);
 
         minutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
             gameTimerMinutes = newVal;
@@ -115,6 +203,7 @@ public class SettingsMenuController {
             gameTimerSeconds = newVal;
         });
 
+        // Set up button styles
         classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
         classicalButton.setOnMouseEntered(e -> classicalButton.setStyle(HOVERED_BUTTON_STYLE));
         classicalButton.setOnMouseExited(e -> classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE));
@@ -184,8 +273,8 @@ public class SettingsMenuController {
         selectedGameMode = "testing";
         disableEverything();
         setSelectedGameModeButton();
-        System.out.println("Classical selected");
-        playButton.setText("Play Classical");
+        System.out.println("Testing selected");
+        playButton.setText("Play Testing");
         timerCheckBox.setDisable(false);
         playButton.setDisable(false);
         enpassantCheckBox.setDisable(false);
