@@ -42,6 +42,7 @@ public class Constants {
 
     // Chess Variables
     public static HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
+    public static HashMap<Vector2, ImageView> fromToMoves = new HashMap<>();
     public static HashMap<Vector2, ImageView> pieces = new HashMap<>();
     public static ArrayList<Piece> takenPieces = new ArrayList<>();
     public static HashMap<Piece, ImageView> takenList = new HashMap<>();

@@ -8,6 +8,7 @@ import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Fastpaced;
 import chess15.gui.interfaces.UIInteface;
+import chess15.gui.util.AudioPlayer;
 import chess15.gui.util.Constants;
 import chess15.gui.util.General;
 import chess15.gui.util.TimerInit;
@@ -16,6 +17,7 @@ import chess15.util.Move;
 import chess15.util.PiecePoints;
 import chess15.util.WinReason;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -35,6 +37,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.FileHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -181,6 +184,8 @@ public class ChessController implements UIInteface {
             Constants.logger.info("With Rules: " + RuleSet.getInstance().toString());
             Constants.logger.info("Starting game");
         }
+
+        AudioPlayer.playStartSound();
     }
 
     // Board setup methods
@@ -306,6 +311,18 @@ public class ChessController implements UIInteface {
         Constants.possibleMoves.clear();
     }
 
+    // Move From To Display Methods
+    /**
+     * Remove the from to move marker from the board
+     */
+    public void removeFromTo() {
+        for (Vector2 move : Constants.fromToMoves.keySet()) {
+            ImageView imageView = Constants.fromToMoves.get(move);
+            chessBoardPane.getChildren().remove(imageView);
+        }
+        Constants.fromToMoves.clear();
+    }
+
     /**
      * Add the possible move marker to the board at the given position list
      * @param moves The {@link Vector2} move list that we want to put the marker to
@@ -333,6 +350,38 @@ public class ChessController implements UIInteface {
             Constants.possibleMoves.put(move, possibleMoveImage);
             chessBoardPane.getChildren().add(possibleMoveImage);
         }
+    }
+
+    /**
+     * Add the from to move marker to the board at the given position list
+     * @param from The {@link Vector2} move list that we want to put the marker to
+     * @param to The {@link Vector2} position of the piece, so we can assign move listener
+     */
+    private void displayFromTo(Vector2 from, Vector2 to) {
+        Image image = null;
+        try {
+            image = new Image(Objects.requireNonNull(getClass().getResource("../images/move.png")).openStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ImageView fromMove = new ImageView();
+        fromMove.setImage(image);
+        fromMove.setFitHeight(90);
+        fromMove.setFitWidth(90);
+        fromMove.setX(90 * from.x);
+        fromMove.setY(90 * from.y);
+        fromMove.setOpacity(0.2);
+        Constants.fromToMoves.put(from, fromMove);
+        chessBoardPane.getChildren().add(fromMove);
+        ImageView toMove = new ImageView();
+        toMove.setImage(image);
+        toMove.setFitHeight(90);
+        toMove.setFitWidth(90);
+        toMove.setX(90 * to.x);
+        toMove.setY(90 * to.y);
+        toMove.setOpacity(0.2);
+        Constants.fromToMoves.put(to, toMove);
+        chessBoardPane.getChildren().add(toMove);
     }
 
     // Timer Method
@@ -521,6 +570,8 @@ public class ChessController implements UIInteface {
      * @param to The {@link Vector2} to position. The Position we want to put the piece to
      */
     public void movePiece(Vector2 from, Vector2 to) {
+        removeFromTo();
+        AtomicBoolean moveFinished = new AtomicBoolean(false);
         if (RuleSet.getInstance().gamemode instanceof Fastpaced) {
             Constants.fastPacedCounter = 0;
             removePosibleMoves();
@@ -528,12 +579,18 @@ public class ChessController implements UIInteface {
         ImageView pieceView = Constants.pieces.get(from);
         Piece piece = (Piece) engine.getBoard().getElement(from);
 
+        boolean playedTake = false;
+
         // Handle the capturing of the pieces
         if (engine.getBoard().getElement(to) instanceof Piece) {
             Constants.takenPieces.add((Piece) engine.getBoard().getElement(to));
             handleTakenList();
             remove(to, null);
+            AudioPlayer.playCaptureSound();
+            playedTake = true;
         }
+
+        if (!playedTake) AudioPlayer.playMoveSound();
 
         // Update the move list
         Move move = new Move(from, to, piece.color);
@@ -550,7 +607,12 @@ public class ChessController implements UIInteface {
         KeyFrame kfy = new KeyFrame(Duration.millis(100 * Math.abs(to.y - from.y)), kvy);
         timeline.getKeyFrames().add(kfx);
         timeline.getKeyFrames().add(kfy);
+        timeline.setOnFinished(event -> {
+            moveFinished.set(true);
+        });
         timeline.play();
+
+        displayFromTo(from, to);
 
         // Make sure to correct placement because of inconsistancy
         pieceView.setX(90 * to.x);
@@ -569,8 +631,28 @@ public class ChessController implements UIInteface {
         }
 
         if (RuleSet.getInstance().isAiGame && piece.color == Piece.Color.WHITE) {
-            Vector2[] fromtopair = alg.move(engine.getBoard());
-            movePiece(fromtopair[0], fromtopair[1]);
+            AtomicBoolean testing = new AtomicBoolean(true);
+            Thread thread = new Thread(() -> {
+                while (testing.get()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (moveFinished.get() && Constants.isRunning) {
+                        testing.set(false);
+                        Vector2[] fromToPair = alg.move(engine.getBoard());
+                        Platform.runLater(() -> {
+                            movePiece(fromToPair[0], fromToPair[1]);
+                        });
+                    }
+//                    Platform.runLater(() -> {
+//                        Vector2[] fromtopair = alg.move(engine.getBoard());
+//                        movePiece(fromtopair[0], fromtopair[1]);
+//                    });
+                }
+            });
+            thread.start();
         }
         if (Constants.DEVMODE)
             Constants.logger.info("Piece: " + piece.toString() + "\n\t\t Moved from: " + from.toString() +
