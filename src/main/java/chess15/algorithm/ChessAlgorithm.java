@@ -5,15 +5,16 @@ import chess15.Piece;
 import chess15.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
-
-import java.util.ArrayList;
+import chess15.util.BoardVisualizer;
 
 public class ChessAlgorithm implements AlgorithmInterface {
 
     private final RuleSet rules;
     private final Piece.Color color;
 
-    private final int searchDepth = 4;
+    private final int searchDepth = 5;
+
+    private Vector2[] bestMove;
 
     @Override
     public Vector2[] move(Board positions) {
@@ -21,9 +22,9 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         Engine engine = new Engine(rules, positions, color);
 
-        ArrayList<MoveNode> moveTree = generateLayers(engine, color, 0);
+        bestMove = new Vector2[2];
 
-        Vector2[] bestMove = moveTree.get(minmax(moveTree, 0)).move;
+        minmax(0, engine, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
         return bestMove;
     }
@@ -33,57 +34,33 @@ public class ChessAlgorithm implements AlgorithmInterface {
         this.color = player;
     }
 
-    private ArrayList<MoveNode> generateLayers(Engine engine, Piece.Color player, int depth) {
-        ArrayList<MoveNode> moveTree = new ArrayList<>();
-
-        if (depth == searchDepth) return null;
+    private int minmax(int depth, Engine engine, boolean max, int alpha, int beta) {
+        int selectedScore = (max) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
         for (Vector2 start : engine.getPieces()) {
             for (Vector2 end : engine.getMoves(start)) {
-                MoveNode node = new MoveNode();
-                node.player = player;
-                node.move = new Vector2[2];
-                node.move[0] = start;
-                node.move[1] = end;
-
                 Engine copiedEngine = new Engine(engine);
                 copiedEngine.move(start, end);
-                node.score = copiedEngine.score();
 
-                node.nextMoves = generateLayers(copiedEngine, Engine.switchColor(player), depth + 1);
+                int score = (depth == searchDepth - 1) ? copiedEngine.score(color) : minmax(depth + 1, copiedEngine, !max, alpha, beta);
 
-                moveTree.add(node);
-            }
-        }
-        return moveTree;
-    }
-
-    private int minmax(ArrayList<MoveNode> tree, int depth) {
-        int selectedScore = Integer.MAX_VALUE;
-        int selectedIndex = 0;
-
-        boolean even = (depth % 2 == 0);
-
-        if (even) selectedScore = 0;
-
-        for (int i = 0; i < tree.size(); i++) {
-            MoveNode node = tree.get(i);
-            if (depth < searchDepth - 1) node.score = minmax(node.nextMoves, depth + 1);
-            int score = node.score;
-            if (even) {
-                if (score > selectedScore) {
-                    selectedScore = score;
-                    selectedIndex = i;
+                if (max) {
+                    if (score > selectedScore) {
+                        selectedScore = score;
+                        if (depth == 0) {
+                            bestMove[0] = start;
+                            bestMove[1] = end;
+                        }
+                    }
+                    alpha = Math.max(alpha, selectedScore);
+                } else {
+                    selectedScore = Math.min(score, selectedScore);
+                    beta = Math.min(beta, selectedScore);
                 }
-            } else {
-                if (score < selectedScore) {
-                    selectedScore = score;
-                    selectedIndex = i;
-                }
+                if(beta <= alpha) return selectedScore;
             }
         }
 
-        if (depth == 0) return selectedIndex;
         return selectedScore;
     }
 

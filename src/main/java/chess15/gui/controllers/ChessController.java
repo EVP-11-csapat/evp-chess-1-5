@@ -688,14 +688,14 @@ public class ChessController implements UIInteface {
      * @param to The current {@link Vector2} position of the pawn. Also, the spawn point for the new {@link Piece}
      */
     @Override
-    public void promote(Vector2 from, Vector2 to) {
+    public void promote(Piece.Color color, Vector2 to) {
         Constants.pausedForPromotion = true;
         // Prepare the promotion UI base
         Constants.promotionUIBase.setPrefWidth(90);
         Constants.promotionUIBase.setPrefHeight(90 * 4);
         Constants.promotionUIBase.setLayoutX(to.x * 90);
         Constants.promotionUIBase.setStyle("-fx-background-color: #2a2a2a");
-        Piece.Color pieceColor = ((Piece) engine.getBoard().at(from)).color;
+        Piece.Color pieceColor = color;
 
         // Flip the position of the UI for when the black pawn promotes
         if (pieceColor == Piece.Color.WHITE) {

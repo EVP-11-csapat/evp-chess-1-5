@@ -50,9 +50,7 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 BoardElement toCopy = original.elements[i][j];
-
-                if(toCopy instanceof Piece) elements[i][j] = new Piece((Piece)toCopy);
-                else elements[i][j] = new BoardElement();
+                elements[i][j] = (toCopy.isEmpty) ? new BoardElement() : new Piece((Piece)toCopy);
             }
         }
     }

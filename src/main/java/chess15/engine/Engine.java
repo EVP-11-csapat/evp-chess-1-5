@@ -67,19 +67,21 @@ public class Engine implements EngineInterface {
     }
 
     public void move(Vector2 from, Vector2 to) {
-        pieces.forEach(p -> {
+        for (Vector2 p : pieces) {
             if (((Piece) board.at(p)).movement.getClass() == Pawn.class) ((Piece) board.at(p)).boolProperty = false;
-        });
-        Piece piece = (Piece) board.at(from);
+        }
 
+        Piece piece = (Piece) board.at(from);
 
         if (piece.movement.getClass() == Pawn.class) {
             if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
-                if (UIRef != null) UIRef.promote(from, to);
-                else {
-                    board.elements[to.x][to.y] = new Piece(nextPlayer, Piece.Type.QUEEN, Queen.getInstance(), false);
-                }
                 board.elements[from.x][from.y] = new BoardElement();
+                if (UIRef != null){
+                    UIRef.promote(nextPlayer, to);
+                }
+                else {
+                    setPiece(to, new Piece(nextPlayer, Piece.Type.QUEEN, Queen.getInstance(), false));
+                }
                 return;
             }
 
@@ -145,10 +147,13 @@ public class Engine implements EngineInterface {
         return new Board(board);
     }
 
-    public int score(){
+    public int score(Piece.Color player){
         int sum = 0;
-        for (Vector2 piece : pieces) {
+        for (Vector2 piece : selectPieces(player)) {
             sum += PiecePoints.evaluate(((Piece)board.at(piece)));
+        }
+        for (Vector2 piece : selectPieces(switchColor(player))) {
+            sum -= PiecePoints.evaluate(((Piece)board.at(piece)));
         }
         return sum;
     }
