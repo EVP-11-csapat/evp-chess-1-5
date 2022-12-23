@@ -1,11 +1,15 @@
 package chess15.algorithm;
 
 import chess15.Board;
+import chess15.Pawn;
 import chess15.Piece;
 import chess15.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
-import chess15.util.BoardVisualizer;
+import chess15.util.Move;
+import chess15.util.PiecePoints;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ChessAlgorithm implements AlgorithmInterface {
 
@@ -37,6 +41,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private int minmax(int depth, Engine engine, boolean max, int alpha, int beta) {
         int selectedScore = (max) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
+        ArrayList<Move> moves = orderMoves(engine);
+
         for (Vector2 start : engine.getPieces()) {
             for (Vector2 end : engine.getMoves(start)) {
                 Engine copiedEngine = new Engine(engine);
@@ -57,11 +63,67 @@ public class ChessAlgorithm implements AlgorithmInterface {
                     selectedScore = Math.min(score, selectedScore);
                     beta = Math.min(beta, selectedScore);
                 }
-                if(beta <= alpha) return selectedScore;
+                if (beta <= alpha) return selectedScore;
             }
         }
 
         return selectedScore;
+    }
+
+    private ArrayList<Move> orderMoves(Engine engine) {
+        ArrayList<Move> moves = new ArrayList<>();
+        for (Vector2 start : engine.getPieces()) {
+            for (Vector2 end : engine.getMoves(start)) {
+                moves.add(new Move(start, end, scoreMove(start, end, engine.getBoard())));
+            }
+        }
+        moves.sort(new SortByScore());
+
+        return moves;
+    }
+
+    private int scoreMove(Vector2 start, Vector2 end, Board board) {
+        int score = 0;
+        Piece p = (Piece) board.at(start);
+
+        if (!board.at(end).isEmpty) {
+            score = 10 * PiecePoints.evaluate((Piece) board.at(end)) - PiecePoints.evaluate(p);
+        }
+
+        if (p.movement instanceof Pawn){
+            if(p.color == Piece.Color.WHITE && end.y == 0 || p.color == Piece.Color.BLACK && end.y == 7) score += 9;
+        }
+
+        int y = (p.color == Piece.Color.WHITE) ? -1 : 1;
+
+        Vector2 left = new Vector2(end.x - 1, y);
+        Vector2 right = new Vector2(end.x + 1, y);
+
+        if(!left.outOfBounds() && !board.at(left).isEmpty){
+            Piece leftPawn = (Piece) board.at(left);
+            if(leftPawn.movement instanceof Pawn && leftPawn.color == Engine.switchColor(p.color)){
+                score -= PiecePoints.evaluate(p);
+            }
+        }
+        else{
+            if(!right.outOfBounds() && !board.at(right).isEmpty){
+                Piece rightPawn = (Piece) board.at(right);
+                if(rightPawn.movement instanceof Pawn && rightPawn.color == Engine.switchColor(p.color)){
+                    score -= PiecePoints.evaluate(p);
+                }
+            }
+        }
+
+
+        return score;
+    }
+
+    class SortByScore implements Comparator<Move> {
+
+        @Override
+        public int compare(Move a, Move b) {
+            return b.score - a.score;
+        }
     }
 
 

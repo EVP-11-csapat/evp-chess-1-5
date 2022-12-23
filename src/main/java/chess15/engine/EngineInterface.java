@@ -3,6 +3,7 @@ package chess15.engine;
 import chess15.Board;
 import chess15.Piece;
 import chess15.Vector2;
+import chess15.util.Move;
 
 import java.util.ArrayList;
 
@@ -12,5 +13,5 @@ public interface EngineInterface {
     void reset();
     Board getBoard();
     void setPiece(Vector2 position, Piece piece);
-    Vector2[] getRandomMove();
+    Move getRandomMove();
 }

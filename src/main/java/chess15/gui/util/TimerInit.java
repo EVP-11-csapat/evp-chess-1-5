@@ -6,6 +6,7 @@ import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Fastpaced;
 import chess15.gui.controllers.ChessController;
+import chess15.util.Move;
 import chess15.util.WinReason;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
@@ -129,8 +130,8 @@ public class TimerInit {
                     Constants.fastPacedCounter += 10;
                     if (Constants.fastPacedCounter >= Constants.FASTPACEDTIMEOUT) { // Fire every 2 seconds
                         Constants.fastPacedCounter = 0;
-                        Vector2[] randomPair = engine.getRandomMove();
-                        Platform.runLater(() -> chessController.movePiece(randomPair[0], randomPair[1]));
+                        Move randomMove = engine.getRandomMove();
+                        Platform.runLater(() -> chessController.movePiece(randomMove.from, randomMove.to));
                     }
                 }
             }

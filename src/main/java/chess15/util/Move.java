@@ -10,6 +10,7 @@ public class Move {
     public Vector2 from;
     public Vector2 to;
     public Piece.Color color;
+    public int score;
 
     /**
      * Create the move class with all parameters
@@ -21,6 +22,21 @@ public class Move {
         this.from = from;
         this.to = to;
         this.color = color;
+        this.score = 0;
+    }
+
+    public Move(Vector2 from, Vector2 to){
+        this.from = from;
+        this.to = to;
+        this.color = null;
+        this.score = 0;
+    }
+
+    public Move(Vector2 from, Vector2 to, int score){
+        this.from = from;
+        this.to = to;
+        this.color = null;
+        this.score = score;
     }
 
     @Override

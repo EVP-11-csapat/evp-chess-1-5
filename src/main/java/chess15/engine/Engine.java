@@ -3,7 +3,7 @@ package chess15.engine;
 import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
-import chess15.util.BoardVisualizer;
+import chess15.util.Move;
 import chess15.util.PiecePoints;
 import chess15.util.WinReason;
 
@@ -30,8 +30,7 @@ public class Engine implements EngineInterface {
     }
 
     @Override
-    public Vector2[] getRandomMove() {
-        Vector2[] move = new Vector2[2];
+    public Move getRandomMove() {
 
         int totalMoves = 0;
         ArrayList<Integer> lengths = new ArrayList<>();
@@ -56,10 +55,7 @@ public class Engine implements EngineInterface {
         }
         Vector2 from = keys.get(fromIndex);
 
-        move[0] = from;
-        move[1] = possibleMoves.get(from).get(randomIndex);
-
-        return move;
+        return new Move(from, possibleMoves.get(from).get(randomIndex));
     }
 
     public ArrayList<Vector2> getPieces() {
