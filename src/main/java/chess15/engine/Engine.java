@@ -21,7 +21,7 @@ public class Engine implements EngineInterface {
 
     private HashMap<Vector2, ArrayList<Vector2>> possibleMoves;
     private HashMap<Vector2, ArrayList<Vector2>> previousAttacks;
-    private Piece.Color nextPlayer;
+    public Piece.Color nextPlayer;
     private ArrayList<Vector2> pieces;
 
 
@@ -65,7 +65,6 @@ public class Engine implements EngineInterface {
     public void move(Vector2 from, Vector2 to) {
         for (Vector2 p : pieces) {
             Piece piece = (Piece) board.at(p);
-            piece.pin = null;
             if (piece.movement.getClass() == Pawn.class) piece.boolProperty = false;
         }
 
@@ -145,17 +144,6 @@ public class Engine implements EngineInterface {
         return new Board(board);
     }
 
-    public int score(Piece.Color player){
-        int sum = 0;
-        for (Vector2 piece : selectPieces(player)) {
-            sum += PiecePoints.evaluate(((Piece)board.at(piece)));
-        }
-        for (Vector2 piece : selectPieces(switchColor(player))) {
-            sum -= PiecePoints.evaluate(((Piece)board.at(piece)));
-        }
-        return sum;
-    }
-
     public void reset() {
         board = gamemode.startState();
         possibleMoves = new HashMap<>();
@@ -209,6 +197,10 @@ public class Engine implements EngineInterface {
         pieces = selectPieces(nextPlayer);
         if (UIRef != null && selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1)
             UIRef.endGame(null, WinReason.NOMATERIAL);
+
+        for (Vector2 p : selectPieces(switchColor(nextPlayer))){
+            ((Piece)board.at(p)).pin = null;
+        }
 
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
@@ -318,7 +310,7 @@ public class Engine implements EngineInterface {
         return moves;
     }
 
-    private ArrayList<Vector2> selectPieces(Piece.Color color) {
+    public ArrayList<Vector2> selectPieces(Piece.Color color) {
         ArrayList<Vector2> selectedPieces = new ArrayList<>();
         Vector2 king = null;
         for (int i = 0; i < 8; i++) {

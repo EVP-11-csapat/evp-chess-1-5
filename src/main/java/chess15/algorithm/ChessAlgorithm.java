@@ -17,7 +17,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private final RuleSet rules;
     private final Piece.Color color;
 
-    private final int searchDepth = 5;
+    private final int searchDepth = 4;
 
     private SearchTree tree;
 
@@ -67,31 +67,63 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         ArrayList<Move> moves = orderMoves(engine);
 
-        for (Vector2 start : engine.getPieces()) {
-            for (Vector2 end : engine.getMoves(start)) {
+        for (Move move : moves){
+            Engine copiedEngine = new Engine(engine);
+            copiedEngine.move(move.from, move.to);
+
+            int score = (depth == searchDepth - 1) ? searchCaptures(copiedEngine, !max, alpha, beta) : minmax(depth + 1, copiedEngine, !max, alpha, beta);
+
+            if (max) {
+                if (score > selectedScore) {
+                    selectedScore = score;
+                    if (depth == 0) {
+                        bestMove = new Move(move.from,move.to);
+                    }
+                }
+                alpha = Math.max(alpha, selectedScore);
+            } else {
+                selectedScore = Math.min(score, selectedScore);
+                beta = Math.min(beta, selectedScore);
+            }
+            if (beta <= alpha) return selectedScore;
+        }
+
+        return selectedScore;
+    }
+
+    private int searchCaptures(Engine engine, boolean max, int alpha, int beta){
+        int score = ScoreEvaluator.evaluate(engine);
+
+        if (max) {
+            alpha = Math.max(alpha, score);
+        } else {
+            beta = Math.min(beta, score);
+        }
+        if (beta <= alpha) return score;
+
+        ArrayList<Move> moves = orderMoves(engine);
+        int selectedScore = score;
+
+        for (Move move : moves) {
+            if (!engine.board.at(move.to).isEmpty){
                 Engine copiedEngine = new Engine(engine);
-                copiedEngine.move(start, end);
-
-                int score = (depth == searchDepth - 1) ? copiedEngine.score(color) : minmax(depth + 1, copiedEngine, !max, alpha, beta);
-
+                copiedEngine.move(move.from, move.to);
+                score = searchCaptures(copiedEngine, !max, alpha, beta);
                 if (max) {
                     if (score > selectedScore) {
                         selectedScore = score;
-                        if (depth == 0) {
-                            bestMove = new Move(start,end);
-                        }
                     }
                     alpha = Math.max(alpha, selectedScore);
                 } else {
                     selectedScore = Math.min(score, selectedScore);
                     beta = Math.min(beta, selectedScore);
                 }
-                if (beta <= alpha) return selectedScore;
             }
         }
 
         return selectedScore;
     }
+
 
     private ArrayList<Move> orderMoves(Engine engine) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -141,7 +173,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return score;
     }
 
-    class SortByScore implements Comparator<Move> {
+    static class SortByScore implements Comparator<Move> {
 
         @Override
         public int compare(Move a, Move b) {
