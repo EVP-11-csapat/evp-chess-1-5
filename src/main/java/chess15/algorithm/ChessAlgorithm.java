@@ -30,7 +30,6 @@ public class ChessAlgorithm implements AlgorithmInterface {
             boolean exists = false;
             SearchTree.Node answer = null;
 
-
             for (SearchTree.Node node : tree.root.children) {
                 if(node.white.equals(playerMove)){
                     exists = true;
