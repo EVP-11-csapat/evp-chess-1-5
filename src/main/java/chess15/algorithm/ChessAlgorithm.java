@@ -41,7 +41,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
             if(exists){
                 tree.root = answer;
                 return answer.black;
-            }else tree = null;
+            }else {
+                tree = null;
+                System.out.println("going dark!");
+            }
         }
 
         Engine engine = new Engine(rules, positions, color);

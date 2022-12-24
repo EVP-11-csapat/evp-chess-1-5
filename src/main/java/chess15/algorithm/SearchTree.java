@@ -17,7 +17,7 @@ public class SearchTree {
         public Move black;
         public ArrayList<Node> children;
 
-        public Node(Move white, Move black, ArrayList<Node> children){
+        public Node(Move white, Move black, ArrayList<Node> children) {
             this.white = white;
             this.black = black;
             this.children = children;
@@ -59,6 +59,6 @@ public class SearchTree {
     }
 
     private Move stringToMove(String string) {
-        return new Move(new Vector2(string.charAt(0), string.charAt(1)), new Vector2(string.charAt(2),string.charAt(3)));
+        return new Move(new Vector2((string.charAt(0) - 48), string.charAt(1) - 48), new Vector2(string.charAt(2) - 48, string.charAt(3) - 48));
     }
 }
