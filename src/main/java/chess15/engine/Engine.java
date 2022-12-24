@@ -64,7 +64,9 @@ public class Engine implements EngineInterface {
 
     public void move(Vector2 from, Vector2 to) {
         for (Vector2 p : pieces) {
-            if (((Piece) board.at(p)).movement.getClass() == Pawn.class) ((Piece) board.at(p)).boolProperty = false;
+            Piece piece = (Piece) board.at(p);
+            piece.pin = null;
+            if (piece.movement.getClass() == Pawn.class) piece.boolProperty = false;
         }
 
         Piece piece = (Piece) board.at(from);
@@ -328,8 +330,7 @@ public class Engine implements EngineInterface {
                     if (piece.color == color) {
                         if (piece.isKing) king = position;
                         else selectedPieces.add(position);
-                    } else piece.pin = null;
-
+                    }
                 }
             }
         }
@@ -467,6 +468,7 @@ public class Engine implements EngineInterface {
                     }
                 }
 
+                // short
                 if (!board.at(rightRookPos).isEmpty) {
                     Piece rightRook = ((Piece) board.at(rightRookPos));
                     if (rightRook.movement.getClass() == Rook.class && !rightRook.boolProperty) {
