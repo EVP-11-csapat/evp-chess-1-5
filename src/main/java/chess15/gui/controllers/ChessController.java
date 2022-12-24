@@ -200,7 +200,7 @@ public class ChessController implements UIInteface {
             for (int j = 0; j < 8; j++) {
                 BoardElement element = Constants.board.elements[j][i];
                 Piece piece = null;
-                if (!(element instanceof Piece))  continue;
+                if (!(element instanceof Piece)) continue;
                 piece = (Piece) element;
                 Vector2 piecePos = new Vector2(j, i);
                 addPiece(piece, piecePos);
@@ -211,8 +211,9 @@ public class ChessController implements UIInteface {
 
     /**
      * Method used to create the ImageView and Position it on the board
+     *
      * @param piece The {@link Piece} object that we want to create the {@link ImageView} for
-     * @param pos The {@link Vector2} used for positioning the {@link Piece}
+     * @param pos   The {@link Vector2} used for positioning the {@link Piece}
      */
     @Override
     public void addPiece(Piece piece, Vector2 pos) {
@@ -252,6 +253,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Handle the event when the user clicks the {@link Piece} at a given position
+     *
      * @param pos The {@link Vector2} that the piece {@link ImageView} is at
      */
     private void handlePieceClick(Vector2 pos) {
@@ -262,7 +264,8 @@ public class ChessController implements UIInteface {
     /**
      * Returns the key of a {@link Map} that is in connection with a value
      * This only works for a 1-1 connection so if one value is only connected to one key
-     * @param map The {@link Map} that contains the key value pairs
+     *
+     * @param map   The {@link Map} that contains the key value pairs
      * @param value The value we want the key for
      * @return The key that is connected to the value provided
      */
@@ -285,6 +288,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Update the click event listener to the new position on the piece {@link ImageView}
+     *
      * @param pos The {@link Vector2} to update the location to
      */
     private void updateClickEventToPiece(Vector2 pos) {
@@ -294,6 +298,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Used to put the event listener to the piece {@link ImageView}
+     *
      * @param piece The {@link ImageView} to put the listener on to
      */
     private void addClickEventToPiece(ImageView piece) {
@@ -301,6 +306,7 @@ public class ChessController implements UIInteface {
     }
 
     // Possible Move Display Methods
+
     /**
      * Remove the possible move marker from the board
      */
@@ -313,6 +319,7 @@ public class ChessController implements UIInteface {
     }
 
     // Move From To Display Methods
+
     /**
      * Remove the from to move marker from the board
      */
@@ -326,6 +333,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Add the possible move marker to the board at the given position list
+     *
      * @param moves The {@link Vector2} move list that we want to put the marker to
      * @param piece The {@link Vector2} position of the piece, so we can assign move listener
      */
@@ -355,8 +363,9 @@ public class ChessController implements UIInteface {
 
     /**
      * Add the from to move marker to the board at the given position list
+     *
      * @param from The {@link Vector2} move list that we want to put the marker to
-     * @param to The {@link Vector2} position of the piece, so we can assign move listener
+     * @param to   The {@link Vector2} position of the piece, so we can assign move listener
      */
     private void displayFromTo(Vector2 from, Vector2 to) {
         Image image = null;
@@ -389,6 +398,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Method to update the timer text and additional time
+     *
      * @param color The {@link chess15.Piece.Color} of the side where we need to update the text
      */
     private void handleTimerUpdate(Piece.Color color) {
@@ -403,6 +413,7 @@ public class ChessController implements UIInteface {
     }
 
     // Taken Pieces Display Methods
+
     /**
      * Display the captured pieces on the side of the board
      */
@@ -421,6 +432,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Add the {@link Piece} to the display based on color
+     *
      * @param piece The {@link Piece} we want to put on the side of the board
      */
     private void addToTaken(Piece piece) {
@@ -484,8 +496,9 @@ public class ChessController implements UIInteface {
 
     /**
      * Generate the material advantage text to put in the move display
+     *
      * @param aditional The string builder we add our moves to
-     * @param move The {@link Move} that contains a from to and a color
+     * @param move      The {@link Move} that contains a from to and a color
      */
     private void generateAditional(StringBuilder aditional, Move move) {
         int whitePoints = 0;
@@ -515,6 +528,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Generate the move string which contains where the user went from and where to
+     *
      * @param move The {@link Move} the move we want to create the string for
      * @return A string we can add to the list on the side of the board
      */
@@ -531,6 +545,7 @@ public class ChessController implements UIInteface {
 
     /**
      * Update the list with the new {@link Move}
+     *
      * @param moveToAdd The {@link Move} we want to add to the list
      */
     private void updateMoveList(Move moveToAdd) {
@@ -543,8 +558,10 @@ public class ChessController implements UIInteface {
     }
 
     // Movement Methods
+
     /**
      * Text input where the user can type a move
+     *
      * @param text The text we get from the input
      */
     private void handleTextMove(String text) {
@@ -567,8 +584,9 @@ public class ChessController implements UIInteface {
      * Handles the piece movement on the board
      * Also handles adding the taken pieces to the list
      * And animates the piece movement
+     *
      * @param from The {@link Vector2} from position. The origin of the piece
-     * @param to The {@link Vector2} to position. The Position we want to put the piece to
+     * @param to   The {@link Vector2} to position. The Position we want to put the piece to
      */
     public void movePiece(Vector2 from, Vector2 to) {
         removeFromTo();
@@ -643,9 +661,9 @@ public class ChessController implements UIInteface {
                     }
                     if (moveFinished.get() && Constants.isRunning) {
                         testing.set(false);
-                        Vector2[] fromToPair = alg.move(engine.getBoard());
+                        Move computerMove = alg.move(engine.getBoard(), new Move(from, to));
                         Platform.runLater(() -> {
-                            movePiece(fromToPair[0], fromToPair[1]);
+                            movePiece(computerMove.from, computerMove.to);
                         });
                     }
 //                    Platform.runLater(() -> {
@@ -663,8 +681,9 @@ public class ChessController implements UIInteface {
 
     /**
      * Remove a piece from the board and potentially add it to the taken pieces
+     *
      * @param pieceToRemove The {@link Vector2} position of the piece we want to remove
-     * @param taken Can be null if we don't want the piece added to the taken list. If not null the provided piece will be added to the taken list
+     * @param taken         Can be null if we don't want the piece added to the taken list. If not null the provided piece will be added to the taken list
      */
     @Override
     public void remove(Vector2 pieceToRemove, Piece taken) {
@@ -684,8 +703,9 @@ public class ChessController implements UIInteface {
     /**
      * Handle the promotion of the pieces.
      * Called by the backend
-     * @param from The previous {@link Vector2} position of the pawn, so we can get the piece from the board due to syncronisation problems
-     * @param to The current {@link Vector2} position of the pawn. Also, the spawn point for the new {@link Piece}
+     *
+     * @param color The {@link Piece.Color} of the {@link Piece} being promoted
+     * @param to    The current {@link Vector2} position of the pawn. Also, the spawn point for the new {@link Piece}
      */
     @Override
     public void promote(Piece.Color color, Vector2 to) {
@@ -753,7 +773,8 @@ public class ChessController implements UIInteface {
     /**
      * The end game is called when we want to finist the current game.
      * Pauses the timer and puts an overlay on the board with the ending condition
-     * @param won The {@link chess15.Piece.Color} of the winning side
+     *
+     * @param won    The {@link chess15.Piece.Color} of the winning side
      * @param reason The {@link WinReason} we ended the game
      */
     @Override
@@ -799,8 +820,9 @@ public class ChessController implements UIInteface {
 
     /**
      * Used to set the check marker on the kings current position
-     * @deprecated Because we currently don't use this method
+     *
      * @param checkCoord The {@link Vector2} position of the king
+     * @deprecated Because we currently don't use this method
      */
     @Override
     public void setCheck(Vector2 checkCoord) {

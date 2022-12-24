@@ -3,6 +3,8 @@ package chess15.util;
 import chess15.Piece;
 import chess15.Vector2;
 
+import java.util.Objects;
+
 /**
  * The Move class is used to package the from, to, and color of a move
  */
@@ -42,5 +44,19 @@ public class Move {
     @Override
     public String toString() {
         return "Move: {From: " + from + ", To: "  + to + ", Color: " + color + "}";
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return from.equals(move.from) && to.equals(move.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to);
     }
 }

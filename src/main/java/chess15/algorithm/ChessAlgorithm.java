@@ -6,6 +6,7 @@ import chess15.Piece;
 import chess15.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
+import chess15.gamemode.Classical;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
 import java.util.ArrayList;
@@ -18,15 +19,32 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     private final int searchDepth = 5;
 
-    private Vector2[] bestMove;
+    private SearchTree tree;
+
+    private Move bestMove;
 
     @Override
-    public Vector2[] move(Board positions) {
+    public Move move(Board positions, Move playerMove) {
+
+        boolean exists = false;
+        SearchTree.Node answer = null;
+
+
+        for (SearchTree.Node node : tree.root.children) {
+            if(node.white.equals(playerMove)){
+                exists = true;
+                answer = node;
+                break;
+            }
+        }
+
+        if(exists){
+            tree.root = answer;
+            return answer.black;
+        }
 
 
         Engine engine = new Engine(rules, positions, color);
-
-        bestMove = new Vector2[2];
 
         minmax(0, engine, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
@@ -36,6 +54,9 @@ public class ChessAlgorithm implements AlgorithmInterface {
     public ChessAlgorithm(RuleSet rules, Piece.Color player) {
         this.rules = rules;
         this.color = player;
+        if(rules.gamemode instanceof Classical){
+            tree = new SearchTree();
+        }
     }
 
     private int minmax(int depth, Engine engine, boolean max, int alpha, int beta) {
@@ -54,8 +75,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
                     if (score > selectedScore) {
                         selectedScore = score;
                         if (depth == 0) {
-                            bestMove[0] = start;
-                            bestMove[1] = end;
+                            bestMove = new Move(start,end);
                         }
                     }
                     alpha = Math.max(alpha, selectedScore);

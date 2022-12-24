@@ -1,0 +1,430 @@
+{
+    "white": "0000",
+    "black": "0000",
+    "children": [
+        {
+            "white": "4644",
+            "black": "4143",
+            "children": [
+                {
+                    "white": "6755",
+                    "black": "1022",
+                    "children": [
+                        {
+                            "white": "5713",
+                            "black": "0102",
+                            "children": [
+                                {
+                                    "white": "1304",
+                                    "black": "6052",
+                                    "children": [
+                                        {
+                                            "white": "4767",
+                                            "black": "5041",
+                                            "children": [
+                                                {
+                                                    "white": "5747",
+                                                    "black": "1113",
+                                                    "children": [
+                                                        {
+                                                            "white": "0415",
+                                                            "black": "4060",
+                                                            "children": [
+                                                                {
+                                                                    "white": "2625",
+                                                                    "black": "3133",
+                                                                    "children": [
+                                                                        {
+                                                                            "white": "4433",
+                                                                            "black": "5233",
+                                                                            "children": [
+                                                                                {
+                                                                                    "white": "5543",
+                                                                                    "black": "2243",
+                                                                                    "children": [
+                                                                                        {
+                                                                                            "white": "4743",
+                                                                                            "black": "2122",
+                                                                                            "children": [
+                                                                                                {
+                                                                                                    "white": "3634",
+                                                                                                    "black": "4132",
+                                                                                                    "children": [
+                                                                                                        {
+                                                                                                            "white": "4347",
+                                                                                                            "black": "3074",
+                                                                                                            "children": [
+                                                                                                                {
+                                                                                                                    "white": "6665",
+                                                                                                                    "black": "7475",
+                                                                                                                    "children": [
+                                                                                                                        {
+                                                                                                                            "white": "2745",
+                                                                                                                            "black": "2064",
+                                                                                                                            "children": [
+                                                                                                                                {
+                                                                                                                                    "white": "3735",
+                                                                                                                                    "black": "0040",
+                                                                                                                                    "children": [
+                                                                                                                                        {
+                                                                                                                                            "white": "1736",
+                                                                                                                                            "black": "4042",
+                                                                                                                                            "children": [
+                                                                                                                                                {
+                                                                                                                                                    "white": "0604",
+                                                                                                                                                    "black": "7573",
+                                                                                                                                                    "children": []
+                                                                                                                                                }
+                                                                                                                                            ]
+                                                                                                                                        }
+                                                                                                                                    ]
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "3634",
+            "black": "3133",
+            "children": [
+                {
+                    "white": "2624",
+                    "black": "4142",
+                    "children": [
+                        {
+                            "white": "1725",
+                            "black": "6052",
+                            "children": [
+                                {
+                                    "white": "6755",
+                                    "black": "2122",
+                                    "children": [
+                                        {
+                                            "white": "4645",
+                                            "black": "1031",
+                                            "children": [
+                                                {
+                                                    "white": "5735",
+                                                    "black": "3324",
+                                                    "children": [
+                                                        {
+                                                            "white": "3524",
+                                                            "black": "1113",
+                                                            "children": [
+                                                                {
+                                                                    "white": "2435",
+                                                                    "black": "0102",
+                                                                    "children": [
+                                                                        {
+                                                                            "white": "4544",
+                                                                            "black": "2223",
+                                                                            "children": [
+                                                                                {
+                                                                                    "white": "4443",
+                                                                                    "black": "2334",
+                                                                                    "children": [
+                                                                                        {
+                                                                                            "white": "2513",
+                                                                                            "black": "3143",
+                                                                                            "children": [
+                                                                                                {
+                                                                                                    "white": "5543",
+                                                                                                    "black": "0213",
+                                                                                                    "children": [
+                                                                                                        {
+                                                                                                            "white": "4767",
+                                                                                                            "black": "3033",
+                                                                                                            "children": [
+                                                                                                                {
+                                                                                                                    "white": "3746",
+                                                                                                                    "black": "2002",
+                                                                                                                    "children": []
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "2624",
+            "black": "2123",
+            "children": [
+                {
+                    "white": "6755",
+                    "black": "6052",
+                    "children": [
+                        {
+                            "white": "6665",
+                            "black": "1112",
+                            "children": [
+                                {
+                                    "white": "5766",
+                                    "black": "2011",
+                                    "children": [
+                                        {
+                                            "white": "4767",
+                                            "black": "4142",
+                                            "children": [
+                                                {
+                                                    "white": "1725",
+                                                    "black": "5041",
+                                                    "children": [
+                                                        {
+                                                            "white": "3634",
+                                                            "black": "2334",
+                                                            "children": [
+                                                                {
+                                                                    "white": "3734",
+                                                                    "black": "3132",
+                                                                    "children": [
+                                                                        {
+                                                                            "white": "5737",
+                                                                            "black": "0102",
+                                                                            "children": [
+                                                                                {
+                                                                                    "white": "1615",
+                                                                                    "black": "1031",
+                                                                                    "children": []
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "6755",
+            "black": "3133",
+            "children": [
+                {
+                    "white": "6665",
+                    "black": "2123",
+                    "children": [
+                        {
+                            "white": "5766",
+                            "black": "1022",
+                            "children": [
+                                {
+                                    "white": "4767",
+                                    "black": "4142",
+                                    "children": [
+                                        {
+                                            "white": "3635",
+                                            "black": "6052",
+                                            "children": [
+                                                {
+                                                    "white": "1736",
+                                                    "black": "5041",
+                                                    "children": [
+                                                        {
+                                                            "white": "4644",
+                                                            "black": "4060",
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "5654",
+            "black": "4143",
+            "children": [
+                {
+                    "white": "5443",
+                    "black": "3132",
+                    "children": [
+                        {
+                            "white": "4332",
+                            "black": "5032",
+                            "children": [
+                                {
+                                    "white": "6755",
+                                    "black": "6072",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "6775",
+            "black": "3133",
+            "children": [
+                {
+                    "white": "6665",
+                    "black": "4143",
+                    "children": [
+                        {
+                            "white": "5654",
+                            "black": "2075",
+                            "children": [
+                                {
+                                    "white": "5775",
+                                    "black": "4354",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "4645",
+            "black": "4143",
+            "children": [
+                {
+                    "white": "2624",
+                    "black": "3132",
+                    "children": [
+                        {
+                            "white": "1725",
+                            "black": "1022",
+                            "children": [
+                                {
+                                    "white": "1615",
+                                    "black": "6052",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "1725",
+            "black": "2123",
+            "children": [
+                {
+                    "white": "3634",
+                    "black": "2334",
+                    "children": [
+                        {
+                            "white": "3734",
+                            "black": "1022",
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "6664",
+            "black": "3133",
+            "children": [
+                {
+                    "white": "5766",
+                    "black": "2064",
+                    "children": [
+                        {
+                            "white": "2624",
+                            "black": "3334",
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "white": "3635",
+            "black": "2123",
+            "children": [
+                {
+                    "white": "1725",
+                    "black": "1022",
+                    "children": []
+                }
+            ]
+        },
+        {
+            "white": "6665",
+            "black": "4143",
+            "children": []
+        },
+        {
+            "white": "7675",
+            "black": "4143",
+            "children": []
+        },
+        {
+            "white": "0604",
+            "black": "4143",
+            "children": []
+        },
+        {
+            "white": "5655",
+            "black": "4143",
+            "children": []
+        }
+    ]
+}

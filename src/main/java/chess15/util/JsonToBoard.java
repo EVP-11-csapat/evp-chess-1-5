@@ -1,12 +1,11 @@
 package chess15.util;
 
 import chess15.*;
-import chess15.gamemodes.GameGrabber;
+import chess15.gamemodes.JSONGrabber;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
 import java.util.Objects;
@@ -27,7 +26,7 @@ public class JsonToBoard {
 
         try {
 //            System.out.println(json);
-            URL url = GameGrabber.getInstance().getClass().getResource(json);
+            URL url = JSONGrabber.getInstance().getClass().getResource(json);
 //            System.out.println(url.toString());
 //            File file = new File(url.getPath());
 //            Object obj = parser.parse(new FileReader(file));
