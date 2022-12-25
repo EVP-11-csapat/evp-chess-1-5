@@ -77,7 +77,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
                 if (score > selectedScore) {
                     selectedScore = score;
                     if (depth == 0) {
-                        bestMove = new Move(move.from,move.to);
+                        bestMove = move;
                     }
                 }
                 alpha = Math.max(alpha, selectedScore);
@@ -106,17 +106,19 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         for (Move move : moves) {
             if (!engine.board.at(move.to).isEmpty){
-                Engine copiedEngine = new Engine(engine);
-                copiedEngine.move(move.from, move.to);
-                score = searchCaptures(copiedEngine, !max, alpha, beta);
-                if (max) {
-                    if (score > selectedScore) {
-                        selectedScore = score;
+                if(!((Piece)engine.board.at(move.to)).isKing){
+                    Engine copiedEngine = new Engine(engine);
+                    copiedEngine.move(move.from, move.to);
+                    score = searchCaptures(copiedEngine, !max, alpha, beta);
+                    if (max) {
+                        if (score > selectedScore) {
+                            selectedScore = score;
+                        }
+                        alpha = Math.max(alpha, selectedScore);
+                    } else {
+                        selectedScore = Math.min(score, selectedScore);
+                        beta = Math.min(beta, selectedScore);
                     }
-                    alpha = Math.max(alpha, selectedScore);
-                } else {
-                    selectedScore = Math.min(score, selectedScore);
-                    beta = Math.min(beta, selectedScore);
                 }
             }
         }

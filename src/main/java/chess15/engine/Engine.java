@@ -23,6 +23,7 @@ public class Engine implements EngineInterface {
     private HashMap<Vector2, ArrayList<Vector2>> previousAttacks;
     public Piece.Color nextPlayer;
     private ArrayList<Vector2> pieces;
+    private ArrayList<Vector2> opponentPieces;
 
 
     public ArrayList<Vector2> getMoves(Vector2 position) {
@@ -62,6 +63,10 @@ public class Engine implements EngineInterface {
         return pieces;
     }
 
+    public ArrayList<Vector2> getOpponentPieces() {
+        return opponentPieces;
+    }
+
     public void move(Vector2 from, Vector2 to) {
         for (Vector2 p : pieces) {
             Piece piece = (Piece) board.at(p);
@@ -73,10 +78,9 @@ public class Engine implements EngineInterface {
         if (piece.movement.getClass() == Pawn.class) {
             if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
                 board.elements[from.x][from.y] = new BoardElement();
-                if (UIRef != null){
+                if (UIRef != null) {
                     UIRef.promote(nextPlayer, to);
-                }
-                else {
+                } else {
                     setPiece(to, new Piece(nextPlayer, Piece.Type.QUEEN, Queen.getInstance(), false));
                 }
                 return;
@@ -122,18 +126,19 @@ public class Engine implements EngineInterface {
         board.elements[to.x][to.y] = board.at(from);
         board.elements[from.x][from.y] = new BoardElement();
 
-
-        previousAttacks = new HashMap<>();
+        pieces = selectPieces(nextPlayer);
+        opponentPieces = selectPieces(switchColor(nextPlayer));
         previousAttacks = calculateMoveMap(true);
-
         switchPlayer();
-
         possibleMoves = calculateMoveMap(false);
 
     }
 
     public void setPiece(Vector2 position, Piece piece) {
         board.elements[position.x][position.y] = piece;
+
+        pieces = selectPieces(nextPlayer);
+        opponentPieces = selectPieces(switchColor(nextPlayer));
         previousAttacks = calculateMoveMap(true);
         switchPlayer();
         possibleMoves = calculateMoveMap(false);
@@ -149,9 +154,11 @@ public class Engine implements EngineInterface {
         possibleMoves = new HashMap<>();
         previousAttacks = new HashMap<>();
         pieces = new ArrayList<>();
-        nextPlayer = Piece.Color.BLACK;
-        previousAttacks = calculateMoveMap(true);
+        opponentPieces = new ArrayList<>();
         nextPlayer = Piece.Color.WHITE;
+        switchPlayer();
+        previousAttacks = calculateMoveMap(true);
+        switchPlayer();
         possibleMoves = calculateMoveMap(false);
     }
 
@@ -161,6 +168,7 @@ public class Engine implements EngineInterface {
         this.rules = original.rules;
         this.board = new Board(original.board);
         pieces = new ArrayList<>(original.pieces);
+        opponentPieces = new ArrayList<>(original.opponentPieces);
         nextPlayer = original.nextPlayer;
         previousAttacks = new HashMap<>(original.previousAttacks);
         possibleMoves = new HashMap<>(original.possibleMoves);
@@ -181,10 +189,11 @@ public class Engine implements EngineInterface {
         this.board = board;
         possibleMoves = new HashMap<>();
         previousAttacks = new HashMap<>();
-        pieces = new ArrayList<>();
-        nextPlayer = switchColor(playerToMove);
-        previousAttacks = calculateMoveMap(true);
+
         nextPlayer = playerToMove;
+        switchPlayer();
+        previousAttacks = calculateMoveMap(true);
+        switchPlayer();
         possibleMoves = calculateMoveMap(false);
     }
 
@@ -194,13 +203,14 @@ public class Engine implements EngineInterface {
     }
 
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
-        pieces = selectPieces(nextPlayer);
-        if (UIRef != null && selectPieces(switchColor(nextPlayer)).size() == 1 && pieces.size() == 1)
+
+        if (UIRef != null && opponentPieces.size() == 1 && pieces.size() == 1)
             UIRef.endGame(null, WinReason.NOMATERIAL);
 
-        for (Vector2 p : selectPieces(switchColor(nextPlayer))){
-            ((Piece)board.at(p)).pin = null;
+        for (Vector2 p : opponentPieces) {
+            ((Piece) board.at(p)).pin = null;
         }
+
 
         HashMap<Vector2, ArrayList<Vector2>> movemap = new HashMap<>();
 
@@ -273,11 +283,12 @@ public class Engine implements EngineInterface {
     }
 
     private ArrayList<Vector2> calculateMoves(Vector2 position, boolean onlyAttacks) {
-        BoardElement e = board.elements[position.x][position.y];
+        BoardElement e = board.at(position);
         ArrayList<Vector2> moves = new ArrayList<>();
         if (e.isEmpty) return moves;
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
+
 
         ArrayList<Vector2> special = p.movement.special.invoke(position, board, rules);
         if (special != null) {
@@ -306,6 +317,7 @@ public class Engine implements EngineInterface {
                 if (evalMove(candidate, true, true, onlyAttacks)) moves.add(candidate);
             }
         }
+
 
         return moves;
     }
@@ -485,6 +497,8 @@ public class Engine implements EngineInterface {
     }
 
     private void switchPlayer() {
+        opponentPieces = selectPieces(nextPlayer);
         nextPlayer = switchColor(nextPlayer);
+        pieces = selectPieces(nextPlayer);
     }
 }

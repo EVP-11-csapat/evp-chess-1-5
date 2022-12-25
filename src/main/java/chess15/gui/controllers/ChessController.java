@@ -724,48 +724,57 @@ public class ChessController implements UIInteface {
             Constants.promotionUIBase.setLayoutY((to.y - 3) * 90);
         }
 
-        for (int i = 0; i < 4; i++) {
-            Piece p = PROMOTIONPIECES.get(i);
-            p.color = pieceColor;
-            String imagePath = "pieces/" +
-                    General.getPieceColorString(p) +
-                    "-" +
-                    General.getPieceTypeString(p) +
-                    ".png";
+        if(RuleSet.instance.isAiGame && color == Piece.Color.BLACK){
+            Piece p = PROMOTIONPIECES.get(0);
+            remove(to, null);
+            addPiece(p, to);
 
-            Image image = null;
-            try {
-                image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
-            } catch (Exception e) {
-                e.printStackTrace();
+            engine.setPiece(to, p);
+
+        }else {
+            for (int i = 0; i < 4; i++) {
+                Piece p = PROMOTIONPIECES.get(i);
+                p.color = pieceColor;
+                String imagePath = "pieces/" +
+                        General.getPieceColorString(p) +
+                        "-" +
+                        General.getPieceTypeString(p) +
+                        ".png";
+
+                Image image = null;
+                try {
+                    image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                ImageView pieceImage = new ImageView();
+                pieceImage.setImage(image);
+                pieceImage.setFitHeight(90);
+                pieceImage.setFitWidth(90);
+                pieceImage.setX(0);
+                pieceImage.setY(90 * i);
+
+                // On click, we spawn the correct piece from the list and remove the UI
+                pieceImage.setOnMouseClicked(event -> {
+                    remove(to, null);
+                    addPiece(Constants.promotionList.get(pieceImage), to);
+                    chessBoardPane.getChildren().remove(Constants.promotionUIBase);
+                    Constants.promotionList.clear();
+                    engine.setPiece(to, p);
+                    Constants.pausedForPromotion = false;
+                    Constants.fastPacedCounter = 0;
+                    if (Constants.DEVMODE)
+                        Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
+                });
+
+                Constants.promotionList.put(pieceImage, p);
+                Constants.promotionUIBase.getChildren().add(pieceImage);
             }
-
-            ImageView pieceImage = new ImageView();
-            pieceImage.setImage(image);
-            pieceImage.setFitHeight(90);
-            pieceImage.setFitWidth(90);
-            pieceImage.setX(0);
-            pieceImage.setY(90 * i);
-
-            // On click, we spawn the correct piece from the list and remove the UI
-            pieceImage.setOnMouseClicked(event -> {
-                remove(to, null);
-                addPiece(Constants.promotionList.get(pieceImage), to);
-                chessBoardPane.getChildren().remove(Constants.promotionUIBase);
-                Constants.promotionList.clear();
-                engine.setPiece(to, p);
-                Constants.pausedForPromotion = false;
-                Constants.fastPacedCounter = 0;
-                if (Constants.DEVMODE)
-                    Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
-            });
-
-            Constants.promotionList.put(pieceImage, p);
-            Constants.promotionUIBase.getChildren().add(pieceImage);
+            chessBoardPane.getChildren().add(Constants.promotionUIBase);
+            if (Constants.DEVMODE)
+                Constants.logger.info("Promotion dialog prompted at: " + to.toString());
         }
-        chessBoardPane.getChildren().add(Constants.promotionUIBase);
-        if (Constants.DEVMODE)
-            Constants.logger.info("Promotion dialog prompted at: " + to.toString());
     }
 
     // End Game Method
