@@ -5,14 +5,20 @@ import chess15.Vector2;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gui.controllers.ChessController;
+import chess15.gui.scenes.ResourceGrabber;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * General class is used to store methods
@@ -42,41 +48,50 @@ public class General {
     /**
      * Resets the GUI. Used to play the same settings again after the game ends
      * @param chessController The {@link ChessController}. Used for access.
+     * @param engine The engine. Also gets reset form here.
+     */
+    public static void reset(ChessController chessController, EngineInterface engine) {
+        engine.reset();
+        Constants.board = engine.getBoard();
+        chessController.removePosibleMoves();
+        chessController.removeFromTo();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                chessController.remove(new Vector2(j, i), null);
+            }
+        }
+        chessController.moveListElement.getItems().clear();
+
+        if (Constants.whiteTaken != null) Constants.whiteTaken.getChildren().clear();
+        if (Constants.blackTaken != null) Constants.blackTaken.getChildren().clear();
+
+        Constants.pieces.clear();
+        Constants.takenPieces = new ArrayList<>();
+        Constants.takenList = new HashMap<>();
+        if (RuleSet.getInstance().timer) {
+            Constants.whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+            Constants.blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
+            Constants.whiteTimerLabel.setText(TimerInit.formatTime(Constants.whiteTimeInMillis));
+            Constants.blackTimerLabel.setText(TimerInit.formatTime(Constants.blackTimeInMillis));
+            Constants.whiteSide = true;
+        }
+        chessController.chessBoardPane.getChildren().remove(Constants.promotionUIBase);
+        Constants.promotionList.clear();
+        chessController.chessBoardPane.getChildren().remove(Constants.endGameBase);
+        Constants.endGameBase = new StackPane();
+        Constants.playedMoves.clear();
+        chessController.setUpBoard();
+    }
+
+    /**
+     * Resets the GUI. Used to play the same settings again after the game ends
+     * @param chessController The {@link ChessController}. Used for access.
      * @param e The key event
      * @param engine The engine. Also gets reset form here.
      */
     public static void guiReset(ChessController chessController, KeyEvent e, EngineInterface engine) {
         if (e.getCode() == KeyCode.R && e.isControlDown() && e.isAltDown()) {
-            engine.reset();
-            Constants.board = engine.getBoard();
-            chessController.removePosibleMoves();
-            chessController.removeFromTo();
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    chessController.remove(new Vector2(j, i), null);
-                }
-            }
-            chessController.moveListElement.getItems().clear();
-
-            if (Constants.whiteTaken != null) Constants.whiteTaken.getChildren().clear();
-            if (Constants.blackTaken != null) Constants.blackTaken.getChildren().clear();
-
-            Constants.pieces.clear();
-            Constants.takenPieces = new ArrayList<>();
-            Constants.takenList = new HashMap<>();
-            if (RuleSet.getInstance().timer) {
-                Constants.whiteTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
-                Constants.blackTimeInMillis = (long) RuleSet.getInstance().startTime * 60 * 1000;
-                Constants.whiteTimerLabel.setText(TimerInit.formatTime(Constants.whiteTimeInMillis));
-                Constants.blackTimerLabel.setText(TimerInit.formatTime(Constants.blackTimeInMillis));
-                Constants.whiteSide = true;
-            }
-            chessController.chessBoardPane.getChildren().remove(Constants.promotionUIBase);
-            Constants.promotionList.clear();
-            chessController.chessBoardPane.getChildren().remove(Constants.endGameBase);
-            Constants.endGameBase = new StackPane();
-            Constants.playedMoves.clear();
-            chessController.setUpBoard();
+            reset(chessController, engine);
         }
     }
 
@@ -154,5 +169,16 @@ public class General {
     public static String getPieceColorString(Piece p) {
         if (p.color == Piece.Color.WHITE) return "white";
         else return "black";
+    }
+
+    public static void changeScene(String scene, Stage stage) {
+        try {
+            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("mainMenu.fxml")));
+            Stage primaryStage = stage;
+            primaryStage.getScene().setRoot(newRoot);
+            primaryStage.requestFocus();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -48,7 +48,6 @@ public class MainMenuController {
     @FXML
     protected void onMultiplayerButtonPressed() throws IOException {
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("settingsMenu.fxml")));
-//        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/settingsMenu.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
         primaryStage.getScene().setRoot(newRoot);
         primaryStage.requestFocus();
@@ -67,9 +66,8 @@ public class MainMenuController {
         rules.timer = false;
         rules.isAiGame = true;
 
-        System.out.println(ResourceGrabber.getInstance().getClass().getResource("chess.fxml").toURI().toString());
+//        System.out.println(ResourceGrabber.getInstance().getClass().getResource("chess.fxml").toURI().toString());
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
-//        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
         primaryStage.getScene().setRoot(newRoot);
         primaryStage.requestFocus();
