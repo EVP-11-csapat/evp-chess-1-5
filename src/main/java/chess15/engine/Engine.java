@@ -3,6 +3,7 @@ package chess15.engine;
 import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
+import chess15.util.BoardVisualizer;
 import chess15.util.Move;
 import chess15.util.WinReason;
 
@@ -223,16 +224,19 @@ public class Engine implements EngineInterface {
 
         ArrayList<Vector2> kingMoves = calculateMoves(kingPos, onlyAttacks);
 
-        for (Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()) {
-            if (entry.getValue().contains(kingPos)) {
-                // check
-                if (checkGivenby == null) checkGivenby = entry.getKey();
-                else checkAvoidable = false;
-            }
-            for (Vector2 pos : entry.getValue()) {
-                kingMoves.remove(pos);
+        if(!onlyAttacks){
+            for (Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()) {
+                if (entry.getValue().contains(kingPos)) {
+                    // check
+                    if (checkGivenby == null) checkGivenby = entry.getKey();
+                    else checkAvoidable = false;
+                }
+                for (Vector2 pos : entry.getValue()) {
+                    kingMoves.remove(pos);
+                }
             }
         }
+
 
         inCheck = (checkGivenby != null);
 
@@ -291,7 +295,6 @@ public class Engine implements EngineInterface {
         if (e.isEmpty) return moves;
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
-
 
         ArrayList<Vector2> special = p.movement.special.invoke(position, board, rules);
         if (special != null) {

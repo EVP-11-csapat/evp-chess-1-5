@@ -7,6 +7,7 @@ import chess15.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.util.BoardVisualizer;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
 
@@ -68,16 +69,25 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         ArrayList<Move> moves = orderMoves(engine, max);
 
-        if(moves.size() == 0){
-            if(engine.inCheck) return mateScore - depth;
+        if (moves.size() == 0) {
+            if (engine.inCheck){
+                int mate = mateScore - depth;
+                return (max) ? -mate : mate;
+            }
             else return 0;
         }
 
         for (Move move : moves) {
             Engine copiedEngine = new Engine(engine);
-            copiedEngine.move(move.from, move.to);
+            try{
+                copiedEngine.move(move.from, move.to);
+            }catch (Exception e){
+                e.printStackTrace();
+                System.out.println(move);
+                BoardVisualizer.printBoard(engine.board);
+            }
 
-            int score = (depth == searchDepth - 1) ? searchCaptures(copiedEngine, !max, alpha, beta) : minmax(depth + 1, copiedEngine, !max, alpha, beta);
+            int score = (depth == searchDepth - 1) ? searchCaptures(copiedEngine, !max, alpha, beta, depth) : minmax(depth + 1, copiedEngine, !max, alpha, beta);
 
             if (max) {
                 if (score > selectedScore) {
@@ -97,8 +107,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return selectedScore;
     }
 
-    private int searchCaptures(Engine engine, boolean max, int alpha, int beta) {
+    private int searchCaptures(Engine engine, boolean max, int alpha, int beta, int depth) {
         int score = ScoreEvaluator.evaluate(engine);
+
+        if(depth == searchDepth + 1) return score;
 
         if (max) {
             alpha = Math.max(alpha, score);
@@ -108,6 +120,15 @@ public class ChessAlgorithm implements AlgorithmInterface {
         if (beta <= alpha) return score;
 
         ArrayList<Move> moves = orderMoves(engine, max);
+
+        if (moves.size() == 0) {
+            if (engine.inCheck){
+                int mate = mateScore - depth;
+                return (max) ? -mate : mate;
+            }
+            else return 0;
+        }
+
         int selectedScore = score;
 
         for (Move move : moves) {
@@ -115,7 +136,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
                 if (!((Piece) engine.board.at(move.to)).isKing) {
                     Engine copiedEngine = new Engine(engine);
                     copiedEngine.move(move.from, move.to);
-                    score = searchCaptures(copiedEngine, !max, alpha, beta);
+                    score = searchCaptures(copiedEngine, !max, alpha, beta, depth += 1);
                     if (max) {
                         if (score > selectedScore) {
                             selectedScore = score;

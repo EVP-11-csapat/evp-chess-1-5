@@ -18,9 +18,9 @@ public class BoardVisualizer {
             for (int j = 0; j < 8; j++) {
                 try {
                     Piece piece = (Piece) board.getElement(j + 1, 8 - i);
-                    System.out.print(getColorChar(piece) + getLookChar(piece) + " ");
+                    System.out.print("\t" + getColorChar(piece) + getLookChar(piece) + " ");
                 } catch (ClassCastException e){
-                    System.out.print("  ");
+                    System.out.print("\t  ");
                 }
             }
             System.out.println();
