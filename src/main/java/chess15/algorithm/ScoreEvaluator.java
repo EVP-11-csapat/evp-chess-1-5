@@ -77,11 +77,7 @@ public class ScoreEvaluator {
         blackScore += (int) (PiecePoints.evaluateTable(blackKing, blackKingPos) * (1 - blackEndgamePhaseWeight));
 
 
-        int score = (engine.nextPlayer == Piece.Color.WHITE) ? whiteScore - blackScore : blackScore - whiteScore;
-
-        return score;
-
-
+        return (engine.nextPlayer == Piece.Color.WHITE) ? whiteScore - blackScore : blackScore - whiteScore;
     }
 
     private static float endgamePhaseWeight(int materialCountWithoutPawns) {

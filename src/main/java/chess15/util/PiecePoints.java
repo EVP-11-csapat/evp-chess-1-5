@@ -15,7 +15,7 @@ public class PiecePoints {
     public static int evaluateTable (Piece piece, Vector2 position) {
         int[] table = new int[64];
 
-        if (piece.isKing) table = kingMiddle;
+        if (piece.isKing) table = king;
         else if (piece.movement.getClass() == Pawn.class) table = pawns;
         else if (piece.movement.getClass() == Knight.class) table = knights;
         else if (piece.movement.getClass() == Bishop.class) table = bishops;
@@ -87,7 +87,7 @@ public class PiecePoints {
             -20,-10,-10, -5, -5,-10,-10,-20
     };
 
-    public static int[] kingMiddle = {
+    public static int[] king = {
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
@@ -96,16 +96,5 @@ public class PiecePoints {
             -10,-20,-20,-20,-20,-20,-20,-10,
             20, 20,  0,  0,  0,  0, 20, 20,
             20, 30, 10,  0,  0, 10, 30, 20
-    };
-
-    public static int[] kingEnd = {
-            -50,-40,-30,-20,-20,-30,-40,-50,
-            -30,-20,-10,  0,  0,-10,-20,-30,
-            -30,-10, 20, 30, 30, 20,-10,-30,
-            -30,-10, 30, 40, 40, 30,-10,-30,
-            -30,-10, 30, 40, 40, 30,-10,-30,
-            -30,-10, 20, 30, 30, 20,-10,-30,
-            -30,-30,  0,  0,  0,  0,-30,-30,
-            -50,-30,-30,-30,-30,-30,-30,-50
     };
 }

@@ -4,7 +4,6 @@ import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
 import chess15.util.Move;
-import chess15.util.PiecePoints;
 import chess15.util.WinReason;
 
 import java.util.ArrayList;
@@ -22,6 +21,8 @@ public class Engine implements EngineInterface {
     private HashMap<Vector2, ArrayList<Vector2>> possibleMoves;
     private HashMap<Vector2, ArrayList<Vector2>> previousAttacks;
     public Piece.Color nextPlayer;
+
+    public boolean inCheck = false;
     private ArrayList<Vector2> pieces;
     private ArrayList<Vector2> opponentPieces;
 
@@ -172,7 +173,7 @@ public class Engine implements EngineInterface {
         nextPlayer = original.nextPlayer;
         previousAttacks = new HashMap<>(original.previousAttacks);
         possibleMoves = new HashMap<>(original.possibleMoves);
-
+        inCheck = original.inCheck;
     }
 
     public Engine(RuleSet rules, UIInteface uiRef) {
@@ -233,6 +234,8 @@ public class Engine implements EngineInterface {
             }
         }
 
+        inCheck = (checkGivenby != null);
+
         if (rules.castling) kingMoves.addAll(castlingMoves());
 
         movemap.put(kingPos, kingMoves);
@@ -271,7 +274,7 @@ public class Engine implements EngineInterface {
         }
         Piece.Color winner = switchColor(nextPlayer);
         if (nomoves && UIRef != null) {
-            if (checkGivenby != null) {
+            if (inCheck) {
                 UIRef.endGame(winner, WinReason.CHECKMATE);
             } else {
                 UIRef.endGame(null, WinReason.STALEMATE);

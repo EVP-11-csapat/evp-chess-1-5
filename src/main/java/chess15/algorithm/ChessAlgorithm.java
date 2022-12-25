@@ -9,6 +9,7 @@ import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -17,8 +18,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private final RuleSet rules;
     private final Piece.Color color;
 
-    private final int searchDepth = 4;
-
+    private static final int searchDepth = 4;
+    private static final int mateScore = 100000;
     private SearchTree tree;
 
     private Move bestMove;
@@ -26,22 +27,22 @@ public class ChessAlgorithm implements AlgorithmInterface {
     @Override
     public Move move(Board positions, Move playerMove) {
 
-        if(tree != null){
+        if (tree != null) {
             boolean exists = false;
             SearchTree.Node answer = null;
 
             for (SearchTree.Node node : tree.root.children) {
-                if(node.white.equals(playerMove)){
+                if (node.white.equals(playerMove)) {
                     exists = true;
                     answer = node;
                     break;
                 }
             }
 
-            if(exists){
+            if (exists) {
                 tree.root = answer;
                 return answer.black;
-            }else {
+            } else {
                 tree = null;
                 System.out.println("going dark!");
             }
@@ -57,7 +58,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     public ChessAlgorithm(RuleSet rules, Piece.Color player) {
         this.rules = rules;
         this.color = player;
-        if(rules.gamemode instanceof Classical){
+        if (rules.gamemode instanceof Classical) {
             tree = new SearchTree();
         }
     }
@@ -65,9 +66,14 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private int minmax(int depth, Engine engine, boolean max, int alpha, int beta) {
         int selectedScore = (max) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-        ArrayList<Move> moves = orderMoves(engine);
+        ArrayList<Move> moves = orderMoves(engine, max);
 
-        for (Move move : moves){
+        if(moves.size() == 0){
+            if(engine.inCheck) return mateScore - depth;
+            else return 0;
+        }
+
+        for (Move move : moves) {
             Engine copiedEngine = new Engine(engine);
             copiedEngine.move(move.from, move.to);
 
@@ -91,7 +97,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return selectedScore;
     }
 
-    private int searchCaptures(Engine engine, boolean max, int alpha, int beta){
+    private int searchCaptures(Engine engine, boolean max, int alpha, int beta) {
         int score = ScoreEvaluator.evaluate(engine);
 
         if (max) {
@@ -101,12 +107,12 @@ public class ChessAlgorithm implements AlgorithmInterface {
         }
         if (beta <= alpha) return score;
 
-        ArrayList<Move> moves = orderMoves(engine);
+        ArrayList<Move> moves = orderMoves(engine, max);
         int selectedScore = score;
 
         for (Move move : moves) {
-            if (!engine.board.at(move.to).isEmpty){
-                if(!((Piece)engine.board.at(move.to)).isKing){
+            if (!engine.board.at(move.to).isEmpty) {
+                if (!((Piece) engine.board.at(move.to)).isKing) {
                     Engine copiedEngine = new Engine(engine);
                     copiedEngine.move(move.from, move.to);
                     score = searchCaptures(copiedEngine, !max, alpha, beta);
@@ -127,14 +133,16 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
 
-    private ArrayList<Move> orderMoves(Engine engine) {
+    private ArrayList<Move> orderMoves(Engine engine, boolean max) {
         ArrayList<Move> moves = new ArrayList<>();
         for (Vector2 start : engine.getPieces()) {
             for (Vector2 end : engine.getMoves(start)) {
                 moves.add(new Move(start, end, scoreMove(start, end, engine.getBoard())));
             }
         }
-        moves.sort(new SortByScore());
+        if (max) {
+            moves.sort(new SortByScore().reversed());
+        } else moves.sort(new SortByScore());
 
         return moves;
     }
@@ -147,8 +155,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
             score = 10 * PiecePoints.evaluate((Piece) board.at(end)) - PiecePoints.evaluate(p);
         }
 
-        if (p.movement instanceof Pawn){
-            if(p.color == Piece.Color.WHITE && end.y == 0 || p.color == Piece.Color.BLACK && end.y == 7) score += 9;
+        if (p.movement instanceof Pawn) {
+            if (p.color == Piece.Color.WHITE && end.y == 0 || p.color == Piece.Color.BLACK && end.y == 7) score += 9;
         }
 
         int y = (p.color == Piece.Color.WHITE) ? -1 : 1;
@@ -156,21 +164,19 @@ public class ChessAlgorithm implements AlgorithmInterface {
         Vector2 left = new Vector2(end.x - 1, y);
         Vector2 right = new Vector2(end.x + 1, y);
 
-        if(!left.outOfBounds() && !board.at(left).isEmpty){
+        if (!left.outOfBounds() && !board.at(left).isEmpty) {
             Piece leftPawn = (Piece) board.at(left);
-            if(leftPawn.movement instanceof Pawn && leftPawn.color == Engine.switchColor(p.color)){
+            if (leftPawn.movement instanceof Pawn && leftPawn.color == Engine.switchColor(p.color)) {
                 score -= PiecePoints.evaluate(p);
             }
-        }
-        else{
-            if(!right.outOfBounds() && !board.at(right).isEmpty){
+        } else {
+            if (!right.outOfBounds() && !board.at(right).isEmpty) {
                 Piece rightPawn = (Piece) board.at(right);
-                if(rightPawn.movement instanceof Pawn && rightPawn.color == Engine.switchColor(p.color)){
+                if (rightPawn.movement instanceof Pawn && rightPawn.color == Engine.switchColor(p.color)) {
                     score -= PiecePoints.evaluate(p);
                 }
             }
         }
-
 
         return score;
     }
@@ -179,7 +185,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         @Override
         public int compare(Move a, Move b) {
-            return b.score - a.score;
+            return a.score - b.score;
         }
     }
 

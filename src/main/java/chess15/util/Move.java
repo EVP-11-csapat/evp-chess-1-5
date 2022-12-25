@@ -43,7 +43,7 @@ public class Move {
 
     @Override
     public String toString() {
-        return "Move: {From: " + from + ", To: "  + to + ", Color: " + color + "}";
+        return "Move: {From: " + from + ", To: "  + to + ", Color: " + color + ", Score: " + score + " }";
     }
 
 
