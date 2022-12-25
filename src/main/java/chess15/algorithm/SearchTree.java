@@ -3,13 +3,18 @@ package chess15.algorithm;
 import chess15.Vector2;
 import chess15.gamemodes.JSONGrabber;
 import chess15.util.Move;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SearchTree {
     class Node {
@@ -29,11 +34,16 @@ public class SearchTree {
     public SearchTree() {
         JSONParser parser = new JSONParser();
         try {
-            URL url = JSONGrabber.getInstance().getClass().getResource("openings.json");
-            Object obj = parser.parse(new FileReader(url.getFile()));
-            JSONObject jsonObject = (JSONObject) obj;
+//            URL url = JSONGrabber.getInstance().getClass().getResource("openings.json");
+//            Object obj = parser.parse(new FileReader(url.getFile()));
+//            JSONObject jsonObject = (JSONObject) obj;
 
-            root = parseNode(jsonObject);
+            InputStream inputStream = JSONGrabber.getInstance().getClass().getResource("openings.json").openStream();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(inputStream);
+
+//            root = parseNode(jsonObject);
+            root = parseNode(rootNode);
             root.black = null;
             root.white = null;
 
@@ -45,6 +55,11 @@ public class SearchTree {
         }
     }
 
+    /**
+     * @deprecated for stendalone build need to use JsonNode instead of JSONObject
+     * @param node
+     * @return
+     */
     private Node parseNode(JSONObject node) {
         Move black = stringToMove(String.valueOf(node.get("black")));
         Move white = stringToMove(String.valueOf(node.get("white")));
@@ -54,6 +69,19 @@ public class SearchTree {
             for (Object childNode : childNodes) {
                 children.add(parseNode((JSONObject) childNode));
             }
+        }
+        return new Node(white, black, children);
+    }
+
+    private Node parseNode(JsonNode node) {
+        Move black = stringToMove(node.get("black").asText());
+        Move white = stringToMove(node.get("white").asText());
+        ArrayList<Node> children = new ArrayList<>();
+        ArrayNode childNodes = (ArrayNode) node.get("children");
+        Iterator<JsonNode> childrenIter = childNodes.elements();
+        while (childrenIter.hasNext()) {
+            JsonNode child = childrenIter.next();
+            children.add(parseNode(child));
         }
         return new Node(white, black, children);
     }

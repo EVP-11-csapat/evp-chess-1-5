@@ -31,11 +31,6 @@ public class JsonToBoard {
         JSONParser parser = new JSONParser();
 
         try {
-//            URL url = JSONGrabber.getInstance().getClass().getResource(json);
-//            Object obj = parser.parse(new FileReader(url.getFile()));
-//            JSONObject jsonObject = (JSONObject) obj;
-//            JSONArray pieces = (JSONArray) jsonObject.get("pieces");
-
             InputStream inputStream = JSONGrabber.getInstance().getClass().getResource(json).openStream();
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(inputStream);
@@ -55,18 +50,6 @@ public class JsonToBoard {
                     board.elements[pos.x][pos.y] = p;
                 }
             }
-
-//            for (Object piece : pieces) {
-//                JSONObject pieceObject = (JSONObject) piece;
-//                Piece piece1 = new Piece(Objects.equals((String) pieceObject.get("color"), "white") ? Piece.Color.WHITE : Piece.Color.BLACK,
-//                        getPieceType((String) pieceObject.get("look")),
-//                        getMoveSet((String) pieceObject.get("moves")),
-//                        (Boolean) pieceObject.get("isKing"));
-//
-//                Vector2 position = new Vector2(((Long) pieceObject.get("column")).intValue(),((Long) pieceObject.get("row")).intValue());
-//                board.elements[position.x][position.y] = piece1;
-//
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
