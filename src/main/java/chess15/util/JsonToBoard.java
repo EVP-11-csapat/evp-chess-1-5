@@ -2,12 +2,18 @@ package chess15.util;
 
 import chess15.*;
 import chess15.gamemodes.JSONGrabber;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -25,25 +31,24 @@ public class JsonToBoard {
         JSONParser parser = new JSONParser();
 
         try {
-//            System.out.println(json);
-            URL url = JSONGrabber.getInstance().getClass().getResource(json);
-//            System.out.println(url.toString());
-//            File file = new File(url.getPath());
-//            Object obj = parser.parse(new FileReader(file));
-            Object obj = parser.parse(new FileReader(url.getFile()));
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray pieces = (JSONArray) jsonObject.get("pieces");
+            InputStream inputStream = JSONGrabber.getInstance().getClass().getResource(json).openStream();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(inputStream);
+            JsonNode piecesNode = root.get("pieces");
 
-            for (Object piece : pieces) {
-                JSONObject pieceObject = (JSONObject) piece;
-                Piece piece1 = new Piece(Objects.equals((String) pieceObject.get("color"), "white") ? Piece.Color.WHITE : Piece.Color.BLACK,
-                        getPieceType((String) pieceObject.get("look")),
-                        getMoveSet((String) pieceObject.get("moves")),
-                        (Boolean) pieceObject.get("isKing"));
+            if (piecesNode.isArray()) {
+                ArrayNode piecesArray = (ArrayNode) piecesNode;
+                Iterator<JsonNode> pieces = piecesArray.elements();
+                while (pieces.hasNext()) {
+                    JsonNode piece = pieces.next();
+                    Piece p = new Piece(Objects.equals(piece.get("color").asText(), "white") ? Piece.Color.WHITE : Piece.Color.BLACK,
+                            getPieceType(piece.get("look").asText()),
+                            getMoveSet(piece.get("moves").asText()),
+                            piece.get("isKing").asBoolean());
 
-                Vector2 position = new Vector2(((Long) pieceObject.get("column")).intValue(),((Long) pieceObject.get("row")).intValue());
-                board.elements[position.x][position.y] = piece1;
-
+                    Vector2 pos = new Vector2(piece.get("column").intValue(), piece.get("row").intValue());
+                    board.elements[pos.x][pos.y] = p;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

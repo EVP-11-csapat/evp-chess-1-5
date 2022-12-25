@@ -7,7 +7,9 @@ import chess15.engine.Engine;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Fastpaced;
+import chess15.gui.images.ImageGrabber;
 import chess15.gui.interfaces.UIInteface;
+import chess15.gui.sounds.SoundGrabber;
 import chess15.gui.util.AudioPlayer;
 import chess15.gui.util.Constants;
 import chess15.gui.util.General;
@@ -227,7 +229,7 @@ public class ChessController implements UIInteface {
         // Get the image from the path above
         Image image = null;
         try {
-            image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
+            image = new Image(Objects.requireNonNull(ImageGrabber.getInstance().getClass().getResource(imagePath)).openStream());
         } catch (IOException e) {
             System.out.println("Image not found");
             throw new RuntimeException(e);
@@ -341,7 +343,8 @@ public class ChessController implements UIInteface {
         for (Vector2 move : moves) {
             Image image = null;
             try {
-                image = new Image(Objects.requireNonNull(getClass().getResource("../images/possibleMove.jpg")).openStream());
+                image = new Image(Objects.requireNonNull(
+                        ImageGrabber.getInstance().getClass().getResource("possibleMove.jpg")).openStream());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -370,7 +373,8 @@ public class ChessController implements UIInteface {
     private void displayFromTo(Vector2 from, Vector2 to) {
         Image image = null;
         try {
-            image = new Image(Objects.requireNonNull(getClass().getResource("../images/move.png")).openStream());
+            image = new Image(Objects.requireNonNull(
+                    ImageGrabber.getInstance().getClass().getResource("move.png")).openStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -443,7 +447,8 @@ public class ChessController implements UIInteface {
                 ".png";
         Image image = null;
         try {
-            image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
+            image = new Image(Objects.requireNonNull(
+                    ImageGrabber.getInstance().getClass().getResource("" + imagePath)).openStream());
         } catch (IOException e) {
             System.out.println("Image not found");
             throw new RuntimeException(e);
@@ -666,10 +671,6 @@ public class ChessController implements UIInteface {
                             movePiece(computerMove.from, computerMove.to);
                         });
                     }
-//                    Platform.runLater(() -> {
-//                        Vector2[] fromtopair = alg.move(engine.getBoard());
-//                        movePiece(fromtopair[0], fromtopair[1]);
-//                    });
                 }
             });
             thread.start();
@@ -700,6 +701,14 @@ public class ChessController implements UIInteface {
             Constants.logger.info("Piece removed at: " + pieceToRemove);
     }
 
+    public void aiPromote(Vector2 to) {
+        Piece p = PROMOTIONPIECES.get(0);
+        remove(to, null);
+        addPiece(p, to);
+
+        engine.setPiece(to, p);
+    }
+
     /**
      * Handle the promotion of the pieces.
      * Called by the backend
@@ -709,72 +718,67 @@ public class ChessController implements UIInteface {
      */
     @Override
     public void promote(Piece.Color color, Vector2 to) {
+        if (RuleSet.getInstance().isAiGame && color == Piece.Color.BLACK) {
+            aiPromote(to);
+            return;
+        }
         Constants.pausedForPromotion = true;
         // Prepare the promotion UI base
         Constants.promotionUIBase.setPrefWidth(90);
         Constants.promotionUIBase.setPrefHeight(90 * 4);
         Constants.promotionUIBase.setLayoutX(to.x * 90);
         Constants.promotionUIBase.setStyle("-fx-background-color: #2a2a2a");
-        Piece.Color pieceColor = color;
 
         // Flip the position of the UI for when the black pawn promotes
-        if (pieceColor == Piece.Color.WHITE) {
+        if (color == Piece.Color.WHITE) {
             Constants.promotionUIBase.setLayoutY(to.y * 90);
         } else {
             Constants.promotionUIBase.setLayoutY((to.y - 3) * 90);
         }
 
-        if(RuleSet.instance.isAiGame && color == Piece.Color.BLACK){
-            Piece p = PROMOTIONPIECES.get(0);
-            remove(to, null);
-            addPiece(p, to);
+        for (int i = 0; i < 4; i++) {
+            Piece p = PROMOTIONPIECES.get(i);
+            p.color = color;
+            String imagePath = "pieces/" +
+                    General.getPieceColorString(p) +
+                    "-" +
+                    General.getPieceTypeString(p) +
+                    ".png";
 
-            engine.setPiece(to, p);
-
-        }else {
-            for (int i = 0; i < 4; i++) {
-                Piece p = PROMOTIONPIECES.get(i);
-                p.color = pieceColor;
-                String imagePath = "pieces/" +
-                        General.getPieceColorString(p) +
-                        "-" +
-                        General.getPieceTypeString(p) +
-                        ".png";
-
-                Image image = null;
-                try {
-                    image = new Image(Objects.requireNonNull(getClass().getResource("../images/" + imagePath)).openStream());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                ImageView pieceImage = new ImageView();
-                pieceImage.setImage(image);
-                pieceImage.setFitHeight(90);
-                pieceImage.setFitWidth(90);
-                pieceImage.setX(0);
-                pieceImage.setY(90 * i);
-
-                // On click, we spawn the correct piece from the list and remove the UI
-                pieceImage.setOnMouseClicked(event -> {
-                    remove(to, null);
-                    addPiece(Constants.promotionList.get(pieceImage), to);
-                    chessBoardPane.getChildren().remove(Constants.promotionUIBase);
-                    Constants.promotionList.clear();
-                    engine.setPiece(to, p);
-                    Constants.pausedForPromotion = false;
-                    Constants.fastPacedCounter = 0;
-                    if (Constants.DEVMODE)
-                        Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
-                });
-
-                Constants.promotionList.put(pieceImage, p);
-                Constants.promotionUIBase.getChildren().add(pieceImage);
+            Image image = null;
+            try {
+                image = new Image(Objects.requireNonNull(
+                        ImageGrabber.getInstance().getClass().getResource("" + imagePath)).openStream());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            chessBoardPane.getChildren().add(Constants.promotionUIBase);
-            if (Constants.DEVMODE)
-                Constants.logger.info("Promotion dialog prompted at: " + to.toString());
+
+            ImageView pieceImage = new ImageView();
+            pieceImage.setImage(image);
+            pieceImage.setFitHeight(90);
+            pieceImage.setFitWidth(90);
+            pieceImage.setX(0);
+            pieceImage.setY(90 * i);
+
+            // On click, we spawn the correct piece from the list and remove the UI
+            pieceImage.setOnMouseClicked(event -> {
+                remove(to, null);
+                addPiece(Constants.promotionList.get(pieceImage), to);
+                chessBoardPane.getChildren().remove(Constants.promotionUIBase);
+                Constants.promotionList.clear();
+                engine.setPiece(to, p);
+                Constants.pausedForPromotion = false;
+                Constants.fastPacedCounter = 0;
+                if (Constants.DEVMODE)
+                    Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
+            });
+
+            Constants.promotionList.put(pieceImage, p);
+            Constants.promotionUIBase.getChildren().add(pieceImage);
         }
+        chessBoardPane.getChildren().add(Constants.promotionUIBase);
+        if (Constants.DEVMODE)
+            Constants.logger.info("Promotion dialog prompted at: " + to.toString());
     }
 
     // End Game Method
@@ -816,13 +820,43 @@ public class ChessController implements UIInteface {
         winLabel.setTextFill(Color.WHITE);
         winDescriptionLabel.setTextFill(Color.WHITE);
 
+        Button backToMenu = new Button();
+        backToMenu.setText("Back to menu");
+        backToMenu.setFont(new Font("Ariel", 30));
+        backToMenu.setTextFill(Color.WHITE);
+        backToMenu.setStyle("-fx-background-color: #2a2a2a");
+
+        Button rematch = new Button();
+        rematch.setText("Rematch");
+        rematch.setFont(new Font("Ariel", 30));
+        rematch.setTextFill(Color.WHITE);
+        rematch.setStyle("-fx-background-color: #2a2a2a");
+
+        rematch.setOnMousePressed(e -> {
+            General.reset(this, engine);
+        });
+
+        backToMenu.setOnMousePressed(e -> {
+            General.changeScene("menu.fxml", (Stage) chessBoardPane.getScene().getWindow());
+        });
+
         VBox labelHolder = new VBox();
-        labelHolder.getChildren().addAll(winLabel, winDescriptionLabel);
+        labelHolder.getChildren().addAll(winLabel, winDescriptionLabel, backToMenu, rematch);
         labelHolder.setSpacing(10);
         labelHolder.setAlignment(Pos.CENTER);
 
         Constants.endGameBase.getChildren().add(labelHolder);
-        chessBoardPane.getChildren().add(Constants.endGameBase);
+
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> chessBoardPane.getChildren().add(Constants.endGameBase));
+        });
+
+        thread.start();
         if (Constants.DEVMODE)
             Constants.logger.info("Game ended with reason: " + winDescriptionLabel + " the winner is: " + winLabel);
     }

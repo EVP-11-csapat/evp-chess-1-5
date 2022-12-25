@@ -5,6 +5,7 @@ import chess15.gamemode.Classical;
 import chess15.gamemode.Fastpaced;
 import chess15.gamemode.PawnAttack;
 import chess15.gamemode.Testing;
+import chess15.gui.images.ImageGrabber;
 import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -138,7 +139,7 @@ public class SettingsMenuController {
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.TOP_LEFT);
 
-        ImageView icon = new ImageView(String.valueOf(ResourceGrabber.class.getResource("../images/" + imageName + ".png")));
+        ImageView icon = new ImageView(String.valueOf(ImageGrabber.getInstance().getClass().getResource("" + imageName + ".png")));
         icon.setFitHeight(150);
         icon.setFitWidth(150);
 
@@ -277,6 +278,8 @@ public class SettingsMenuController {
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         castlingCheckBox.setDisable(false);
+        isCastlingEnabled = true;
+        castlingCheckBox.setSelected(true);
     }
 
     protected void onPawnAttackSelected() {
@@ -313,6 +316,8 @@ public class SettingsMenuController {
         minutesSpinner.getValueFactory().setValue(90);
         secondsSpinner.getValueFactory().setValue(0);
         castlingCheckBox.setDisable(false);
+        isCastlingEnabled = true;
+        castlingCheckBox.setSelected(true);
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         playButton.setDisable(false);
@@ -330,6 +335,8 @@ public class SettingsMenuController {
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         castlingCheckBox.setDisable(false);
+        isCastlingEnabled = true;
+        castlingCheckBox.setSelected(true);
     }
 
     /**
