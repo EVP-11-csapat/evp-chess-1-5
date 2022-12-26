@@ -13,9 +13,6 @@ public abstract class MoveSet{
     public ArrayList<Vector2> moves;
     public ArrayList<Vector2> attacks;
 
-    public Function3<Vector2, Board, RuleSet,ArrayList<Vector2>> special = (a, b, c) -> (null);
-
-
     public boolean attackDifferent;
     public boolean whiteDifferent;
     public boolean repeating;

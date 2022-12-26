@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SearchTree {
-    class Node {
+    static class Node {
         public Move white;
         public Move black;
         public ArrayList<Node> children;
@@ -34,15 +34,11 @@ public class SearchTree {
     public SearchTree() {
         JSONParser parser = new JSONParser();
         try {
-//            URL url = JSONGrabber.getInstance().getClass().getResource("openings.json");
-//            Object obj = parser.parse(new FileReader(url.getFile()));
-//            JSONObject jsonObject = (JSONObject) obj;
 
             InputStream inputStream = JSONGrabber.getInstance().getClass().getResource("openings.json").openStream();
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(inputStream);
 
-//            root = parseNode(jsonObject);
             root = parseNode(rootNode);
             root.black = null;
             root.white = null;
@@ -53,24 +49,6 @@ public class SearchTree {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @deprecated for stendalone build need to use JsonNode instead of JSONObject
-     * @param node
-     * @return
-     */
-    private Node parseNode(JSONObject node) {
-        Move black = stringToMove(String.valueOf(node.get("black")));
-        Move white = stringToMove(String.valueOf(node.get("white")));
-        ArrayList<Node> children = new ArrayList<>();
-        JSONArray childNodes = (JSONArray) node.get("children");
-        if (childNodes != null) {
-            for (Object childNode : childNodes) {
-                children.add(parseNode((JSONObject) childNode));
-            }
-        }
-        return new Node(white, black, children);
     }
 
     private Node parseNode(JsonNode node) {

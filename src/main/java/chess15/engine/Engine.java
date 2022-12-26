@@ -3,7 +3,6 @@ package chess15.engine;
 import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
-import chess15.util.BoardVisualizer;
 import chess15.util.Move;
 import chess15.util.WinReason;
 
@@ -133,7 +132,6 @@ public class Engine implements EngineInterface {
         previousAttacks = calculateMoveMap(true);
         switchPlayer();
         possibleMoves = calculateMoveMap(false);
-
     }
 
     public void setPiece(Vector2 position, Piece piece) {
@@ -224,7 +222,7 @@ public class Engine implements EngineInterface {
 
         ArrayList<Vector2> kingMoves = calculateMoves(kingPos, onlyAttacks);
 
-        if(!onlyAttacks){
+        if (!onlyAttacks) {
             for (Map.Entry<Vector2, ArrayList<Vector2>> entry : previousAttacks.entrySet()) {
                 if (entry.getValue().contains(kingPos)) {
                     // check
@@ -296,14 +294,17 @@ public class Engine implements EngineInterface {
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
 
-        ArrayList<Vector2> special = p.movement.special.invoke(position, board, rules);
-        if (special != null) {
-            special = filterDirections(special, p.pin);
-            special.forEach(dir -> moves.add(Vector2.add(position, dir)));
-        }
-
-
         ArrayList<Vector2> moveDirections = filterDirections(orient(p.movement.moves, p.movement.whiteDifferent, p.color), p.pin);
+
+        if (p.movement instanceof Pawn) {
+            Vector2 twoSquares = null;
+            if ((position.y == 1 && p.color == Piece.Color.BLACK && board.at(new Vector2(position.x, 2)).isEmpty && board.at(new Vector2(position.x, 3)).isEmpty))
+                twoSquares = new Vector2(0, 2);
+            else if (position.y == 6 && p.color == Piece.Color.WHITE && board.at(new Vector2(position.x, 5)).isEmpty && board.at(new Vector2(position.x, 4)).isEmpty)
+                twoSquares = new Vector2(0, -2);
+            if (twoSquares != null && filterDirection(twoSquares, p.pin))
+                moveDirections.add(twoSquares);
+        }
 
         if (!isAttackDifferent || !onlyAttacks) {
             for (Vector2 direction : moveDirections) {
@@ -318,9 +319,36 @@ public class Engine implements EngineInterface {
 
         if (isAttackDifferent) {
             ArrayList<Vector2> attackDirections = filterDirections(orient(p.movement.attacks, p.movement.whiteDifferent, p.color), p.pin);
+
             for (Vector2 attackDirection : attackDirections) {
                 Vector2 candidate = Vector2.add(position, attackDirection);
                 if (evalMove(candidate, true, true, onlyAttacks)) moves.add(candidate);
+            }
+
+            if (rules.enpassant && p.movement instanceof Pawn) {
+                Vector2 left = Vector2.add(position, new Vector2(-1, 0));
+                Vector2 right = Vector2.add(position, new Vector2(1, 0));
+
+                Vector2 enpassant = null;
+
+                if (!left.outOfBounds() && !board.at(left).isEmpty) {
+                    Piece leftPiece = (Piece) board.at(left);
+                    if (leftPiece.movement.getClass() == Pawn.class && leftPiece.color != p.color && leftPiece.boolProperty) {
+                        enpassant = new Vector2(-1, 1);
+
+                    }
+                }
+                if (!right.outOfBounds() && !board.at(right).isEmpty) {
+                    Piece rightPiece = (Piece) board.at(right);
+                    if (rightPiece.movement.getClass() == Pawn.class && rightPiece.color != p.color && rightPiece.boolProperty) {
+                        enpassant = new Vector2(1, 1);
+                    }
+                }
+                if (enpassant != null) {
+                    if (p.color == Piece.Color.WHITE) enpassant = enpassant.flip();
+                    if (filterDirection(enpassant, p.pin)) moves.add(Vector2.add(position, enpassant));
+                }
+
             }
         }
 
@@ -435,7 +463,7 @@ public class Engine implements EngineInterface {
     }
 
     private ArrayList<Vector2> filterDirections(ArrayList<Vector2> directions, Vector2 pinDirection) {
-        if (pinDirection == null) return directions;
+        if (pinDirection == null) return new ArrayList<>(directions);
 
         ArrayList<Vector2> filteredDirections = new ArrayList<>();
         for (Vector2 direction : directions) {
