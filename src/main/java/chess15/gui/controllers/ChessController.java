@@ -703,6 +703,7 @@ public class ChessController implements UIInteface {
 
     public void aiPromote(Vector2 to) {
         Piece p = PROMOTIONPIECES.get(0);
+        p.color = Piece.Color.BLACK;
         remove(to, null);
         addPiece(p, to);
 

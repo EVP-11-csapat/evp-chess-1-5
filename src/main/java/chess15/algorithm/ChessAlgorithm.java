@@ -18,7 +18,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private final RuleSet rules;
     private final Piece.Color color;
 
-    private static final int searchDepth = 4;
+    private static final int searchDepth = 5;
     private static final int mateScore = 100000;
 
     private static final int infinity = 1073741824;
