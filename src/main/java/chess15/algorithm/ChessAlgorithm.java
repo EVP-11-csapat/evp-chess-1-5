@@ -7,7 +7,6 @@ import chess15.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
-import chess15.util.BoardVisualizer;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
 
@@ -21,6 +20,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     private static final int searchDepth = 4;
     private static final int mateScore = 100000;
+
+    private static final int infinity = 1073741824;
     private SearchTree tree;
 
     private Move bestMove;
@@ -51,7 +52,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         Engine engine = new Engine(rules, positions, color);
 
-        minmax(0, engine, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        minmax(0, engine, -infinity, infinity);
 
         return bestMove;
     }
@@ -64,106 +65,94 @@ public class ChessAlgorithm implements AlgorithmInterface {
         }
     }
 
-    private int minmax(int depth, Engine engine, boolean max, int alpha, int beta) {
-        int selectedScore = (max) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+    private int minmax(int depth, Engine engine, int alpha, int beta) {
 
-        ArrayList<Move> moves = orderMoves(engine, max);
+        if(depth > 0){
+            alpha = Math.max(alpha, -mateScore + depth);
+            beta = Math.min(beta, mateScore - depth);
+            if (alpha >= beta) {
+                return alpha;
+            }
+        }
+
+        if (depth == searchDepth) {
+            return searchCaptures (engine, alpha, beta);
+        }
+
+        ArrayList<Move> moves = orderMoves(engine);
 
         if (moves.size() == 0) {
             if (engine.inCheck){
-                int mate = mateScore - depth;
-                return (max) ? -mate : mate;
+                return -1 * (mateScore - depth);
             }
             else return 0;
         }
 
         for (Move move : moves) {
             Engine copiedEngine = new Engine(engine);
-            try{
-                copiedEngine.move(move.from, move.to);
-            }catch (Exception e){
-                e.printStackTrace();
-                System.out.println(move);
-                BoardVisualizer.printBoard(engine.board);
-            }
+            copiedEngine.move(move.from, move.to);
 
-            int score = (depth == searchDepth - 1) ? searchCaptures(copiedEngine, !max, alpha, beta, depth) : minmax(depth + 1, copiedEngine, !max, alpha, beta);
 
-            if (max) {
-                if (score > selectedScore) {
-                    selectedScore = score;
-                    if (depth == 0) {
-                        bestMove = move;
-                    }
+            int score = -minmax(depth + 1, copiedEngine, -beta, -alpha);
+
+            if (score >= beta) return beta;
+
+
+            if (score > alpha) {
+
+                alpha = score;
+                if (depth == 0) {
+                    bestMove = move;
                 }
-                alpha = Math.max(alpha, selectedScore);
-            } else {
-                selectedScore = Math.min(score, selectedScore);
-                beta = Math.min(beta, selectedScore);
             }
-            if (beta <= alpha) return selectedScore;
         }
 
-        return selectedScore;
+        return alpha;
     }
 
-    private int searchCaptures(Engine engine, boolean max, int alpha, int beta, int depth) {
+    private int searchCaptures(Engine engine, int alpha, int beta) {
         int score = ScoreEvaluator.evaluate(engine);
 
-        if(depth == searchDepth + 1) return score;
-
-        if (max) {
-            alpha = Math.max(alpha, score);
-        } else {
-            beta = Math.min(beta, score);
+        if (score >= beta) {
+            return beta;
         }
-        if (beta <= alpha) return score;
-
-        ArrayList<Move> moves = orderMoves(engine, max);
-
-        if (moves.size() == 0) {
-            if (engine.inCheck){
-                int mate = mateScore - depth;
-                return (max) ? -mate : mate;
-            }
-            else return 0;
+        if (score > alpha) {
+            alpha = score;
         }
 
-        int selectedScore = score;
+
+        ArrayList<Move> moves = orderMoves(engine);
 
         for (Move move : moves) {
             if (!engine.board.at(move.to).isEmpty) {
                 if (!((Piece) engine.board.at(move.to)).isKing) {
                     Engine copiedEngine = new Engine(engine);
                     copiedEngine.move(move.from, move.to);
-                    score = searchCaptures(copiedEngine, !max, alpha, beta, depth += 1);
-                    if (max) {
-                        if (score > selectedScore) {
-                            selectedScore = score;
-                        }
-                        alpha = Math.max(alpha, selectedScore);
-                    } else {
-                        selectedScore = Math.min(score, selectedScore);
-                        beta = Math.min(beta, selectedScore);
+                    score = -searchCaptures(copiedEngine, -beta, -alpha);
+
+                    if (score >= beta) {
+                        return beta;
+                    }
+                    if (score > alpha) {
+                        alpha = score;
                     }
                 }
             }
         }
 
-        return selectedScore;
+        return alpha;
     }
 
 
-    private ArrayList<Move> orderMoves(Engine engine, boolean max) {
+    private ArrayList<Move> orderMoves(Engine engine) {
         ArrayList<Move> moves = new ArrayList<>();
         for (Vector2 start : engine.getPieces()) {
             for (Vector2 end : engine.getMoves(start)) {
                 moves.add(new Move(start, end, scoreMove(start, end, engine.getBoard())));
             }
         }
-        if (max) {
-            moves.sort(new SortByScore().reversed());
-        } else moves.sort(new SortByScore());
+
+        moves.sort(new SortByScore().reversed());
 
         return moves;
     }
@@ -188,13 +177,13 @@ public class ChessAlgorithm implements AlgorithmInterface {
         if (!left.outOfBounds() && !board.at(left).isEmpty) {
             Piece leftPawn = (Piece) board.at(left);
             if (leftPawn.movement instanceof Pawn && leftPawn.color == Engine.switchColor(p.color)) {
-                score -= PiecePoints.evaluate(p);
+                score -= 350;
             }
         } else {
             if (!right.outOfBounds() && !board.at(right).isEmpty) {
                 Piece rightPawn = (Piece) board.at(right);
                 if (rightPawn.movement instanceof Pawn && rightPawn.color == Engine.switchColor(p.color)) {
-                    score -= PiecePoints.evaluate(p);
+                    score -= 350;
                 }
             }
         }
