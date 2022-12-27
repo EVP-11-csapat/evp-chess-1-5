@@ -1,10 +1,7 @@
 package chess15.gui.controllers;
 
 import chess15.engine.RuleSet;
-import chess15.gamemode.Classical;
-import chess15.gamemode.Fastpaced;
-import chess15.gamemode.PawnAttack;
-import chess15.gamemode.Testing;
+import chess15.gamemode.*;
 import chess15.gui.images.ImageGrabber;
 import chess15.gui.scenes.ResourceGrabber;
 import javafx.fxml.FXML;
@@ -41,13 +38,15 @@ public class SettingsMenuController {
     @FXML
     private CheckBox enpassantCheckBox;
     @FXML
+    private ScrollPane gamemodesScroll;
+    @FXML
     private CheckBox promotionCheckBox;
     private Button fastpacedButton;
     private Button classicalButton;
     private Button testingButton;
     private Button pawnAttackButton;
-    @FXML
-    private ScrollPane gamemodesScroll;
+    private Button chess960Button;
+    private Button chaosModeButton;
 
     private Pane bgPane;
 
@@ -63,6 +62,8 @@ public class SettingsMenuController {
     private String IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
     private String IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
     private String IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
+    private String IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: transparent;";
+    private String IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
     private static final String HOVERED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
 
     private int height = 619;
@@ -77,41 +78,85 @@ public class SettingsMenuController {
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle("-fx-background-color: #5A5A5A;");
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
             testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
             pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+            chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
+            chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE);
         } else if (selectedGameMode.equals("fastpaced")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
             fastpacedButton.setStyle("-fx-background-color: #5A5A5A;");
             testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
             pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+            chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
+            chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE);
         } else if (selectedGameMode.equals("testing")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
             IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
             testingButton.setStyle("-fx-background-color: #5A5A5A;");
             pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+            chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
+            chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE);
         } else if (selectedGameMode.equals("pawnattack")) {
             IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
             IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+            IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
 
             classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
             fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
             testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
             pawnAttackButton.setStyle("-fx-background-color: #5A5A5A;");
+            chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
+            chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE);
+        } else if (selectedGameMode.equals("chess960")) {
+            IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+            IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
+
+            classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
+            fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
+            testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+            pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+            chess960Button.setStyle("-fx-background-color: #5A5A5A;");
+            chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE);
+        } else if (selectedGameMode.equals("chaos")) {
+            IDLE_CLASSICAL_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_FASTPACED_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_TESTING_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_PAWNATTACK_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHESS960_BUTTON_STYLE = "-fx-background-color: transparent;";
+            IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
+
+            classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
+            fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
+            testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
+            pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
+            chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
+            chaosModeButton.setStyle("-fx-background-color: #5A5A5A;");
         }
     }
 
@@ -121,12 +166,25 @@ public class SettingsMenuController {
      */
     private void disableEverything() {
         playButton.setDisable(true);
+        playButton.setText("Play");
         timerCheckBox.setDisable(true);
+        timerCheckBox.setSelected(false);
+        gameTimerEnabled = false;
         minutesSpinner.setDisable(true);
+        minutesSpinner.getValueFactory().setValue(5);
+        gameTimerMinutes = 5;
         secondsSpinner.setDisable(true);
+        secondsSpinner.getValueFactory().setValue(1);
+        gameTimerSeconds = 1;
         castlingCheckBox.setDisable(true);
+        castlingCheckBox.setSelected(true);
+        isCastlingEnabled = true;
         enpassantCheckBox.setDisable(true);
+        enpassantCheckBox.setSelected(true);
+        isEnPassantEnabled = true;
         promotionCheckBox.setDisable(true);
+        promotionCheckBox.setSelected(true);
+        isPromotionEnabled = true;
     }
 
     private Button setUpButton(String imageName, String title, String description, int index) {
@@ -213,6 +271,14 @@ public class SettingsMenuController {
                 "Just a bunch of pawns and their king", 3);
         pawnAttackButton.setOnMousePressed(e -> onPawnAttackSelected());
 
+        chess960Button = setUpButton("fastpaced", "Chess960",
+                "A chess variant where the back row is randomized", 4);
+        chess960Button.setOnMousePressed(e -> onChess960Selected());
+
+        chaosModeButton = setUpButton("fastpaced", "Chaos Mode",
+                "WARNING: This mode is chaotic", 5);
+        chaosModeButton.setOnMousePressed(e -> onChaosModeSelected());
+
 
         // Set button background onto scroll pane
         if (calcHeight > height) height = calcHeight;
@@ -252,14 +318,15 @@ public class SettingsMenuController {
         pawnAttackButton.setOnMouseEntered(e -> pawnAttackButton.setStyle(HOVERED_BUTTON_STYLE));
         pawnAttackButton.setOnMouseExited(e -> pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE));
 
-        minutesSpinner.setDisable(true);
-        secondsSpinner.setDisable(true);
+        chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
+        chess960Button.setOnMouseEntered(e -> chess960Button.setStyle(HOVERED_BUTTON_STYLE));
+        chess960Button.setOnMouseExited(e -> chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE));
 
-        timerCheckBox.setDisable(true);
-        castlingCheckBox.setDisable(true);
-        enpassantCheckBox.setDisable(true);
-        promotionCheckBox.setDisable(true);
-        playButton.setDisable(true);
+        chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE);
+        chaosModeButton.setOnMouseEntered(e -> chaosModeButton.setStyle(HOVERED_BUTTON_STYLE));
+        chaosModeButton.setOnMouseExited(e -> chaosModeButton.setStyle(IDLE_CHAOS_MODE_BUTTON_STYLE));
+
+        disableEverything();
     }
 
     /**
@@ -278,8 +345,6 @@ public class SettingsMenuController {
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         castlingCheckBox.setDisable(false);
-        isCastlingEnabled = true;
-        castlingCheckBox.setSelected(true);
     }
 
     protected void onPawnAttackSelected() {
@@ -316,8 +381,6 @@ public class SettingsMenuController {
         minutesSpinner.getValueFactory().setValue(90);
         secondsSpinner.getValueFactory().setValue(0);
         castlingCheckBox.setDisable(false);
-        isCastlingEnabled = true;
-        castlingCheckBox.setSelected(true);
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         playButton.setDisable(false);
@@ -335,8 +398,32 @@ public class SettingsMenuController {
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
         castlingCheckBox.setDisable(false);
-        isCastlingEnabled = true;
-        castlingCheckBox.setSelected(true);
+    }
+
+    protected void onChess960Selected() {
+        selectedGameMode = "chess960";
+        disableEverything();
+        setSelectedGameModeButton();
+        System.out.println("Chess960 selected");
+        playButton.setText("Play Chess96");
+        timerCheckBox.setDisable(false);
+        playButton.setDisable(false);
+        enpassantCheckBox.setDisable(false);
+        promotionCheckBox.setDisable(false);
+        castlingCheckBox.setDisable(false);
+    }
+
+    protected void onChaosModeSelected() {
+        selectedGameMode = "chaos";
+        disableEverything();
+        setSelectedGameModeButton();
+        System.out.println("Chaos mode selected");
+        playButton.setText("Play Chaos Mode");
+        timerCheckBox.setDisable(false);
+        playButton.setDisable(false);
+        enpassantCheckBox.setDisable(false);
+        promotionCheckBox.setDisable(false);
+        castlingCheckBox.setDisable(false);
     }
 
     /**
@@ -393,6 +480,7 @@ public class SettingsMenuController {
             if (Objects.equals(selectedGameMode, "fastpaced")) rules.gamemode = new Fastpaced();
             if (Objects.equals(selectedGameMode, "testing")) rules.gamemode = new Testing();
             if (Objects.equals(selectedGameMode, "pawnattack")) rules.gamemode = new PawnAttack();
+            if (Objects.equals(selectedGameMode, "chess960")) rules.gamemode = new Chess960();
             rules.timer = gameTimerEnabled;
             rules.startTime = gameTimerMinutes;
             rules.timeDelta = gameTimerSeconds;

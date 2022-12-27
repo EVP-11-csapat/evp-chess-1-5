@@ -1,0 +1,132 @@
+{
+  "pieces": [
+    {
+      "row": 1,
+      "column": 0,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 1,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 2,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 3,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 4,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 5,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 6,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 1,
+      "column": 7,
+      "color": "black",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 0,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 1,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 2,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 3,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 4,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 5,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 6,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    },
+    {
+      "row": 6,
+      "column": 7,
+      "color": "white",
+      "look": "pawn",
+      "moves": "pawn",
+      "isKing": false
+    }
+  ]
+}
