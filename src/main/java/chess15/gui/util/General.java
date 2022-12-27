@@ -31,6 +31,10 @@ public class General {
     public static void threadStop() {
         Constants.timerThread.interrupt();
         Constants.timerThread.stop();
+        if (Constants.algMoveThreads != null) {
+            Constants.algMoveThreads.interrupt();
+            Constants.algMoveThreads.stop();
+        }
     }
 
     /**

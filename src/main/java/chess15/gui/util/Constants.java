@@ -41,6 +41,7 @@ public class Constants {
     public static int fastPacedCounter;
 
     // Chess Variables
+    public static Thread algMoveThreads;
     public static HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
     public static HashMap<Vector2, ImageView> fromToMoves = new HashMap<>();
     public static HashMap<Vector2, ImageView> pieces = new HashMap<>();

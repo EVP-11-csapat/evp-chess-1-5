@@ -9,7 +9,6 @@ import chess15.engine.RuleSet;
 import chess15.gamemode.Fastpaced;
 import chess15.gui.images.ImageGrabber;
 import chess15.gui.interfaces.UIInteface;
-import chess15.gui.sounds.SoundGrabber;
 import chess15.gui.util.AudioPlayer;
 import chess15.gui.util.Constants;
 import chess15.gui.util.General;
@@ -657,7 +656,7 @@ public class ChessController implements UIInteface {
 
         if (RuleSet.getInstance().isAiGame && piece.color == Piece.Color.WHITE) {
             AtomicBoolean testing = new AtomicBoolean(true);
-            Thread thread = new Thread(() -> {
+            Constants.algMoveThreads = new Thread(() -> {
                 while (testing.get()) {
                     try {
                         Thread.sleep(10);
@@ -673,7 +672,7 @@ public class ChessController implements UIInteface {
                     }
                 }
             });
-            thread.start();
+            Constants.algMoveThreads.start();
         }
         if (Constants.DEVMODE)
             Constants.logger.info("Piece: " + piece.toString() + "\n\t\t Moved from: " + from.toString() +
