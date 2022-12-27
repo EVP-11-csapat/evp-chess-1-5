@@ -410,7 +410,9 @@ public class SettingsMenuController {
         playButton.setDisable(false);
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
-        castlingCheckBox.setDisable(false);
+        castlingCheckBox.setDisable(true);
+        castlingCheckBox.setSelected(false);
+        isCastlingEnabled = false;
     }
 
     protected void onChaosModeSelected() {
@@ -423,7 +425,9 @@ public class SettingsMenuController {
         playButton.setDisable(false);
         enpassantCheckBox.setDisable(false);
         promotionCheckBox.setDisable(false);
-        castlingCheckBox.setDisable(false);
+        castlingCheckBox.setDisable(true);
+        castlingCheckBox.setSelected(false);
+        isCastlingEnabled = false;
     }
 
     /**
@@ -481,20 +485,13 @@ public class SettingsMenuController {
             if (Objects.equals(selectedGameMode, "testing")) rules.gamemode = new Testing();
             if (Objects.equals(selectedGameMode, "pawnattack")) rules.gamemode = new PawnAttack();
             if (Objects.equals(selectedGameMode, "chess960")) rules.gamemode = new Chess960();
+            if (Objects.equals(selectedGameMode, "chaos")) rules.gamemode = new ChaosMode();
             rules.timer = gameTimerEnabled;
             rules.startTime = gameTimerMinutes;
             rules.timeDelta = gameTimerSeconds;
             rules.castling = isCastlingEnabled;
             rules.promotion = isPromotionEnabled;
             rules.enpassant = isEnPassantEnabled;
-            System.out.println("Play button pressed");
-            System.out.println("Game mode: " + selectedGameMode);
-            System.out.println("Game timer enabled: " + gameTimerEnabled);
-            System.out.println("Game timer minutes: " + gameTimerMinutes);
-            System.out.println("Game timer seconds: " + gameTimerSeconds);
-            System.out.println("Castling enabled: " + isCastlingEnabled);
-            System.out.println("En passant enabled: " + isEnPassantEnabled);
-            System.out.println("Promotion enabled: " + isPromotionEnabled);
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
 //            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scenes/chess.fxml")));
             Stage primarStage = (Stage) playButton.getScene().getWindow();
