@@ -294,7 +294,7 @@ public class Engine implements EngineInterface {
         Piece p = (Piece) e;
         boolean isAttackDifferent = p.movement.attackDifferent;
 
-        ArrayList<Vector2> moveDirections = filterDirections(orient(p.movement.moves, p.movement.whiteDifferent, p.color), p.pin);
+        ArrayList<Vector2> moveDirections = filterDirections(orient(p.movement.moves, p.movement.whiteDifferent, p.color), p.pin, onlyAttacks);
 
         if (p.movement instanceof Pawn) {
             Vector2 twoSquares = null;
@@ -302,7 +302,7 @@ public class Engine implements EngineInterface {
                 twoSquares = new Vector2(0, 2);
             else if (position.y == 6 && p.color == Piece.Color.WHITE && board.at(new Vector2(position.x, 5)).isEmpty && board.at(new Vector2(position.x, 4)).isEmpty)
                 twoSquares = new Vector2(0, -2);
-            if (twoSquares != null && filterDirection(twoSquares, p.pin))
+            if (twoSquares != null && filterDirection(twoSquares, p.pin, onlyAttacks))
                 moveDirections.add(twoSquares);
         }
 
@@ -318,7 +318,7 @@ public class Engine implements EngineInterface {
         }
 
         if (isAttackDifferent) {
-            ArrayList<Vector2> attackDirections = filterDirections(orient(p.movement.attacks, p.movement.whiteDifferent, p.color), p.pin);
+            ArrayList<Vector2> attackDirections = filterDirections(orient(p.movement.attacks, p.movement.whiteDifferent, p.color), p.pin, onlyAttacks);
 
             for (Vector2 attackDirection : attackDirections) {
                 Vector2 candidate = Vector2.add(position, attackDirection);
@@ -346,7 +346,7 @@ public class Engine implements EngineInterface {
                 }
                 if (enpassant != null) {
                     if (p.color == Piece.Color.WHITE) enpassant = enpassant.flip();
-                    if (filterDirection(enpassant, p.pin)) moves.add(Vector2.add(position, enpassant));
+                    if (filterDirection(enpassant, p.pin, onlyAttacks)) moves.add(Vector2.add(position, enpassant));
                 }
 
             }
@@ -456,18 +456,18 @@ public class Engine implements EngineInterface {
 
     }
 
-    private boolean filterDirection(Vector2 direction, Vector2 pinDirection) {
-        if (pinDirection == null) return true;
+    private boolean filterDirection(Vector2 direction, Vector2 pinDirection, boolean onlyAttacks) {
+        if (onlyAttacks || pinDirection == null) return true;
 
         return Vector2.sameDirection(direction, pinDirection);
     }
 
-    private ArrayList<Vector2> filterDirections(ArrayList<Vector2> directions, Vector2 pinDirection) {
-        if (pinDirection == null) return new ArrayList<>(directions);
+    private ArrayList<Vector2> filterDirections(ArrayList<Vector2> directions, Vector2 pinDirection, boolean onlyAttacks) {
+        if (onlyAttacks || pinDirection == null) return new ArrayList<>(directions);
 
         ArrayList<Vector2> filteredDirections = new ArrayList<>();
         for (Vector2 direction : directions) {
-            if (filterDirection(direction, pinDirection)) filteredDirections.add(direction);
+            if (filterDirection(direction, pinDirection, false)) filteredDirections.add(direction);
         }
 
 

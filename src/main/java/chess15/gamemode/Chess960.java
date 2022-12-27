@@ -1,6 +1,7 @@
 package chess15.gamemode;
 
 import chess15.*;
+import chess15.util.BoardVisualizer;
 import chess15.util.JsonToBoard;
 
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class Chess960 extends Gamemode {
 
 //        board = JsonToBoard.jsonToBoard("classical.json");
 
+        BoardVisualizer.printBoard(board);
         return board;
     }
 

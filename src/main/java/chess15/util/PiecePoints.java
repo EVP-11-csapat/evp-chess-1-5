@@ -13,7 +13,7 @@ public class PiecePoints {
     }
 
     public static int evaluateTable (Piece piece, Vector2 position) {
-        int[] table = new int[64];
+        byte[] table = new byte[64];
 
         if (piece.isKing) table = king;
         else if (piece.movement.getClass() == Pawn.class) table = pawns;
@@ -32,7 +32,7 @@ public class PiecePoints {
         return table[row * 8 + column];
     }
 
-    public static int[] pawns = {
+    public static byte[] pawns = {
             0,  0,  0,  0,  0,  0,  0,  0,
             50, 50, 50, 50, 50, 50, 50, 50,
             10, 10, 20, 30, 30, 20, 10, 10,
@@ -43,7 +43,7 @@ public class PiecePoints {
             0,  0,  0,  0,  0,  0,  0,  0
     };
 
-    public static int[] knights = {
+    public static byte[] knights = {
             -50,-40,-30,-30,-30,-30,-40,-50,
             -40,-20,  0,  0,  0,  0,-20,-40,
             -30,  0, 10, 15, 15, 10,  0,-30,
@@ -54,7 +54,7 @@ public class PiecePoints {
             -50,-40,-30,-30,-30,-30,-40,-50,
     };
 
-    public static int[] bishops = {
+    public static byte[] bishops = {
             -20,-10,-10,-10,-10,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
             -10,  0,  5, 10, 10,  5,  0,-10,
@@ -65,7 +65,7 @@ public class PiecePoints {
             -20,-10,-10,-10,-10,-10,-10,-20,
     };
 
-    public static int[] rooks = {
+    public static byte[] rooks = {
             0,  0,  0,  0,  0,  0,  0,  0,
             5, 10, 10, 10, 10, 10, 10,  5,
             -5,  0,  0,  0,  0,  0,  0, -5,
@@ -76,7 +76,7 @@ public class PiecePoints {
             0,  0,  0,  5,  5,  0,  0,  0
     };
 
-    public static int[] queens = {
+    public static byte[] queens = {
             -20,-10,-10, -5, -5,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
             -10,  0,  5,  5,  5,  5,  0,-10,
@@ -87,7 +87,7 @@ public class PiecePoints {
             -20,-10,-10, -5, -5,-10,-10,-20
     };
 
-    public static int[] king = {
+    public static byte[] king = {
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,

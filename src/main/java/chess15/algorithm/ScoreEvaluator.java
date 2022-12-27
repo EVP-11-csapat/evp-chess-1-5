@@ -53,8 +53,8 @@ public class ScoreEvaluator {
         whiteScore += whiteMaterial;
         blackScore += blackMaterial;
 
-        float whiteEndgamePhaseWeight = endgamePhaseWeight(whiteMaterialWoPawns);
-        float blackEndgamePhaseWeight = endgamePhaseWeight(blackMaterialWoPawns);
+        float whiteEndgame = endgame(whiteMaterialWoPawns);
+        float blackEndgame = endgame(blackMaterialWoPawns);
 
         for (int i = 0; i < whitePieces.size() - 1; i++) {
             Vector2 p = whitePieces.get(i);
@@ -70,19 +70,50 @@ public class ScoreEvaluator {
 
         Vector2 whiteKingPos = whitePieces.get(whitePieces.size() - 1);
         Piece whiteKing = (Piece) board.at(whiteKingPos);
-        whiteScore += (int) (PiecePoints.evaluateTable(whiteKing, whiteKingPos) * (1 - whiteEndgamePhaseWeight));
+        whiteScore += (int) (PiecePoints.evaluateTable(whiteKing, whiteKingPos) * (1 - whiteEndgame));
 
         Vector2 blackKingPos = whitePieces.get(whitePieces.size() - 1);
         Piece blackKing = (Piece) board.at(whiteKingPos);
-        blackScore += (int) (PiecePoints.evaluateTable(blackKing, blackKingPos) * (1 - blackEndgamePhaseWeight));
+        blackScore += (int) (PiecePoints.evaluateTable(blackKing, blackKingPos) * (1 - blackEndgame));
+
+        whiteScore += mopUp(whiteKingPos, blackKingPos, whiteMaterial, blackMaterial, blackEndgame);
+        blackScore += mopUp(blackKingPos, whiteKingPos, blackMaterial, whiteMaterial, whiteEndgame);
 
 
         return (engine.nextPlayer == Piece.Color.WHITE) ? whiteScore - blackScore : blackScore - whiteScore;
     }
 
-    private static float endgamePhaseWeight(int materialCountWithoutPawns) {
+    private static float endgame(int materialCountWithoutPawns) {
         float multiplier = 1 / endgameMaterialStart;
         return 1 - Math.min(1, materialCountWithoutPawns * multiplier);
     }
+
+    private static int mopUp(Vector2 playerKing, Vector2 opponentKing, int playerMaterial, int opponentMaterial, float endgame) {
+        int mopUpScore = 0;
+        if (playerMaterial > opponentMaterial + 200 && endgame > 0) {
+
+            mopUpScore += centerManhattanDistance[opponentKing.y * 8 + opponentKing.x] * 10;
+
+            mopUpScore += (14 - manhattanDistance(playerKing, opponentKing)) * 4;
+
+            return (int) (mopUpScore * endgame);
+        }
+        return 0;
+    }
+
+    private static byte manhattanDistance(Vector2 a, Vector2 b) {
+        return (byte) (Math.abs(a.x - b.x) + Math.abs(a.y - b.y));
+    }
+
+    private static final byte[] centerManhattanDistance = {
+            6, 5, 4, 3, 3, 4, 5, 6,
+            5, 4, 3, 2, 2, 3, 4, 5,
+            4, 3, 2, 1, 1, 2, 3, 4,
+            3, 2, 1, 0, 0, 1, 2, 3,
+            3, 2, 1, 0, 0, 1, 2, 3,
+            4, 3, 2, 1, 1, 2, 3, 4,
+            5, 4, 3, 2, 2, 3, 4, 5,
+            6, 5, 4, 3, 3, 4, 5, 6
+    };
 
 }
