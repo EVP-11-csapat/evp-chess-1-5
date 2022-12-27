@@ -53,6 +53,7 @@ public class Constants {
     public static Pane promotionUIBase = new Pane();
     public static StackPane endGameBase = new StackPane();
     public static ArrayList<Move> playedMoves = new ArrayList<>();
+    public static boolean pauseForPromotion = false;
 
     // DevMode
     public static final boolean DEVMODE = true;

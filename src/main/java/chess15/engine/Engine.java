@@ -3,6 +3,7 @@ package chess15.engine;
 import chess15.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
+import chess15.gui.util.Constants;
 import chess15.util.Move;
 import chess15.util.WinReason;
 
@@ -80,6 +81,7 @@ public class Engine implements EngineInterface {
             if (rules.promotion && ((nextPlayer == Piece.Color.WHITE && to.y == 0) || (nextPlayer == Piece.Color.BLACK && to.y == 7))) {
                 board.elements[from.x][from.y] = new BoardElement();
                 if (UIRef != null) {
+                    Constants.pauseForPromotion = true;
                     UIRef.promote(nextPlayer, to);
                 } else {
                     setPiece(to, new Piece(nextPlayer, Piece.Type.QUEEN, Queen.getInstance(), false));

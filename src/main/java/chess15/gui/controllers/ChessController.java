@@ -664,7 +664,7 @@ public class ChessController implements UIInteface {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (moveFinished.get() && Constants.isRunning) {
+                    if (moveFinished.get() && Constants.isRunning && !Constants.pauseForPromotion) {
                         testing.set(false);
                         Move computerMove = alg.move(engine.getBoard(), new Move(from, to));
                         Platform.runLater(() -> {
@@ -770,6 +770,7 @@ public class ChessController implements UIInteface {
                 engine.setPiece(to, p);
                 Constants.pausedForPromotion = false;
                 Constants.fastPacedCounter = 0;
+                Constants.pauseForPromotion = false;
                 if (Constants.DEVMODE)
                     Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
             });
