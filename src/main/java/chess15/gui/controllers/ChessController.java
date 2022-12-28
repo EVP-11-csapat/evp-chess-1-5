@@ -705,8 +705,8 @@ public class ChessController implements UIInteface {
         p.color = Piece.Color.BLACK;
         remove(to, null);
         addPiece(p, to);
-
         engine.setPiece(to, p);
+        Constants.pauseForPromotion = false;
     }
 
     /**
@@ -722,7 +722,6 @@ public class ChessController implements UIInteface {
             aiPromote(to);
             return;
         }
-        Constants.pausedForPromotion = true;
         // Prepare the promotion UI base
         Constants.promotionUIBase.setPrefWidth(90);
         Constants.promotionUIBase.setPrefHeight(90 * 4);
@@ -767,7 +766,7 @@ public class ChessController implements UIInteface {
                 chessBoardPane.getChildren().remove(Constants.promotionUIBase);
                 Constants.promotionList.clear();
                 engine.setPiece(to, p);
-                Constants.pausedForPromotion = false;
+                Constants.pauseForPromotion = false;
                 Constants.fastPacedCounter = 0;
                 Constants.pauseForPromotion = false;
                 if (Constants.DEVMODE)

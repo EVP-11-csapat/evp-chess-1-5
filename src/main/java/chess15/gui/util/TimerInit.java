@@ -126,7 +126,7 @@ public class TimerInit {
                     e.printStackTrace();
                 }
 
-                if (!Constants.pausedForPromotion) {
+                if (!Constants.pauseForPromotion) {
                     Constants.fastPacedCounter += 10;
                     if (Constants.fastPacedCounter >= Constants.FASTPACEDTIMEOUT) { // Fire every 2 seconds
                         Constants.fastPacedCounter = 0;
