@@ -18,7 +18,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private final RuleSet rules;
     private final Piece.Color color;
 
-    private static final int searchDepth = 5;
+    private static final int startDepth = 3;
+    private static int searchDepth = 3;
     private static final int mateScore = 100000;
 
     private static final int infinity = 1073741824;
@@ -52,8 +53,15 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         Engine engine = new Engine(rules, positions, color);
 
-        minmax(0, engine, -infinity, infinity);
+        long startTime = System.nanoTime();
 
+        searchDepth = startDepth;
+        while (System.nanoTime() - startTime < 2000000000){
+            minmax(0, engine, -infinity, infinity);
+            searchDepth++;
+        }
+
+        System.out.println("Searched to depth of " + (searchDepth - 1));
         return bestMove;
     }
 
