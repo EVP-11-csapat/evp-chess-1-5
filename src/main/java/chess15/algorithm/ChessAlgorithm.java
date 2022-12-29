@@ -12,6 +12,11 @@ import chess15.util.PiecePoints;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ChessAlgorithm implements AlgorithmInterface {
 
@@ -23,6 +28,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private SearchTree tree;
 
     private Move bestMove;
+    private Move bestMoveInIteration;
 
     @Override
     public Move move(Board positions, Move playerMove) {
@@ -48,12 +54,42 @@ public class ChessAlgorithm implements AlgorithmInterface {
             }
         }
 
+
         Engine engine = new Engine(rules, positions, color);
+        Thread searchThread = new Thread(() -> {
+            int i = 1;
+            try {
 
-        for (int i = 1; i < 6; i++) {
-            minmax(i, 0, engine, -infinity, infinity);
+                while (!Thread.currentThread().isInterrupted()) {
+                    System.out.println("Starting iteration " + i);
+                    minmax(i, 0, engine, -infinity, infinity);
+                    bestMove = bestMoveInIteration;
+                    System.out.println("Completed iteration " + i);
+                    i++;
+                }
+            } catch (InterruptedException e) {
+
+            }
+        });
+
+        searchThread.start();
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                searchThread.interrupt();
+                System.out.println("ScheduledExecutorService interrupted the search");
+            }
+        }, 3, TimeUnit.SECONDS);
+
+        try {
+            executor.awaitTermination(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+
+        } finally {
+            executor.shutdown();
         }
-
         return bestMove;
     }
 
@@ -65,7 +101,9 @@ public class ChessAlgorithm implements AlgorithmInterface {
         }
     }
 
-    private int minmax(int depth, int plyFromRoot, Engine engine, int alpha, int beta) {
+    private int minmax(int depth, int plyFromRoot, Engine engine, int alpha, int beta) throws InterruptedException {
+
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
 
         long hash = Zobrist.calculateHash(engine);
 
@@ -77,7 +115,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
             int score = entry.getCorrectedScore(depth, plyFromRoot, alpha, beta);
             storedmove = entry.bestMove;
             if (score != TranspositionTable.LOOKUPFAILED) {
-                if (plyFromRoot == 0) bestMove = entry.bestMove;
+                if (plyFromRoot == 0) bestMoveInIteration = entry.bestMove;
                 return score;
             }
         }
@@ -125,7 +163,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
                 alpha = score;
                 if (plyFromRoot == 0) {
-                    bestMove = move;
+                    bestMoveInIteration = move;
                 }
             }
         }
@@ -135,7 +173,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return alpha;
     }
 
-    private int searchCaptures(Engine engine, int alpha, int beta) {
+    private int searchCaptures(Engine engine, int alpha, int beta) throws InterruptedException {
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
+
+
         int score = ScoreEvaluator.evaluate(engine);
 
         if (score >= beta) {
