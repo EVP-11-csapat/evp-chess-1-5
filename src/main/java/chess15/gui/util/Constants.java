@@ -3,6 +3,7 @@ package chess15.gui.util;
 import chess15.Board;
 import chess15.Piece;
 import chess15.Vector2;
+import chess15.algorithm.AlgorithmInterface;
 import chess15.gui.controllers.ChessController;
 import chess15.util.Move;
 import javafx.scene.control.Label;
@@ -55,6 +56,7 @@ public class Constants {
     public static StackPane endGameBase = new StackPane();
     public static ArrayList<Move> playedMoves = new ArrayList<>();
     public static boolean pauseForPromotion = false;
+    public static AlgorithmInterface alg;
 
     // ###########
     // # DevMode #

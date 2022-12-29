@@ -1,7 +1,6 @@
 package chess15.gui.controllers;
 
 import chess15.*;
-import chess15.algorithm.AlgorithmInterface;
 import chess15.algorithm.ChessAlgorithm;
 import chess15.engine.Engine;
 import chess15.engine.EngineInterface;
@@ -56,7 +55,6 @@ public class ChessController implements UIInteface {
             new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Knight.getInstance(), false)
     ));
     private EngineInterface engine;
-    private AlgorithmInterface alg;
     @FXML
     public Pane chessBoardPane;
     @FXML
@@ -78,7 +76,7 @@ public class ChessController implements UIInteface {
      */
     public void initialize() {
         engine = new Engine(RuleSet.getInstance(), this);
-        if (RuleSet.getInstance().isAiGame) alg = new ChessAlgorithm(RuleSet.getInstance(), Piece.Color.BLACK);
+        if (RuleSet.getInstance().isAiGame) Constants.alg = new ChessAlgorithm(RuleSet.getInstance(), Piece.Color.BLACK);
         Constants.board = engine.getBoard();
         setUpBoard();
 
@@ -668,7 +666,7 @@ public class ChessController implements UIInteface {
                     }
                     if (moveFinished.get() && Constants.isRunning && !Constants.pauseForPromotion) {
                         testing.set(false);
-                        Move computerMove = alg.move(engine.getBoard(), new Move(from, to));
+                        Move computerMove = Constants.alg.move(engine.getBoard(), new Move(from, to));
                         Platform.runLater(() -> movePiece(computerMove.from, computerMove.to));
                     }
                 }

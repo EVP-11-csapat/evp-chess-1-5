@@ -2,6 +2,7 @@ package chess15.gui.util;
 
 import chess15.Piece;
 import chess15.Vector2;
+import chess15.algorithm.ChessAlgorithm;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
 import chess15.gui.controllers.ChessController;
@@ -56,6 +57,7 @@ public class General {
      */
     public static void reset(ChessController chessController, EngineInterface engine) {
         engine.reset();
+        if (RuleSet.getInstance().isAiGame) Constants.alg = new ChessAlgorithm(RuleSet.getInstance(), Piece.Color.BLACK);
         Constants.board = engine.getBoard();
         chessController.removePosibleMoves();
         chessController.removeFromTo();
