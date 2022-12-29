@@ -1,10 +1,10 @@
 package chess15.gui.sounds;
 
+/**
+ * Just a class to use getResource on for standalone build
+ */
 public class SoundGrabber {
     private static SoundGrabber instance = null;
-
-    private SoundGrabber() {
-    }
 
     public static SoundGrabber getInstance() {
         if (instance == null) {

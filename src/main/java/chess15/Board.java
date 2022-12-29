@@ -45,6 +45,10 @@ public class Board {
         }
     }
 
+    /**
+     * Initializes a new board based on the passed original
+     * @param original The {@link Board} to copy
+     */
     public Board(Board original){
         elements = new BoardElement[8][8];
         for (int i = 0; i < 8; i++) {

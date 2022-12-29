@@ -2,7 +2,15 @@ package chess15.util;
 
 import chess15.*;
 
+/**
+ * Class used for piece evaluation
+ */
 public class PiecePoints {
+    /**
+     * Return the points a piece is worth in chess
+     * @param p The {@link Piece} we want to score for materian
+     * @return The score
+     */
     public static int evaluate(Piece p) {
         if (p.movement.getClass() == Pawn.class) return 1;
         if (p.movement.getClass() == Knight.class) return 3;
@@ -12,6 +20,13 @@ public class PiecePoints {
         else return 0;
     }
 
+    /**
+     * Evaluate a piece based on its position on the board
+     * Used for chess alg
+     * @param piece The {@link Piece} we want to evaluate
+     * @param position The {@link Vector2} on the board
+     * @return The score of the piece
+     */
     public static int evaluateTable (Piece piece, Vector2 position) {
         byte[] table = new byte[64];
 

@@ -11,10 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -23,7 +20,9 @@ import java.util.logging.Logger;
  * Stores all the constants that we use
  */
 public class Constants {
-    // Timer Variables
+    // ###################
+    // # Timer Variables #
+    // ###################
     public static final int FASTPACEDTIMEOUT = 2000;
     public static HBox timerHBox;
     public static Label whiteTimerLabel;
@@ -39,7 +38,9 @@ public class Constants {
     public static long blackTimeInMillis;
     public static int fastPacedCounter;
 
-    // Chess Variables
+    // ###################
+    // # Chess Variables #
+    // ###################
     public static Thread algMoveThreads;
     public static HashMap<Vector2, ImageView> possibleMoves = new HashMap<>();
     public static HashMap<Vector2, ImageView> fromToMoves = new HashMap<>();
@@ -55,7 +56,9 @@ public class Constants {
     public static ArrayList<Move> playedMoves = new ArrayList<>();
     public static boolean pauseForPromotion = false;
 
-    // DevMode
+    // ###########
+    // # DevMode #
+    // ###########
     public static final boolean DEVMODE = true;
     public static final Logger logger = Logger.getLogger(ChessController.class.getName());
     public static FileHandler logFileHandler;

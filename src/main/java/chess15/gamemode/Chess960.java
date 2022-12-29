@@ -1,7 +1,6 @@
 package chess15.gamemode;
 
 import chess15.*;
-import chess15.util.BoardVisualizer;
 import chess15.util.JsonToBoard;
 
 import java.util.ArrayList;
@@ -10,7 +9,14 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Chess960 Game Mode
+ */
 public class Chess960 extends Gamemode {
+    /**
+     * Prepares the board for the gamemode
+     * @return The {@link Board} created for the mode
+     */
     @Override
     public Board startState() {
         Board board = new Board();
@@ -79,6 +85,12 @@ public class Chess960 extends Gamemode {
         return board;
     }
 
+    /**
+     * Add the {@link Piece} to the {@link Board}
+     * @param board The {@link Board} we want to add the piece to
+     * @param p The {@link Piece} we want to add
+     * @param pos The {@link Vector2} position we want to add it at
+     */
     private static void addPiece(Board board, Piece p, Vector2 pos) {
         board.elements[pos.x][pos.y] = new Piece(p);
         p.color = Piece.Color.BLACK;

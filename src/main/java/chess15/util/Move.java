@@ -15,7 +15,7 @@ public class Move {
     public int score;
 
     /**
-     * Create the move class with all parameters
+     * Create the move class with all parameters score set to 0
      * @param from The {@link Vector2} position of where the piece was moved from
      * @param to The {@link Vector2} position of where the piece was moved to
      * @param color The {@link chess15.Piece.Color} of the side that played the move
@@ -27,6 +27,11 @@ public class Move {
         this.score = 0;
     }
 
+    /**
+     * Create the move class with just from to positions
+     * @param from The {@link Vector2} position of where the piece was moved from
+     * @param to The {@link Vector2} position of where the piece was moved to
+     */
     public Move(Vector2 from, Vector2 to){
         this.from = from;
         this.to = to;
@@ -34,6 +39,12 @@ public class Move {
         this.score = 0;
     }
 
+    /**
+     * Create the move class with all parameters color set to null
+     * @param from The {@link Vector2} position of where the piece was moved from
+     * @param to The {@link Vector2} position of where the piece was moved to
+     * @param score The score given to the move
+     */
     public Move(Vector2 from, Vector2 to, int score){
         this.from = from;
         this.to = to;
@@ -41,11 +52,14 @@ public class Move {
         this.score = score;
     }
 
+    /**
+     * To string method for debugging
+     * @return The string form of the move
+     */
     @Override
     public String toString() {
         return "Move: {From: " + from + ", To: "  + to + ", Color: " + color + ", Score: " + score + " }";
     }
-
 
     @Override
     public boolean equals(Object o) {

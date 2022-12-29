@@ -2,11 +2,17 @@ package chess15;
 
 import java.util.ArrayList;
 
-//Singleton class
+/**
+ * King movement class
+ * Singleton class
+ */
 public class King extends MoveSet
 {
     private static King instance;
 
+    /**
+     * Add the posible moves for the class
+     */
     private King()
     {
         moves = new ArrayList<Vector2>();
@@ -23,6 +29,10 @@ public class King extends MoveSet
         attackDifferent = false;
         whiteDifferent = false;
     }
+
+    /**
+     * @return The instance of the class
+     */
     public static MoveSet getInstance()
     {
         if(instance == null) instance = new King();

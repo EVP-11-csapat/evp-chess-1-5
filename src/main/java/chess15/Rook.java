@@ -2,11 +2,17 @@ package chess15;
 
 import java.util.ArrayList;
 
-//Singleton class
+/**
+ * Rook movement class
+ * Singleton class
+ */
 public class Rook extends MoveSet
 {
     private static Rook instance;
 
+    /**
+     * Add the posible moves for the class
+     */
     private Rook()
     {
         moves = new ArrayList<Vector2>();
@@ -20,6 +26,9 @@ public class Rook extends MoveSet
         whiteDifferent = false;
     }
 
+    /**
+     * @return The instance of the class
+     */
     public static MoveSet getInstance()
     {
         if (instance == null) instance = new Rook();

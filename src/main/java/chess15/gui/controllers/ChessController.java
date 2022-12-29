@@ -189,7 +189,9 @@ public class ChessController implements UIInteface {
         AudioPlayer.playStartSound();
     }
 
-    // Board setup methods
+    // #######################
+    // # Board setup methods #
+    // #######################
 
     /**
      * Method used to set up the board and the pieces
@@ -306,7 +308,9 @@ public class ChessController implements UIInteface {
         piece.setOnMousePressed(pressedHandler);
     }
 
-    // Possible Move Display Methods
+    // #################################
+    // # Possible Move Display Methods #
+    // #################################
 
     /**
      * Remove the possible move marker from the board
@@ -319,7 +323,9 @@ public class ChessController implements UIInteface {
         Constants.possibleMoves.clear();
     }
 
-    // Move From To Display Methods
+    // ################################
+    // # Move From To Display Methods #
+    // ################################
 
     /**
      * Remove the from to move marker from the board
@@ -397,7 +403,9 @@ public class ChessController implements UIInteface {
         chessBoardPane.getChildren().add(toMove);
     }
 
-    // Timer Method
+    // ################
+    // # Timer Method #
+    // ################
 
     /**
      * Method to update the timer text and additional time
@@ -415,7 +423,9 @@ public class ChessController implements UIInteface {
         Constants.blackTimerLabel.setText(TimerInit.formatTime(Constants.blackTimeInMillis));
     }
 
-    // Taken Pieces Display Methods
+    // ################################
+    // # Taken Pieces Display Methods #
+    // ################################
 
     /**
      * Display the captured pieces on the side of the board
@@ -496,7 +506,9 @@ public class ChessController implements UIInteface {
         displayTaken();
     }
 
-    // Move List Display Methods
+    // #############################
+    // # Move List Display Methods #
+    // #############################
 
     /**
      * Generate the material advantage text to put in the move display
@@ -561,7 +573,9 @@ public class ChessController implements UIInteface {
         moveListElement.scrollTo(moveListElement.getItems().size());
     }
 
-    // Movement Methods
+    // ####################
+    // # Movement Methods #
+    // ####################
 
     /**
      * Text input where the user can type a move
@@ -700,6 +714,11 @@ public class ChessController implements UIInteface {
             Constants.logger.info("Piece removed at: " + pieceToRemove);
     }
 
+    /**
+     * Handles the promotion for the chess alg
+     * Always chooses queen for simplicity
+     * @param to The {@link Vector2} position of the promoting pawn
+     */
     public void aiPromote(Vector2 to) {
         Piece p = PROMOTIONPIECES.get(0);
         p.color = Piece.Color.BLACK;
@@ -768,7 +787,6 @@ public class ChessController implements UIInteface {
                 engine.setPiece(to, p);
                 Constants.pauseForPromotion = false;
                 Constants.fastPacedCounter = 0;
-                Constants.pauseForPromotion = false;
                 if (Constants.DEVMODE)
                     Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
             });
@@ -781,7 +799,9 @@ public class ChessController implements UIInteface {
             Constants.logger.info("Promotion dialog prompted at: " + to.toString());
     }
 
-    // End Game Method
+    // ###################
+    // # End Game Method #
+    // ###################
 
     /**
      * The end game is called when we want to finist the current game.

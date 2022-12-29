@@ -1,5 +1,8 @@
 package chess15.gamemodes;
 
+/**
+ * Just a class to use getResource on for standalone build
+ */
 public class JSONGrabber {
     private static JSONGrabber instance;
 

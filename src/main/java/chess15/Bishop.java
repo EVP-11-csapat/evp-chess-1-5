@@ -2,11 +2,17 @@ package chess15;
 
 import java.util.ArrayList;
 
-//Singleton class
+/**
+ * Bishop movement class
+ * Singleton class
+ */
 public class Bishop extends MoveSet
 {
     private static Bishop instance;
 
+    /**
+     * Add the posible moves for the class
+     */
     private Bishop()
     {
         moves= new ArrayList<Vector2>();
@@ -20,6 +26,9 @@ public class Bishop extends MoveSet
         whiteDifferent = false;
     }
 
+    /**
+     * @return The instance of the class
+     */
     public static MoveSet getInstance()
     {
         if (instance == null) instance = new Bishop();

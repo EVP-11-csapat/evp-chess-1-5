@@ -175,6 +175,11 @@ public class General {
         else return "black";
     }
 
+    /**
+     * Change the scene to the main menu when the game is finished
+     * @param scene The Scene to switch to
+     * @param stage The stage to switch the scene
+     */
     public static void changeScene(String scene, Stage stage) {
         try {
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("mainMenu.fxml")));

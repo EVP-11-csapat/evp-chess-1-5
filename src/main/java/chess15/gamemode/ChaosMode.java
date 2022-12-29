@@ -2,15 +2,20 @@ package chess15.gamemode;
 
 import chess15.*;
 import chess15.util.BoardVisualizer;
-import chess15.util.JsonToBoard;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * Chaos Game Mode
+ */
 public class ChaosMode extends Gamemode {
 
+    /**
+     * Gets a random {@link chess15.Piece.Type} to create a random piece
+     * @return The {@link chess15.Piece.Type} of the piece
+     */
     private Piece.Type getRandomType() {
         ArrayList<Piece.Type> possible = new ArrayList<>(List.of(
                 Piece.Type.ROOK,
@@ -25,6 +30,10 @@ public class ChaosMode extends Gamemode {
         return possible.get(index);
     }
 
+    /**
+     * Gets a random {@link MoveSet} to create a random piece
+     * @return The {@link MoveSet} of the piece
+     */
     private MoveSet getMovement() {
         ArrayList<MoveSet> possible = new ArrayList<>(List.of(
                 Rook.getInstance(),
@@ -39,15 +48,19 @@ public class ChaosMode extends Gamemode {
         return possible.get(index);
     }
 
+    /**
+     * Prepares the board for the gamemode
+     * @return The {@link Board} created for the mode
+     */
     @Override
     public Board startState() {
         Board board = new Board();
-//        board = JsonToBoard.jsonToBoard("classical.json");
 
         // Gemerate king positions
         SecureRandom random = new SecureRandom();
         int x = random.nextInt(7);
 
+        // Place the two kings
         Piece whiteKing = new Piece(Piece.Color.WHITE, Piece.Type.KING, King.getInstance(), true);
         Piece blackKing = new Piece(Piece.Color.BLACK, Piece.Type.KING, King.getInstance(), true);
         board.elements[x][0] = blackKing;
@@ -65,8 +78,6 @@ public class ChaosMode extends Gamemode {
                 board.elements[position.x][7 - position.y] = new Piece(p);
             }
         }
-
-        BoardVisualizer.printBoard(board);
 
         return board;
     }

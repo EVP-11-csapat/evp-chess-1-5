@@ -3,9 +3,16 @@ package chess15;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+/**
+ * Bishop movement class
+ * Singleton class
+ */
 public class Pawn extends MoveSet {
     private static Pawn instance;
 
+    /**
+     * Add the posible moves for the class
+     */
     private Pawn() {
         moves = new ArrayList<>();
         moves.add(new Vector2(0, 1));
@@ -19,6 +26,9 @@ public class Pawn extends MoveSet {
         whiteDifferent = true;
     }
 
+    /**
+     * @return The instance of the class
+     */
     public static MoveSet getInstance() {
         if (instance == null) instance = new Pawn();
         return instance;

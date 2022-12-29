@@ -10,8 +10,6 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -53,8 +51,11 @@ public class MainMenuController {
         primaryStage.requestFocus();
     }
 
+    /**
+     * Opens the game board agains the chess alg
+     */
     @FXML
-    protected void onAiButtonPressed() throws IOException, URISyntaxException {
+    protected void onAiButtonPressed() {
         System.out.println("AI button pressed");
         RuleSet rules = RuleSet.getInstance();
         rules.castling = true;
@@ -66,8 +67,13 @@ public class MainMenuController {
         rules.timer = false;
         rules.isAiGame = true;
 
-//        System.out.println(ResourceGrabber.getInstance().getClass().getResource("chess.fxml").toURI().toString());
-        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+        Parent newRoot = null;
+        try {
+            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+        } catch (IOException e) {
+            System.out.println("Chess.fxml not found");
+            throw new RuntimeException(e);
+        }
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
         primaryStage.getScene().setRoot(newRoot);
         primaryStage.requestFocus();
