@@ -1,7 +1,6 @@
 package chess15.gamemode;
 
 import chess15.*;
-import chess15.util.BoardVisualizer;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;

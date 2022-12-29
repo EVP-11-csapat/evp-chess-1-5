@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * The controller for the settings menu.
@@ -322,13 +321,9 @@ public class SettingsMenuController {
         });
 
         // Set up value factory for the spinners
-        minutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
-            gameTimerMinutes = newVal;
-        });
+        minutesSpinner.valueProperty().addListener((obs, oldVal, newVal) -> gameTimerMinutes = newVal);
 
-        secondsSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
-            gameTimerSeconds = newVal;
-        });
+        secondsSpinner.valueProperty().addListener((obs, oldVal, newVal) -> gameTimerSeconds = newVal);
 
         // Set up button styles
         classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);

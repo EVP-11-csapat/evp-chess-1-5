@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Chess960 Game Mode
@@ -19,7 +18,7 @@ public class Chess960 extends Gamemode {
      */
     @Override
     public Board startState() {
-        Board board = new Board();
+        Board board;
 
         board = JsonToBoard.jsonToBoard("chess960.json");
 
@@ -51,24 +50,12 @@ public class Chess960 extends Gamemode {
             if (p.movement.getClass() == Bishop.class) {
                 if (firstBishop) {
                     Predicate<Vector2> isDarkX = n -> n.x % 2 == 0;
-                    ArrayList<Vector2> darkMoves = (ArrayList<Vector2>) remainingPositions.stream()
-                            .filter(isDarkX)
-                            .collect(Collectors.toList());
-                    int index = random.nextInt(darkMoves.size());
-                    Vector2 pos = darkMoves.get(index);
-                    remainingPositions.remove(pos);
-                    addPiece(board, p, pos);
+                    bishopPosition(board, remainingPositions, random, p, isDarkX);
                     firstBishop = false;
                     continue;
                 } else {
                     Predicate<Vector2> isListX = n -> n.x % 2 != 0;
-                    ArrayList<Vector2> lightMoves = (ArrayList<Vector2>) remainingPositions.stream()
-                            .filter(isListX)
-                            .collect(Collectors.toList());
-                    int index = random.nextInt(lightMoves.size());
-                    Vector2 pos = lightMoves.get(index);
-                    remainingPositions.remove(pos);
-                    addPiece(board, p, pos);
+                    bishopPosition(board, remainingPositions, random, p, isListX);
                     continue;
                 }
             } else if (p.movement.getClass() == Rook.class || p.isKing) {
@@ -83,6 +70,27 @@ public class Chess960 extends Gamemode {
         }
 
         return board;
+    }
+
+    /**
+     * Calculates the position of the bishops
+     * @param board The {@link Board} where we need to add it
+     * @param remainingPositions The ramaining positions available to put the bishop
+     * @param random Random to generate the position
+     * @param p The {@link Piece} bishop to add
+     * @param isListX Check for dark and light positions
+     */
+    private void bishopPosition(Board board, ArrayList<Vector2> remainingPositions, Random random, Piece p, Predicate<Vector2> isListX) {
+        ArrayList<Vector2> list = new ArrayList<>();
+        for (Vector2 remainingPosition : remainingPositions) {
+            if (isListX.test(remainingPosition)) {
+                list.add(remainingPosition);
+            }
+        }
+        int index = random.nextInt(list.size());
+        Vector2 pos = list.get(index);
+        remainingPositions.remove(pos);
+        addPiece(board, p, pos);
     }
 
     /**

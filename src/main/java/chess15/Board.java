@@ -1,7 +1,5 @@
 package chess15;
 
-import chess15.util.BoardVisualizer;
-
 import java.util.Arrays;
 
 /**

@@ -1,7 +1,7 @@
 package chess15;
 
 import java.util.ArrayList;
-import java.util.function.Function;
+
 
 /**
  * Bishop movement class

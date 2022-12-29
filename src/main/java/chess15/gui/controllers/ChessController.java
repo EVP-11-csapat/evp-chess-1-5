@@ -83,9 +83,7 @@ public class ChessController implements UIInteface {
         setUpBoard();
 
         // Development command to reset the board
-        EventHandler<KeyEvent> resetHandler = e -> {
-            General.guiReset(this, e, engine);
-        };
+        EventHandler<KeyEvent> resetHandler = e -> General.guiReset(this, e, engine);
 
         // Development command to force checkmate ending
         EventHandler<KeyEvent> checkmateHandler = e -> {
@@ -133,7 +131,7 @@ public class ChessController implements UIInteface {
         // Hook the handlers to the Key Pressed Event
         if (main.getScene() != null) {
             main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
-            ((Stage) main.getScene().getWindow()).setOnCloseRequest(e -> {
+            main.getScene().getWindow().setOnCloseRequest(e -> {
                 if (Constants.timerThread != null) {
                     General.threadStop();
                 }
@@ -145,7 +143,7 @@ public class ChessController implements UIInteface {
             main.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
                     main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
-                    ((Stage) main.getScene().getWindow()).setOnCloseRequest(e -> {
+                    main.getScene().getWindow().setOnCloseRequest(e -> {
                         if (Constants.timerThread != null) {
                             General.threadStop();
                         }
@@ -158,9 +156,7 @@ public class ChessController implements UIInteface {
         }
 
         // Set handleMove action to chat input
-        inputText.setOnAction(e -> {
-            handleTextMove(inputText.getCharacters().toString());
-        });
+        inputText.setOnAction(e -> handleTextMove(inputText.getCharacters().toString()));
 
         // Set up timer if timer is enabled in the current game
         if (RuleSet.getInstance().timer) {
@@ -202,7 +198,7 @@ public class ChessController implements UIInteface {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 BoardElement element = Constants.board.elements[j][i];
-                Piece piece = null;
+                Piece piece;
                 if (!(element instanceof Piece)) continue;
                 piece = (Piece) element;
                 Vector2 piecePos = new Vector2(j, i);
@@ -228,7 +224,7 @@ public class ChessController implements UIInteface {
                 ".png";
 
         // Get the image from the path above
-        Image image = null;
+        Image image;
         try {
             image = new Image(Objects.requireNonNull(ImageGrabber.getInstance().getClass().getResource(imagePath)).openStream());
         } catch (IOException e) {
@@ -251,12 +247,11 @@ public class ChessController implements UIInteface {
         chessBoardPane.getChildren().add(pieceImage);
 
         if (Constants.DEVMODE)
-            Constants.logger.info("Piece added: " + piece.toString() + " at: " + pos.toString());
+            Constants.logger.info("Piece added: " + piece + " at: " + pos);
     }
 
     /**
      * Handle the event when the user clicks the {@link Piece} at a given position
-     *
      * @param pos The {@link Vector2} that the piece {@link ImageView} is at
      */
     private void handlePieceClick(Vector2 pos) {
@@ -281,17 +276,13 @@ public class ChessController implements UIInteface {
     }
 
     // Handle the click event on the piece
-    EventHandler<MouseEvent> pressedHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent mouseEvent) {
-            Vector2 handlePos = getKeysByValue(Constants.pieces, (ImageView) mouseEvent.getSource()).get(0);
-            handlePieceClick(handlePos);
-        }
+    EventHandler<MouseEvent> pressedHandler = mouseEvent -> {
+        Vector2 handlePos = getKeysByValue(Constants.pieces, (ImageView) mouseEvent.getSource()).get(0);
+        handlePieceClick(handlePos);
     };
 
     /**
      * Update the click event listener to the new position on the piece {@link ImageView}
-     *
      * @param pos The {@link Vector2} to update the location to
      */
     private void updateClickEventToPiece(Vector2 pos) {
@@ -346,7 +337,7 @@ public class ChessController implements UIInteface {
      */
     private void displayPosibleMoves(ArrayList<Vector2> moves, Vector2 piece) {
         for (Vector2 move : moves) {
-            Image image = null;
+            Image image;
             try {
                 image = new Image(Objects.requireNonNull(
                         ImageGrabber.getInstance().getClass().getResource("possibleMove.jpg")).openStream());
@@ -376,7 +367,7 @@ public class ChessController implements UIInteface {
      * @param to   The {@link Vector2} position of the piece, so we can assign move listener
      */
     private void displayFromTo(Vector2 from, Vector2 to) {
-        Image image = null;
+        Image image;
         try {
             image = new Image(Objects.requireNonNull(
                     ImageGrabber.getInstance().getClass().getResource("move.png")).openStream());
@@ -454,7 +445,7 @@ public class ChessController implements UIInteface {
                 "-" +
                 General.getPieceTypeString(piece) +
                 ".png";
-        Image image = null;
+        Image image;
         try {
             image = new Image(Objects.requireNonNull(
                     ImageGrabber.getInstance().getClass().getResource("" + imagePath)).openStream());
@@ -466,7 +457,7 @@ public class ChessController implements UIInteface {
         pieceImage.setImage(image);
         pieceImage.setFitHeight(80);
         pieceImage.setFitWidth(80);
-        int spacign = 0;
+        int spacign;
         if (piece.color == Piece.Color.WHITE) spacign = Constants.whiteTaken.getChildren().size();
         else spacign = Constants.blackTaken.getChildren().size();
         pieceImage.setX(80 * spacign);
@@ -523,22 +514,22 @@ public class ChessController implements UIInteface {
             if (p.color == Piece.Color.WHITE) blackPoints += PiecePoints.evaluate(p);
             else whitePoints += PiecePoints.evaluate(p);
         }
-        if (whitePoints == blackPoints) {
-            return;
-        } else if (whitePoints > blackPoints) {
+        if (whitePoints != blackPoints) {
             aditional.append(" with a material ");
-            String adv = move.color == Piece.Color.WHITE
-                    ? "advantage of "
-                    : "disadvantage of ";
-            aditional.append(adv);
-            aditional.append(whitePoints - blackPoints);
-        } else {
-            aditional.append(" with a material ");
-            String adv = move.color == Piece.Color.BLACK
-                    ? "advantage of "
-                    : "disadvantage of ";
-            aditional.append(adv);
-            aditional.append(blackPoints - whitePoints);
+            String adv;
+            if (whitePoints > blackPoints) {
+                adv = move.color == Piece.Color.WHITE
+                        ? "advantage of "
+                        : "disadvantage of ";
+                aditional.append(adv);
+                aditional.append(whitePoints - blackPoints);
+            } else {
+                adv = move.color == Piece.Color.BLACK
+                        ? "advantage of "
+                        : "disadvantage of ";
+                aditional.append(adv);
+                aditional.append(blackPoints - whitePoints);
+            }
         }
     }
 
@@ -556,7 +547,7 @@ public class ChessController implements UIInteface {
 
         generateAditional(aditional, move);
 
-        return color + " played " + fromCoord + " to " + toCoord + aditional.toString();
+        return color + " played " + fromCoord + " to " + toCoord + aditional;
     }
 
     /**
@@ -644,9 +635,7 @@ public class ChessController implements UIInteface {
         KeyFrame kfy = new KeyFrame(Duration.millis(100 * Math.abs(to.y - from.y)), kvy);
         timeline.getKeyFrames().add(kfx);
         timeline.getKeyFrames().add(kfy);
-        timeline.setOnFinished(event -> {
-            moveFinished.set(true);
-        });
+        timeline.setOnFinished(event -> moveFinished.set(true));
         timeline.play();
 
         displayFromTo(from, to);
@@ -680,17 +669,15 @@ public class ChessController implements UIInteface {
                     if (moveFinished.get() && Constants.isRunning && !Constants.pauseForPromotion) {
                         testing.set(false);
                         Move computerMove = alg.move(engine.getBoard(), new Move(from, to));
-                        Platform.runLater(() -> {
-                            movePiece(computerMove.from, computerMove.to);
-                        });
+                        Platform.runLater(() -> movePiece(computerMove.from, computerMove.to));
                     }
                 }
             });
             Constants.algMoveThreads.start();
         }
         if (Constants.DEVMODE)
-            Constants.logger.info("Piece: " + piece.toString() + "\n\t\t Moved from: " + from.toString() +
-                    " to: " + to.toString());
+            Constants.logger.info("Piece: " + piece + "\n\t\t Moved from: " + from +
+                    " to: " + to);
     }
 
     /**
@@ -788,7 +775,7 @@ public class ChessController implements UIInteface {
                 Constants.pauseForPromotion = false;
                 Constants.fastPacedCounter = 0;
                 if (Constants.DEVMODE)
-                    Constants.logger.info("Promotion finished at: " + to.toString() + " with piece: " + p.toString());
+                    Constants.logger.info("Promotion finished at: " + to + " with piece: " + p);
             });
 
             Constants.promotionList.put(pieceImage, p);
@@ -796,7 +783,7 @@ public class ChessController implements UIInteface {
         }
         chessBoardPane.getChildren().add(Constants.promotionUIBase);
         if (Constants.DEVMODE)
-            Constants.logger.info("Promotion dialog prompted at: " + to.toString());
+            Constants.logger.info("Promotion dialog prompted at: " + to);
     }
 
     // ###################
@@ -852,13 +839,9 @@ public class ChessController implements UIInteface {
         rematch.setTextFill(Color.WHITE);
         rematch.setStyle("-fx-background-color: #2a2a2a");
 
-        rematch.setOnMousePressed(e -> {
-            General.reset(this, engine);
-        });
+        rematch.setOnMousePressed(e -> General.reset(this, engine));
 
-        backToMenu.setOnMousePressed(e -> {
-            General.changeScene("menu.fxml", (Stage) chessBoardPane.getScene().getWindow());
-        });
+        backToMenu.setOnMousePressed(e -> General.changeScene((Stage) chessBoardPane.getScene().getWindow()));
 
         VBox labelHolder = new VBox();
         labelHolder.getChildren().addAll(winLabel, winDescriptionLabel, backToMenu, rematch);

@@ -177,15 +177,13 @@ public class General {
 
     /**
      * Change the scene to the main menu when the game is finished
-     * @param scene The Scene to switch to
      * @param stage The stage to switch the scene
      */
-    public static void changeScene(String scene, Stage stage) {
+    public static void changeScene(Stage stage) {
         try {
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("mainMenu.fxml")));
-            Stage primaryStage = stage;
-            primaryStage.getScene().setRoot(newRoot);
-            primaryStage.requestFocus();
+            stage.getScene().setRoot(newRoot);
+            stage.requestFocus();
         } catch (IOException e) {
             e.printStackTrace();
         }
