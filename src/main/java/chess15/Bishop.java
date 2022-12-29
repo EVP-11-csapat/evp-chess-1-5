@@ -34,4 +34,9 @@ public class Bishop extends MoveSet
         if (instance == null) instance = new Bishop();
         return instance;
     }
+
+    @Override
+    public int hashCode() {
+        return 2;
+    }
 }

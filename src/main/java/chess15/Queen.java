@@ -38,4 +38,9 @@ public class Queen extends MoveSet
         if (instance == null) instance = new Queen();
         return instance;
     }
+
+    @Override
+    public int hashCode() {
+        return 5;
+    }
 }

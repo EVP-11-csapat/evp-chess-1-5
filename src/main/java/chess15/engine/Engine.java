@@ -78,7 +78,7 @@ public class Engine implements EngineInterface {
      * @return The list of all {@link Vector2} positions of all pieces
      */
     public ArrayList<Vector2> getPieces() {
-        return pieces;
+        return new ArrayList<>(pieces);
     }
 
     /**
@@ -86,7 +86,7 @@ public class Engine implements EngineInterface {
      * @return The list of all {@link Vector2} positions of all opponent's pieces
      */
     public ArrayList<Vector2> getOpponentPieces() {
-        return opponentPieces;
+        return new ArrayList<>(opponentPieces);
     }
 
     /**

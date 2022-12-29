@@ -12,6 +12,9 @@ import chess15.util.PiecePoints;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ChessAlgorithm is the class that contains the algorithm for the game.
@@ -20,15 +23,13 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     private final RuleSet rules;
     private final Piece.Color color;
-
-    private static final int startDepth = 3;
-    private static int searchDepth = 3;
     private static final int mateScore = 100000;
 
     private static final int infinity = 1073741824;
     private SearchTree tree;
 
     private Move bestMove;
+    private Move bestMoveInIteration;
 
     /**
      * Calculate the best move for the black pieces.
@@ -60,17 +61,39 @@ public class ChessAlgorithm implements AlgorithmInterface {
             }
         }
 
+
         Engine engine = new Engine(rules, positions, color);
+        Thread searchThread = new Thread(() -> {
+            int i = 1;
+            try {
 
-        long startTime = System.nanoTime();
+                while (!Thread.currentThread().isInterrupted()) {
+                    System.out.println("Starting iteration " + i);
+                    minmax(i, 0, engine, -infinity, infinity);
+                    bestMove = bestMoveInIteration;
+                    System.out.println("Completed iteration " + i);
+                    i++;
+                }
+            } catch (InterruptedException ignored) {
 
-        searchDepth = startDepth;
-        while (System.nanoTime() - startTime < 2000000000){
-            minmax(0, engine, -infinity, infinity);
-            searchDepth++;
+            }
+        });
+
+        searchThread.start();
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.schedule(() -> {
+            searchThread.interrupt();
+            System.out.println("ScheduledExecutorService interrupted the search");
+        }, 3, TimeUnit.SECONDS);
+
+        try {
+            executor.awaitTermination(3, TimeUnit.SECONDS);
+        } catch (InterruptedException ignored) {
+
+        } finally {
+            executor.shutdown();
         }
-
-        System.out.println("Searched to depth of " + (searchDepth - 1));
         return bestMove;
     }
 
@@ -95,47 +118,74 @@ public class ChessAlgorithm implements AlgorithmInterface {
      * @param beta The beta value.
      * @return The score of the best move.
      */
-    private int minmax(int depth, Engine engine, int alpha, int beta) {
+    private int minmax(int depth, int plyFromRoot, Engine engine, int alpha, int beta) throws InterruptedException {
 
-        if(depth > 0){
-            alpha = Math.max(alpha, -mateScore + depth);
-            beta = Math.min(beta, mateScore - depth);
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
+
+        long hash = Zobrist.calculateHash(engine);
+
+        TranspositionTable.TableEntry entry = TranspositionTable.retrieve(hash);
+
+        Move storedmove = null;
+
+        if (entry != null) {
+            int score = entry.getCorrectedScore(depth, plyFromRoot, alpha, beta);
+            storedmove = entry.bestMove;
+            if (score != TranspositionTable.LOOKUPFAILED) {
+                if (plyFromRoot == 0) bestMoveInIteration = entry.bestMove;
+                return score;
+            }
+        }
+
+
+        if (plyFromRoot > 0) {
+            alpha = Math.max(alpha, -mateScore + plyFromRoot);
+            beta = Math.min(beta, mateScore - plyFromRoot);
             if (alpha >= beta) {
                 return alpha;
             }
         }
 
-        if (depth == searchDepth) {
-            return searchCaptures (engine, alpha, beta);
+        if (depth == 0) {
+            return searchCaptures(engine, alpha, beta);
         }
 
-        ArrayList<Move> moves = orderMoves(engine);
+        ArrayList<Move> moves = orderMoves(engine, storedmove);
 
         if (moves.size() == 0) {
-            if (engine.inCheck){
-                return -1 * (mateScore - depth);
-            }
-            else return 0;
+            if (engine.inCheck) {
+                return -1 * (mateScore - plyFromRoot);
+            } else return 0;
         }
+
+        byte evalType = TranspositionTable.UPPER_BOUND;
+        Move localBestMove = null;
 
         for (Move move : moves) {
             Engine copiedEngine = new Engine(engine);
             copiedEngine.move(move.from, move.to);
 
 
-            int score = -minmax(depth + 1, copiedEngine, -beta, -alpha);
+            int score = -minmax(depth - 1, plyFromRoot + 1, copiedEngine, -beta, -alpha);
 
-            if (score >= beta) return beta;
+            if (score >= beta) {
+                TranspositionTable.store(hash, TranspositionTable.LOWER_BOUND, beta, depth, plyFromRoot, move);
+                return beta;
+            }
 
-
+            // Found a new best move in this position
             if (score > alpha) {
+                evalType = TranspositionTable.EXACT;
+                localBestMove = move;
 
                 alpha = score;
-                if (depth == 0) {
-                    bestMove = move;
+                if (plyFromRoot == 0) {
+                    bestMoveInIteration = move;
                 }
             }
         }
+
+        TranspositionTable.store(hash, evalType, alpha, depth, plyFromRoot, localBestMove);
 
         return alpha;
     }
@@ -147,7 +197,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
      * @param beta The beta value.
      * @return The score of the best capture.
      */
-    private int searchCaptures(Engine engine, int alpha, int beta) {
+    private int searchCaptures(Engine engine, int alpha, int beta) throws InterruptedException {
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
+
+
         int score = ScoreEvaluator.evaluate(engine);
 
         if (score >= beta) {
@@ -158,7 +211,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         }
 
 
-        ArrayList<Move> moves = orderMoves(engine);
+        ArrayList<Move> moves = orderMoves(engine, null);
 
         for (Move move : moves) {
             if (!engine.board.at(move.to).isEmpty) {
@@ -180,17 +233,28 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return alpha;
     }
 
+    /**
+     * Returns if the score is winning
+     * @param score The score to check.
+     * @return If the score is winning.
+     */
+    public static boolean isWinScore(int score) {
+        final int maxWinDepth = 1000;
+        return Math.abs(score) > mateScore - maxWinDepth;
+    }
 
     /**
      * Order the moves based on the score of the move.
      * @param engine The {@link Engine} used to calculate legal moves.
      * @return The ordered list of moves.
      */
-    private ArrayList<Move> orderMoves(Engine engine) {
+    private ArrayList<Move> orderMoves(Engine engine, Move storedMove) {
         ArrayList<Move> moves = new ArrayList<>();
         for (Vector2 start : engine.getPieces()) {
             for (Vector2 end : engine.getMoves(start)) {
-                moves.add(new Move(start, end, scoreMove(start, end, engine.getBoard())));
+                if (storedMove != null && start == storedMove.from && end == storedMove.to) {
+                    moves.add(new Move(start, end, 10000));
+                } else moves.add(new Move(start, end, scoreMove(start, end, engine.getBoard())));
             }
         }
 
