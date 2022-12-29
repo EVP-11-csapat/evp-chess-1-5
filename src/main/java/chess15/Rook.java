@@ -34,4 +34,9 @@ public class Rook extends MoveSet
         if (instance == null) instance = new Rook();
         return instance;
     }
+
+    @Override
+    public int hashCode() {
+        return 4;
+    }
 }

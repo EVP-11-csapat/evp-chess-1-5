@@ -38,4 +38,9 @@ public class King extends MoveSet
         if(instance == null) instance = new King();
         return instance;
     }
+
+    @Override
+    public int hashCode() {
+        return 6;
+    }
 }

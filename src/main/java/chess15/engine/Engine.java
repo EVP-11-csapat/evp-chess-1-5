@@ -62,11 +62,11 @@ public class Engine implements EngineInterface {
     }
 
     public ArrayList<Vector2> getPieces() {
-        return pieces;
+        return new ArrayList<>(pieces);
     }
 
     public ArrayList<Vector2> getOpponentPieces() {
-        return opponentPieces;
+        return new ArrayList<>(opponentPieces);
     }
 
     public void move(Vector2 from, Vector2 to) {

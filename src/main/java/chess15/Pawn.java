@@ -34,4 +34,8 @@ public class Pawn extends MoveSet {
         return instance;
     }
 
+    @Override
+    public int hashCode() {
+        return 1;
+    }
 }
