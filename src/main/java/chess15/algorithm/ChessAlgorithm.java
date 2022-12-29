@@ -13,6 +13,9 @@ import chess15.util.PiecePoints;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * ChessAlgorithm is the class that contains the algorithm for the game.
+ */
 public class ChessAlgorithm implements AlgorithmInterface {
 
     private final RuleSet rules;
@@ -27,6 +30,12 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     private Move bestMove;
 
+    /**
+     * Calculate the best move for the black pieces.
+     * @param positions The current {@link Board} positions.
+     * @param playerMove The {@link Move} the player made.
+     * @return The best {@link Move} for the black pieces.
+     */
     @Override
     public Move move(Board positions, Move playerMove) {
 
@@ -65,6 +74,11 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return bestMove;
     }
 
+    /**
+     * Constructor for the ChessAlgorithm class.
+     * @param rules The {@link RuleSet} of the game.
+     * @param player The {@link Piece.Color} of the pieces the algorithm plays.
+     */
     public ChessAlgorithm(RuleSet rules, Piece.Color player) {
         this.rules = rules;
         this.color = player;
@@ -73,6 +87,14 @@ public class ChessAlgorithm implements AlgorithmInterface {
         }
     }
 
+    /**
+     * The minmax algorithm used to calculate the best move.
+     * @param depth The current depth of the search.
+     * @param engine The {@link Engine} used to calculate legal moves.
+     * @param alpha The alpha value.
+     * @param beta The beta value.
+     * @return The score of the best move.
+     */
     private int minmax(int depth, Engine engine, int alpha, int beta) {
 
         if(depth > 0){
@@ -118,6 +140,13 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return alpha;
     }
 
+    /**
+     * Search for captures and return the score of the best capture.
+     * @param engine The {@link Engine} used to calculate legal moves.
+     * @param alpha The alpha value.
+     * @param beta The beta value.
+     * @return The score of the best capture.
+     */
     private int searchCaptures(Engine engine, int alpha, int beta) {
         int score = ScoreEvaluator.evaluate(engine);
 
@@ -152,6 +181,11 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
 
+    /**
+     * Order the moves based on the score of the move.
+     * @param engine The {@link Engine} used to calculate legal moves.
+     * @return The ordered list of moves.
+     */
     private ArrayList<Move> orderMoves(Engine engine) {
         ArrayList<Move> moves = new ArrayList<>();
         for (Vector2 start : engine.getPieces()) {
@@ -165,6 +199,13 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return moves;
     }
 
+    /**
+     * Score a move based on the piece that is moved.
+     * @param start The start {@link Vector2} position of the move.
+     * @param end The end {@link Vector2} position of the move.
+     * @param board The {@link Board} the move is made on.
+     * @return The score of the move.
+     */
     private int scoreMove(Vector2 start, Vector2 end, Board board) {
         int score = 0;
         Piece p = (Piece) board.at(start);
@@ -199,8 +240,16 @@ public class ChessAlgorithm implements AlgorithmInterface {
         return score;
     }
 
+    /**
+     * The {@link Comparator} used to sort the moves.
+     */
     static class SortByScore implements Comparator<Move> {
-
+        /**
+         * Compare two moves based on their score.
+         * @param a the first object to be compared.
+         * @param b the second object to be compared.
+         * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+         */
         @Override
         public int compare(Move a, Move b) {
             return a.score - b.score;

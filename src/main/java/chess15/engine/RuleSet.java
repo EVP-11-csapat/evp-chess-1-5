@@ -2,6 +2,10 @@ package chess15.engine;
 
 import chess15.gamemode.Gamemode;
 
+/**
+ * RulkSet class is used to determine the rules of the game
+ * Singleton class
+ */
 public class RuleSet {
     public static RuleSet instance = null;
 

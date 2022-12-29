@@ -6,22 +6,29 @@ import chess15.util.Move;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.FileReader;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
+/**
+ * SearchTree class for opening book.
+ */
 public class SearchTree {
+    /**
+     * Node class for SearchTree.
+     */
     static class Node {
         public Move white;
         public Move black;
         public ArrayList<Node> children;
 
+        /**
+         * Constructor for Node.
+         * @param white {@link Move} white move
+         * @param black {@link Move} black move
+         * @param children {@link ArrayList} of {@link Node} children
+         */
         public Node(Move white, Move black, ArrayList<Node> children) {
             this.white = white;
             this.black = black;
@@ -31,11 +38,14 @@ public class SearchTree {
 
     public Node root;
 
+    /**
+     * Constructor for SearchTree.
+     */
     public SearchTree() {
-        JSONParser parser = new JSONParser();
         try {
-
-            InputStream inputStream = JSONGrabber.getInstance().getClass().getResource("openings.json").openStream();
+            // Load the JSON file
+            InputStream inputStream = Objects.requireNonNull(JSONGrabber.getInstance().getClass()
+                    .getResource("openings.json")).openStream();
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(inputStream);
 
@@ -51,6 +61,11 @@ public class SearchTree {
         }
     }
 
+    /**
+     * Parse a node from a JSON file.
+     * @param node {@link JsonNode} node to parse
+     * @return {@link Node} parsed node
+     */
     private Node parseNode(JsonNode node) {
         Move black = stringToMove(node.get("black").asText());
         Move white = stringToMove(node.get("white").asText());
@@ -64,6 +79,11 @@ public class SearchTree {
         return new Node(white, black, children);
     }
 
+    /**
+     * Convert a string to a move.
+     * @param string {@link String} string to convert
+     * @return {@link Move} converted move
+     */
     private Move stringToMove(String string) {
         return new Move(new Vector2((string.charAt(0) - 48), string.charAt(1) - 48), new Vector2(string.charAt(2) - 48, string.charAt(3) - 48));
     }

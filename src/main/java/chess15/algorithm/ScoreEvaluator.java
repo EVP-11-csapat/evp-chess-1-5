@@ -9,10 +9,19 @@ import chess15.util.PiecePoints;
 
 import java.util.ArrayList;
 
+/**
+ * ScoreEvaluator is a class that evaluates the score of a board.
+ */
 public class ScoreEvaluator {
 
     private static final float endgameMaterialStart = 1600;
 
+    /**
+     * Evaluates the score of a board.
+     *
+     * @param engine The engine to evaluate.
+     * @return The score of the board.
+     */
     public static int evaluate(Engine engine) {
         Board board = engine.board;
 
@@ -83,11 +92,25 @@ public class ScoreEvaluator {
         return (engine.nextPlayer == Piece.Color.WHITE) ? whiteScore - blackScore : blackScore - whiteScore;
     }
 
+    /**
+     * Calculates the endgame factor.
+     * @param materialCountWithoutPawns The material count without pawns.
+     * @return The endgame factor.
+     */
     private static float endgame(int materialCountWithoutPawns) {
         float multiplier = 1 / endgameMaterialStart;
         return 1 - Math.min(1, materialCountWithoutPawns * multiplier);
     }
 
+    /**
+     * Calculates the mop up factor.
+     * @param playerKing The position of the player's king.
+     * @param opponentKing The position of the opponent's king.
+     * @param playerMaterial The material count of the player.
+     * @param opponentMaterial The material count of the opponent.
+     * @param endgame The endgame factor.
+     * @return The mop up factor.
+     */
     private static int mopUp(Vector2 playerKing, Vector2 opponentKing, int playerMaterial, int opponentMaterial, float endgame) {
         int mopUpScore = 0;
         if (playerMaterial > opponentMaterial + 200 && endgame > 0) {
@@ -101,6 +124,12 @@ public class ScoreEvaluator {
         return 0;
     }
 
+    /**
+     * Calculates the manhattan distance between two positions.
+     * @param a The first {@link Vector2} position.
+     * @param b The second {@link Vector2} position.
+     * @return The manhattan distance.
+     */
     private static byte manhattanDistance(Vector2 a, Vector2 b) {
         return (byte) (Math.abs(a.x - b.x) + Math.abs(a.y - b.y));
     }
