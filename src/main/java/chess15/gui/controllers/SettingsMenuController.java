@@ -29,6 +29,8 @@ public class SettingsMenuController {
     @FXML
     private Button playButton;
     @FXML
+    private Button backButton;
+    @FXML
     private CheckBox timerCheckBox;
     @FXML
     private Spinner<Integer> minutesSpinner;
@@ -510,7 +512,7 @@ public class SettingsMenuController {
      * When the user presses the play button, we load the game window, and generate the engine with the specified inputs.
      */
     @FXML
-    protected void onPlayButtonPressed() throws IOException {
+    protected void onPlayButtonPressed() {
         if (!selectedGameMode.equals("")) {
             RuleSet rules = RuleSet.getInstance();
             switch (selectedGameMode) {
@@ -527,12 +529,35 @@ public class SettingsMenuController {
             rules.castling = isCastlingEnabled;
             rules.promotion = isPromotionEnabled;
             rules.enpassant = isEnPassantEnabled;
-            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+            Parent newRoot;
+            try {
+                newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+            } catch (IOException e) {
+                System.out.println("Chess.fxml not found");
+                throw new RuntimeException(e);
+            }
             Stage primarStage = (Stage) playButton.getScene().getWindow();
             primarStage.getScene().setRoot(newRoot);
             primarStage.requestFocus();
         } else {
             playButton.setText("Select a game mode");
         }
+    }
+
+    /**
+     * When the user presses the back button, we take them back to the main menu
+     */
+    @FXML
+    protected void onBackButtonPressed() {
+        Parent newRoot;
+        try {
+            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("mainMenu.fxml")));
+        } catch (IOException e) {
+            System.out.println("Chess.fxml not found");
+            throw new RuntimeException(e);
+        }
+        Stage primaryStage = (Stage) backButton.getScene().getWindow();
+        primaryStage.getScene().setRoot(newRoot);
+        primaryStage.requestFocus();
     }
 }
