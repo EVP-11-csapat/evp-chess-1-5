@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * ChessAlgorithm is the class that contains the algorithm for playing the game.
+ * <code>ChessAlgorithm</code> is the class that contains the algorithm for playing the game.
  */
 public class ChessAlgorithm implements AlgorithmInterface {
 
@@ -35,7 +35,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     /**
      * Calculate the best possible move from the current board setup and the opponents last move.
-     * @param positions The current {@link Board} positions.
+     *
+     * @param positions  The current {@link Board} positions.
      * @param playerMove The {@link Move} the user made.
      * @return The best {@link Move} for the computer's pieces.
      */
@@ -87,12 +88,12 @@ public class ChessAlgorithm implements AlgorithmInterface {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             searchThread.interrupt();
-            if (Constants.DEVMODE){
+            if (Constants.DEVMODE) {
                 System.out.println("time's up\n");
-                if(isWinScore(bestScore)){
+                if (isWinScore(bestScore)) {
                     int mateIn = -(bestScore - mateScore);
-                    if(mateIn == 1) System.out.println("Thank you for playing");
-                        else System.out.println("Mate in: " + mateIn);
+                    if (mateIn == 1) System.out.println("Thank you for playing");
+                    else System.out.println("Mate in: " + mateIn);
                 }
             }
 
@@ -109,8 +110,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
     /**
-     * Constructor for the ChessAlgorithm class.
-     * @param rules The {@link RuleSet} of the game.
+     * Constructor for the {@link ChessAlgorithm} class.
+     * @param rules  The {@link RuleSet} of the game.
      * @param player The {@link Piece.Color} of the side the computer plays.
      */
     public ChessAlgorithm(RuleSet rules, Piece.Color player) {
@@ -124,11 +125,12 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     /**
      * The negamax algorithm used to calculate the best move.
-     * @param depth The current depth of the search. Starts from the desired number and ends on 0.
+     *
+     * @param depth       The current depth of the search. Starts from the desired number and ends on 0.
      * @param plyFromRoot Number of moves made from the inital Board positions in the current search depth.
-     * @param engine The {@link Engine} used to calculate legal moves.
-     * @param alpha The alpha value for alpha-beta pruning.
-     * @param beta The beta value for alpha-beta pruning.
+     * @param engine      The {@link Engine} used to calculate legal moves.
+     * @param alpha       The alpha value for alpha-beta pruning.
+     * @param beta        The beta value for alpha-beta pruning.
      * @return The score of the best move in the current depth level.
      */
     private int minmax(int depth, int plyFromRoot, Engine engine, int alpha, int beta) throws InterruptedException {
@@ -204,9 +206,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     /**
      * Searches for a quiet position (i.e. no captures avaliable on the next move) to evaluate.
+     *
      * @param engine The {@link Engine} used to calculate legal moves.
-     * @param alpha The alpha value for alpha-beta pruning.
-     * @param beta The beta value for alpha-beta pruning.
+     * @param alpha  The alpha value for alpha-beta pruning.
+     * @param beta   The beta value for alpha-beta pruning.
      * @return The score of the best possible move, or when a quiet position is reached the evaluation of that position.
      */
     private int searchCaptures(Engine engine, int alpha, int beta) throws InterruptedException {
@@ -247,6 +250,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     /**
      * Returns if the score is for a move that leads to a forced mate.
+     *
      * @param score The score to check.
      * @return True if the score is for a move that leads to a forced mate..
      */
@@ -256,6 +260,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     /**
      * Order the moves based on the estimated score of the moves.
+     *
      * @param engine The {@link Engine} used to calculate legal moves.
      * @return The ordered list of moves.
      */
@@ -275,8 +280,9 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     /**
      * Score a move based on estimates.
+     *
      * @param start The start {@link Vector2} position of the move.
-     * @param end The end {@link Vector2} position of the move.
+     * @param end   The end {@link Vector2} position of the move.
      * @param board The {@link Board} the move is made on.
      * @return The estimated score of the move.
      */
@@ -320,6 +326,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     static class SortByScore implements Comparator<Move> {
         /**
          * Compare two moves based on their score.
+         *
          * @param a the first object to be compared.
          * @param b the second object to be compared.
          * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
