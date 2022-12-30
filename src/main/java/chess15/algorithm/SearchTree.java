@@ -2,6 +2,7 @@ package chess15.algorithm;
 
 import chess15.Vector2;
 import chess15.gamemodes.JSONGrabber;
+import chess15.gui.util.Constants;
 import chess15.util.Move;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +54,8 @@ public class SearchTree {
             root.black = null;
             root.white = null;
 
-            System.out.println(root);
+            if (Constants.DEVMODE)
+                System.out.println(root);
 
 
         } catch (Exception e) {

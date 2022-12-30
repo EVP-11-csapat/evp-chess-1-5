@@ -226,7 +226,7 @@ public class ChessController implements UIInteface {
         try {
             image = new Image(Objects.requireNonNull(ImageGrabber.getInstance().getClass().getResource(imagePath)).openStream());
         } catch (IOException e) {
-            System.out.println("Image not found");
+            System.out.println("ERROR in ChessController (addPiece): Image not found");
             throw new RuntimeException(e);
         }
         ImageView pieceImage = new ImageView();
@@ -448,7 +448,7 @@ public class ChessController implements UIInteface {
             image = new Image(Objects.requireNonNull(
                     ImageGrabber.getInstance().getClass().getResource("" + imagePath)).openStream());
         } catch (IOException e) {
-            System.out.println("Image not found");
+            System.out.println("ERROR in ChessController (addToTaken): Image not found");
             throw new RuntimeException(e);
         }
         ImageView pieceImage = new ImageView();
@@ -620,13 +620,14 @@ public class ChessController implements UIInteface {
         Matcher patternMatcher = testPattern.matcher(text.toLowerCase());
         boolean correctInput = patternMatcher.matches();
         if (correctInput) {
-            System.out.println("Pattern FOUND");
-            System.out.println(text);
+            if (Constants.DEVMODE)
+                System.out.println("Pattern FOUND");
             //TODO: Parse to move and call move method
             if (Constants.DEVMODE)
                 Constants.logger.info("Text move issued: " + text);
         } else {
-            System.out.println("Pattern NOT FOUND");
+            if (Constants.DEVMODE)
+                System.out.println("Pattern NOT FOUND");
         }
         inputText.clear();
     }

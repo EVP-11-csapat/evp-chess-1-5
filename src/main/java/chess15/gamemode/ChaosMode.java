@@ -1,6 +1,7 @@
 package chess15.gamemode;
 
 import chess15.*;
+import chess15.gui.util.Constants;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ public class ChaosMode extends Gamemode {
         ));
         SecureRandom random = new SecureRandom();
         int index = random.nextInt(possible.size());
-        System.out.println("Choosing random: " + index);
+        if (Constants.DEVMODE)
+            System.out.println("Choosing random: " + index);
         return possible.get(index);
     }
 
@@ -43,7 +45,8 @@ public class ChaosMode extends Gamemode {
         ));
         SecureRandom random = new SecureRandom();
         int index = random.nextInt(possible.size());
-        System.out.println("Choosing random: " + index);
+        if (Constants.DEVMODE)
+            System.out.println("Choosing random: " + index);
         return possible.get(index);
     }
 
@@ -71,7 +74,8 @@ public class ChaosMode extends Gamemode {
                 Vector2 position = new Vector2(i, j);
                 if (board.at(position) instanceof Piece) continue;
                 Piece p = new Piece(Piece.Color.BLACK, getRandomType(), getMovement(), false);
-                System.out.println(p);
+                if (Constants.DEVMODE)
+                    System.out.println(p);
                 board.elements[position.x][position.y] = new Piece(p);
                 p.color = Piece.Color.WHITE;
                 board.elements[position.x][7 - position.y] = new Piece(p);

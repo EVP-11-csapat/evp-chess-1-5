@@ -7,6 +7,7 @@ import chess15.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.gui.util.Constants;
 import chess15.util.Move;
 import chess15.util.PiecePoints;
 
@@ -57,7 +58,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
                 return answer.black;
             } else {
                 tree = null;
-                System.out.println("going dark!");
+                if (Constants.DEVMODE)
+                    System.out.println("going dark!");
             }
         }
 
@@ -68,10 +70,12 @@ public class ChessAlgorithm implements AlgorithmInterface {
             try {
 
                 while (!Thread.currentThread().isInterrupted()) {
-                    System.out.println("Starting iteration " + i);
+                    if (Constants.DEVMODE)
+                        System.out.println("Starting iteration " + i);
                     minmax(i, 0, engine, -infinity, infinity);
                     bestMove = bestMoveInIteration;
-                    System.out.println("Completed iteration " + i);
+                    if (Constants.DEVMODE)
+                        System.out.println("Completed iteration " + i);
                     i++;
                 }
             } catch (InterruptedException ignored) {
@@ -84,7 +88,8 @@ public class ChessAlgorithm implements AlgorithmInterface {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             searchThread.interrupt();
-            System.out.println("ScheduledExecutorService interrupted the search");
+            if (Constants.DEVMODE)
+                System.out.println("ScheduledExecutorService interrupted the search");
         }, 3, TimeUnit.SECONDS);
 
         try {

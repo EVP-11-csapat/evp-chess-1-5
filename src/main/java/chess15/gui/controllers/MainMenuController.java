@@ -3,6 +3,7 @@ package chess15.gui.controllers;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
 import chess15.gui.scenes.ResourceGrabber;
+import chess15.gui.util.Constants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -56,7 +57,8 @@ public class MainMenuController {
      */
     @FXML
     protected void onAiButtonPressed() {
-        System.out.println("AI button pressed");
+        if (Constants.DEVMODE)
+            System.out.println("AI button pressed");
         RuleSet rules = RuleSet.getInstance();
         rules.castling = true;
         rules.enpassant = true;
@@ -67,11 +69,11 @@ public class MainMenuController {
         rules.timer = false;
         rules.isAiGame = true;
 
-        Parent newRoot = null;
+        Parent newRoot;
         try {
             newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
         } catch (IOException e) {
-            System.out.println("Chess.fxml not found");
+            System.out.println("ERROR in MainMenuController (onAiButtonPressed): Chess.fxml not found");
             throw new RuntimeException(e);
         }
         Stage primaryStage = (Stage) multiplayerButton.getScene().getWindow();
