@@ -1,5 +1,14 @@
 # evp-chess-1-5
 
+## Chat commands
+
+ - `resign` - resigns the game with the color that is next to move
+ - `rw`, `resign white` - resigns the game with white
+ - `rb`, `resign black` - resigns the game with black
+ - `draw` - ends the game with a draw
+ - `reset`, `restart`, `rematch` - restarts the game with the same settings
+ - `color swap`, `color switch`, `ai switch` - switches the color of the AI
+
 ### *WIP*
 
 ---
