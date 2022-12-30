@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * ChessAlgorithm is the class that contains the algorithm for the game.
+ * ChessAlgorithm is the class that contains the algorithm for playing the game.
  */
 public class ChessAlgorithm implements AlgorithmInterface {
 
@@ -33,10 +33,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
     private Move bestMoveInIteration;
 
     /**
-     * Calculate the best move for the black pieces.
+     * Calculate the best possible move from the current board setup and the opponents last move.
      * @param positions The current {@link Board} positions.
-     * @param playerMove The {@link Move} the player made.
-     * @return The best {@link Move} for the black pieces.
+     * @param playerMove The {@link Move} the user made.
+     * @return The best {@link Move} for the computer's pieces.
      */
     @Override
     public Move move(Board positions, Move playerMove) {
@@ -71,11 +71,11 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
                 while (!Thread.currentThread().isInterrupted()) {
                     if (Constants.DEVMODE)
-                        System.out.println("Starting iteration " + i);
+                        System.out.println("starting iteration " + i);
                     minmax(i, 0, engine, -infinity, infinity);
                     bestMove = bestMoveInIteration;
                     if (Constants.DEVMODE)
-                        System.out.println("Completed iteration " + i);
+                        System.out.println("completed iteration " + i);
                     i++;
                 }
             } catch (InterruptedException ignored) {
@@ -89,7 +89,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         executor.schedule(() -> {
             searchThread.interrupt();
             if (Constants.DEVMODE)
-                System.out.println("ScheduledExecutorService interrupted the search");
+                System.out.println("time's up\n");
         }, 3, TimeUnit.SECONDS);
 
         try {
@@ -105,7 +105,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     /**
      * Constructor for the ChessAlgorithm class.
      * @param rules The {@link RuleSet} of the game.
-     * @param player The {@link Piece.Color} of the pieces the algorithm plays.
+     * @param player The {@link Piece.Color} of the side the computer plays.
      */
     public ChessAlgorithm(RuleSet rules, Piece.Color player) {
         this.rules = rules;
@@ -116,12 +116,13 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
     /**
-     * The minmax algorithm used to calculate the best move.
-     * @param depth The current depth of the search.
+     * The negamax algorithm used to calculate the best move.
+     * @param depth The current depth of the search. Starts from the desired number and ends on 0.
+     * @param plyFromRoot Number of moves made from the inital Board positions in the current search depth.
      * @param engine The {@link Engine} used to calculate legal moves.
-     * @param alpha The alpha value.
-     * @param beta The beta value.
-     * @return The score of the best move.
+     * @param alpha The alpha value for alpha-beta pruning.
+     * @param beta The beta value for alpha-beta pruning.
+     * @return The score of the best move in the current depth level.
      */
     private int minmax(int depth, int plyFromRoot, Engine engine, int alpha, int beta) throws InterruptedException {
 
@@ -178,7 +179,6 @@ public class ChessAlgorithm implements AlgorithmInterface {
                 return beta;
             }
 
-            // Found a new best move in this position
             if (score > alpha) {
                 evalType = TranspositionTable.EXACT;
                 localBestMove = move;
@@ -196,11 +196,11 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
     /**
-     * Search for captures and return the score of the best capture.
+     * Searches for a quiet position (i.e. no captures avaliable on the next move) to evaluate.
      * @param engine The {@link Engine} used to calculate legal moves.
-     * @param alpha The alpha value.
-     * @param beta The beta value.
-     * @return The score of the best capture.
+     * @param alpha The alpha value for alpha-beta pruning.
+     * @param beta The beta value for alpha-beta pruning.
+     * @return The score of the best possible move, or when a quiet position is reached the evaluation of that position.
      */
     private int searchCaptures(Engine engine, int alpha, int beta) throws InterruptedException {
         if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
@@ -239,9 +239,9 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
     /**
-     * Returns if the score is winning
+     * Returns if the score is for a move that leads to a forced mate.
      * @param score The score to check.
-     * @return If the score is winning.
+     * @return True if the score is for a move that leads to a forced mate..
      */
     public static boolean isWinScore(int score) {
         final int maxWinDepth = 1000;
@@ -249,7 +249,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
     }
 
     /**
-     * Order the moves based on the score of the move.
+     * Order the moves based on the estimated score of the moves.
      * @param engine The {@link Engine} used to calculate legal moves.
      * @return The ordered list of moves.
      */
@@ -262,18 +262,17 @@ public class ChessAlgorithm implements AlgorithmInterface {
                 } else moves.add(new Move(start, end, scoreMove(start, end, engine.getBoard())));
             }
         }
-
         moves.sort(new SortByScore().reversed());
 
         return moves;
     }
 
     /**
-     * Score a move based on the piece that is moved.
+     * Score a move based on estimates.
      * @param start The start {@link Vector2} position of the move.
      * @param end The end {@link Vector2} position of the move.
      * @param board The {@link Board} the move is made on.
-     * @return The score of the move.
+     * @return The estimated score of the move.
      */
     private int scoreMove(Vector2 start, Vector2 end, Board board) {
         int score = 0;

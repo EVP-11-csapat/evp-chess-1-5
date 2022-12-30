@@ -26,8 +26,8 @@ public class SearchTree {
 
         /**
          * Constructor for Node.
-         * @param white {@link Move} white move
-         * @param black {@link Move} black move
+         * @param white {@link Move} white's move
+         * @param black {@link Move} black's move
          * @param children {@link ArrayList} of {@link Node} children
          */
         public Node(Move white, Move black, ArrayList<Node> children) {

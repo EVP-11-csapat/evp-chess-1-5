@@ -72,6 +72,8 @@ public class Zobrist {
             }
         }
 
+        // Add the hash values for the en passant column
+
         Vector2 enpassantPosition = new Vector2(0, 3);
         if(engine.nextPlayer == Piece.Color.BLACK) enpassantPosition.y = 4;
 
