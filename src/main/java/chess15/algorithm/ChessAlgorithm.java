@@ -28,8 +28,9 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
     private static final int infinity = 1073741824;
     private SearchTree tree;
-
+    private final TranspositionTable tTable;
     private Move bestMove;
+    private int bestScore;
     private Move bestMoveInIteration;
 
     /**
@@ -70,12 +71,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
             try {
 
                 while (!Thread.currentThread().isInterrupted()) {
-                    if (Constants.DEVMODE)
-                        System.out.println("starting iteration " + i);
-                    minmax(i, 0, engine, -infinity, infinity);
+                    if (Constants.DEVMODE) System.out.println("starting iteration " + i);
+                    bestScore = minmax(i, 0, engine, -infinity, infinity);
                     bestMove = bestMoveInIteration;
-                    if (Constants.DEVMODE)
-                        System.out.println("completed iteration " + i);
+                    if (Constants.DEVMODE) System.out.println("completed iteration " + i);
                     i++;
                 }
             } catch (InterruptedException ignored) {
@@ -88,8 +87,15 @@ public class ChessAlgorithm implements AlgorithmInterface {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             searchThread.interrupt();
-            if (Constants.DEVMODE)
+            if (Constants.DEVMODE){
                 System.out.println("time's up\n");
+                if(isWinScore(bestScore)){
+                    int mateIn = -(bestScore - mateScore);
+                    if(mateIn == 1) System.out.println("Thank you for playing");
+                        else System.out.println("Mate in: " + mateIn);
+                }
+            }
+
         }, 3, TimeUnit.SECONDS);
 
         try {
@@ -113,6 +119,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         if (rules.gamemode instanceof Classical) {
             tree = new SearchTree();
         }
+        tTable = new TranspositionTable();
     }
 
     /**
@@ -130,7 +137,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
 
         long hash = Zobrist.calculateHash(engine);
 
-        TranspositionTable.TableEntry entry = TranspositionTable.retrieve(hash);
+        TranspositionTable.TableEntry entry = tTable.retrieve(hash);
 
         Move storedmove = null;
 
@@ -175,7 +182,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
             int score = -minmax(depth - 1, plyFromRoot + 1, copiedEngine, -beta, -alpha);
 
             if (score >= beta) {
-                TranspositionTable.store(hash, TranspositionTable.LOWER_BOUND, beta, depth, plyFromRoot, move);
+                tTable.store(hash, TranspositionTable.LOWER_BOUND, beta, depth, plyFromRoot, move);
                 return beta;
             }
 
@@ -190,7 +197,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
             }
         }
 
-        TranspositionTable.store(hash, evalType, alpha, depth, plyFromRoot, localBestMove);
+        tTable.store(hash, evalType, alpha, depth, plyFromRoot, localBestMove);
 
         return alpha;
     }
@@ -244,8 +251,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
      * @return True if the score is for a move that leads to a forced mate..
      */
     public static boolean isWinScore(int score) {
-        final int maxWinDepth = 1000;
-        return Math.abs(score) > mateScore - maxWinDepth;
+        return Math.abs(score) > mateScore - 1000;
     }
 
     /**

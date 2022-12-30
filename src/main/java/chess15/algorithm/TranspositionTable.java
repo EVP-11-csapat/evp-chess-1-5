@@ -11,7 +11,7 @@ public class TranspositionTable {
     public static final byte UPPER_BOUND = 2;
 
     public static final int LOOKUPFAILED = Integer.MIN_VALUE;
-    private static final HashMap<Long, TableEntry> table;
+    private final HashMap<Long, TableEntry> table;
 
     public static class TableEntry {
         int score;
@@ -64,16 +64,15 @@ public class TranspositionTable {
         return score;
     }
 
-
-    static {
-        table = new HashMap<>();
-    }
-
-    public static void store(long hash, byte nodeType, int score, int depth, int plyFromRoot, Move bestMove) {
+    public void store(long hash, byte nodeType, int score, int depth, int plyFromRoot, Move bestMove) {
         table.put(hash, new TableEntry(nodeType, correctWinEvalForStorage(score, plyFromRoot), depth, bestMove));
     }
 
-    public static TableEntry retrieve(long hash) {
+    public TableEntry retrieve(long hash) {
         return table.get(hash);
+    }
+
+    public TranspositionTable(){
+        table = new HashMap<>();
     }
 }
