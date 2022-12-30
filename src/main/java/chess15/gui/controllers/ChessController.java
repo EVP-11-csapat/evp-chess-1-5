@@ -590,17 +590,21 @@ public class ChessController implements UIInteface {
      */
     private void handleTextMove(String text) {
         // handle resignation and restart
-        switch (text) {
-            case "resign" -> {
-                // if resign is typed by itself, we resign the player that is about to move
-                if (Constants.whiteToMove) endGame(Piece.Color.BLACK, WinReason.RESIGNITION);
-                else endGame(Piece.Color.WHITE, WinReason.RESIGNITION);
+        if (!chessBoardPane.getChildren().contains(Constants.endGameBase)) {
+            switch (text) {
+                case "resign" -> {
+                    // if resign is typed by itself, we resign the player that is about to move
+                    if (Constants.whiteToMove) endGame(Piece.Color.BLACK, WinReason.RESIGNITION);
+                    else endGame(Piece.Color.WHITE, WinReason.RESIGNITION);
+                }
+                case "rw", "resign white", "white resign" -> endGame(Piece.Color.BLACK, WinReason.RESIGNITION);
+                case "rb", "resign black", "black resign" -> endGame(Piece.Color.WHITE, WinReason.RESIGNITION);
+                case "draw" -> endGame(null, WinReason.DRAW);
             }
-            case "rw", "resign white", "white resign" -> endGame(Piece.Color.BLACK, WinReason.RESIGNITION);
-            case "rb", "resign black", "black resign" -> endGame(Piece.Color.WHITE, WinReason.RESIGNITION);
-            case "draw" -> endGame(null, WinReason.DRAW);
-            case "reset", "restart", "rematch" -> General.reset(this, engine);
         }
+
+        if (text.equals("reset") || text.equals("restart") || text.equals("rematch"))
+            General.reset(this, engine);
 
         // handle AI color switch
         if (text.equals("color swap") || text.equals("color switch") || text.equals("swap color") || text.equals("switch color") ||
@@ -843,6 +847,7 @@ public class ChessController implements UIInteface {
      */
     @Override
     public void endGame(Piece.Color won, WinReason reason) {
+        Constants.endGameBase = new StackPane();
         Constants.isRunning = false;
         Constants.endGameBase.setPrefHeight(90 * 8);
         Constants.endGameBase.setPrefWidth(90 * 8);
