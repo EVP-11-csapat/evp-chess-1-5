@@ -28,8 +28,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -239,7 +239,7 @@ public class ChessController implements UIInteface {
         // Add the piece to the pieces list for later use
         Constants.pieces.put(pos, pieceImage);
         // Adds the event listener for click
-        if (!RuleSet.getInstance().isAiGame || piece.color != Piece.Color.BLACK)
+        if (!RuleSet.getInstance().isAiGame || piece.color != Constants.AlgColor)
             addClickEventToPiece(pieceImage);
         // Adds the piece to the board as an image
         chessBoardPane.getChildren().add(pieceImage);
@@ -567,11 +567,55 @@ public class ChessController implements UIInteface {
     // ####################
 
     /**
+     * Swaps the {@link chess15.Piece.Color} the alg uses
+     */
+    private void switchAiMoveColor() {
+        if (Constants.AlgColor == Piece.Color.WHITE) Constants.AlgColor = Piece.Color.BLACK;
+        else Constants.AlgColor = Piece.Color.WHITE;
+    }
+
+    /**
+     * Gets the opposite color of the alg
+     * @return The playes color
+     */
+    private Piece.Color playerColor() {
+        if (Constants.AlgColor == Piece.Color.WHITE) return Piece.Color.BLACK;
+        else return Piece.Color.WHITE;
+    }
+
+    /**
      * Text input where the user can type a move
      *
      * @param text The text we get from the input
      */
     private void handleTextMove(String text) {
+        // handle resignation and restart
+        switch (text) {
+            case "resign" -> {
+                // if resign is typed by itself, we resign the player that is about to move
+                if (Constants.whiteToMove) endGame(Piece.Color.BLACK, WinReason.RESIGNITION);
+                else endGame(Piece.Color.WHITE, WinReason.RESIGNITION);
+            }
+            case "rw", "resign white", "white resign" -> endGame(Piece.Color.BLACK, WinReason.RESIGNITION);
+            case "rb", "resign black", "black resign" -> endGame(Piece.Color.WHITE, WinReason.RESIGNITION);
+            case "draw" -> endGame(null, WinReason.DRAW);
+            case "reset", "restart", "rematch" -> General.reset(this, engine);
+        }
+
+        // handle AI color switch
+        if (text.equals("color swap") || text.equals("color switch") || text.equals("swap color") || text.equals("switch color") ||
+                text.equals("ai switch") || text.equals("switch ai")) {
+            switchAiMoveColor();
+            General.reset(this, engine);
+            if (Constants.AlgColor == Piece.Color.WHITE) {
+                Constants.algMoveThreads = new Thread(() -> {
+                    Move computerMove = Constants.alg.move(engine.getBoard(), null);
+                    Platform.runLater(() -> movePiece(computerMove.from, computerMove.to));
+                });
+                Constants.algMoveThreads.start();
+            }
+        }
+
         Pattern testPattern = Pattern.compile("[a-h][1-8][a-h][1-8]");
         Matcher patternMatcher = testPattern.matcher(text.toLowerCase());
         boolean correctInput = patternMatcher.matches();
@@ -581,10 +625,10 @@ public class ChessController implements UIInteface {
             //TODO: Parse to move and call move method
             if (Constants.DEVMODE)
                 Constants.logger.info("Text move issued: " + text);
-            inputText.clear();
         } else {
             System.out.println("Pattern NOT FOUND");
         }
+        inputText.clear();
     }
 
     /**
@@ -597,6 +641,7 @@ public class ChessController implements UIInteface {
      */
     public void movePiece(Vector2 from, Vector2 to) {
         removeFromTo();
+        Constants.whiteToMove = !Constants.whiteToMove;
         AtomicBoolean moveFinished = new AtomicBoolean(false);
         if (RuleSet.getInstance().gamemode instanceof Fastpaced) {
             Constants.fastPacedCounter = 0;
@@ -647,7 +692,7 @@ public class ChessController implements UIInteface {
 
         // Call the move on the backend
         engine.move(from, to);
-        if (!RuleSet.getInstance().isAiGame || piece.color != Piece.Color.BLACK)
+        if (!RuleSet.getInstance().isAiGame || piece.color != playerColor())
             updateClickEventToPiece(to);
 
         // Change the timer to the other color
@@ -655,7 +700,7 @@ public class ChessController implements UIInteface {
             handleTimerUpdate(piece.color);
         }
 
-        if (RuleSet.getInstance().isAiGame && piece.color == Piece.Color.WHITE) {
+        if (RuleSet.getInstance().isAiGame && piece.color == playerColor()) {
             AtomicBoolean testing = new AtomicBoolean(true);
             Constants.algMoveThreads = new Thread(() -> {
                 while (testing.get()) {
@@ -818,6 +863,8 @@ public class ChessController implements UIInteface {
             case CHECKMATE -> winDescriptionLabel.setText("Won by checkmate");
             case STALEMATE -> winDescriptionLabel.setText("Drawn by stalemate");
             case NOMATERIAL -> winDescriptionLabel.setText("Draw by lack of material");
+            case RESIGNITION -> winDescriptionLabel.setText("Won by resignation");
+            case DRAW -> winDescriptionLabel.setText("Draw by agreement");
         }
 
         winLabel.setFont(new Font("Ariel", 70));

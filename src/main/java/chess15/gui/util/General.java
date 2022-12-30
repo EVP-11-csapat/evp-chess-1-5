@@ -57,7 +57,7 @@ public class General {
      */
     public static void reset(ChessController chessController, EngineInterface engine) {
         engine.reset();
-        if (RuleSet.getInstance().isAiGame) Constants.alg = new ChessAlgorithm(RuleSet.getInstance(), Piece.Color.BLACK);
+        if (RuleSet.getInstance().isAiGame) Constants.alg = new ChessAlgorithm(RuleSet.getInstance(), Constants.AlgColor);
         Constants.board = engine.getBoard();
         chessController.removePosibleMoves();
         chessController.removeFromTo();
@@ -86,11 +86,13 @@ public class General {
         chessController.chessBoardPane.getChildren().remove(Constants.endGameBase);
         Constants.endGameBase = new StackPane();
         Constants.playedMoves.clear();
+        Constants.whiteToMove = true;
         chessController.setUpBoard();
     }
 
     /**
-     * Resets the GUI. Used to play the same settings again after the game ends
+     * Resets the GUI. Used to play the same settings again after the game ends<br />
+     * This is the Key Event version
      * @param chessController The {@link ChessController}. Used for access.
      * @param e The key event
      * @param engine The engine. Also gets reset form here.

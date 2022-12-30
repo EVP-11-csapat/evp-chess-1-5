@@ -57,6 +57,8 @@ public class Constants {
     public static ArrayList<Move> playedMoves = new ArrayList<>();
     public static boolean pauseForPromotion = false;
     public static AlgorithmInterface alg;
+    public static boolean whiteToMove = true;
+    public static Piece.Color AlgColor = Piece.Color.BLACK;
 
     // ###########
     // # DevMode #

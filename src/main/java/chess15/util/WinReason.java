@@ -4,5 +4,7 @@ public enum WinReason {
     TIMEOUT,
     CHECKMATE,
     STALEMATE,
-    NOMATERIAL
+    NOMATERIAL,
+    RESIGNITION,
+    DRAW
 }
