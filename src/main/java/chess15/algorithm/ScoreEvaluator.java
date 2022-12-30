@@ -20,7 +20,7 @@ public class ScoreEvaluator {
      * Evaluates the score of a board.
      *
      * @param engine The engine to evaluate.
-     * @return The score of the board.
+     * @return The score of the board from the perspective of the player that would make the next move.
      */
     public static int evaluate(Engine engine) {
         Board board = engine.board;

@@ -31,16 +31,16 @@ public class Engine implements EngineInterface {
     private ArrayList<Vector2> opponentPieces;
 
     /**
-     * Used to get the moves for a {@link Vector2} position
-     * @param position The {@link Vector2} position to get the moves for
-     * @return The list of moves for the position
+     * Used to get the moves from a {@link Vector2} position
+     * @param position The {@link Vector2} position to get the moves from
+     * @return The list of moves from the position
      */
     public ArrayList<Vector2> getMoves(Vector2 position) {
         return possibleMoves.getOrDefault(position, new ArrayList<>());
     }
 
     /**
-     * Gets a random move for all posible moves
+     * Gets a random move from all posible moves
      * Can be used for both black and white
      * @return A random {@link Move} from the list of possible moves
      */
@@ -74,8 +74,8 @@ public class Engine implements EngineInterface {
     }
 
     /**
-     * Gets all piece {@link Vector2} positions
-     * @return The list of all {@link Vector2} positions of all pieces
+     * Gets all piece {@link Vector2} positions of the next player
+     * @return The list of all {@link Vector2} positions of the next player's pieces
      */
     public ArrayList<Vector2> getPieces() {
         return new ArrayList<>(pieces);
@@ -83,15 +83,14 @@ public class Engine implements EngineInterface {
 
     /**
      * Gets all opponent's piece {@link Vector2} positions
-     * @return The list of all {@link Vector2} positions of all opponent's pieces
+     * @return The list of all {@link Vector2} positions of the opponent's pieces
      */
     public ArrayList<Vector2> getOpponentPieces() {
         return new ArrayList<>(opponentPieces);
     }
 
     /**
-     * Preform a move on the board and check for promotion, castling, en passant,
-     * and other elements related to moving
+     * Perform a move on the board
      * @param from The {@link Vector2} position of the piece to move
      * @param to The {@link Vector2} position to move the piece to
      */
@@ -203,7 +202,7 @@ public class Engine implements EngineInterface {
     }
 
     /**
-     * Constructor for the {@link Engine} class,
+     * Copy constructor for the {@link Engine} class,
      * that creates a copy of the {@link Engine} passed in
      * @param original The {@link Engine} to copy
      */
@@ -255,9 +254,9 @@ public class Engine implements EngineInterface {
     }
 
     /**
-     * Switch the color of the player
-     * @param color The {@link Piece.Color} to switch from
-     * @return The {@link Piece.Color} that was switched to
+     * Switch a color from black to white or vice versa
+     * @param color The {@link Piece.Color} to switch
+     * @return The opposite color {@link Piece.Color}
      */
     public static Piece.Color switchColor(Piece.Color color) {
         if (color == Piece.Color.WHITE) return Piece.Color.BLACK;
@@ -266,7 +265,7 @@ public class Engine implements EngineInterface {
 
     /**
      * Calculate the move map for the current player
-     * @param onlyAttacks Whether to only calculate attacks
+     * @param onlyAttacks Calculate only the positions the player can attack
      * @return The {@link HashMap} of the move map with the {@link Vector2} position as the key and the {@link ArrayList} of {@link Vector2} moves as the value
      */
     private HashMap<Vector2, ArrayList<Vector2>> calculateMoveMap(boolean onlyAttacks) {
@@ -357,7 +356,7 @@ public class Engine implements EngineInterface {
     /**
      * Calculate the moves for a piece at a position
      * @param position The {@link Vector2} position of the piece
-     * @param onlyAttacks Whether to only calculate attacks
+     * @param onlyAttacks Calculate only the positions the piece can attack
      * @return The {@link ArrayList} of {@link Vector2} moves
      */
     private ArrayList<Vector2> calculateMoves(Vector2 position, boolean onlyAttacks) {
@@ -430,9 +429,9 @@ public class Engine implements EngineInterface {
     }
 
     /**
-     * Select the pieces with a given {@link Piece.Color}
-     * @param color The {@link Piece.Color} to select
-     * @return The {@link ArrayList} of {@link Vector2} positions
+     * Select the pieces of the given {@link Piece.Color}
+     * @param color The {@link Piece.Color} of the pieces to select
+     * @return The {@link ArrayList} of {@link Vector2} positions for selected pieces
      */
     public ArrayList<Vector2> selectPieces(Piece.Color color) {
         ArrayList<Vector2> selectedPieces = new ArrayList<>();
@@ -457,9 +456,9 @@ public class Engine implements EngineInterface {
     /**
      * Evaluate a move
      * @param pos The {@link Vector2} to evaluate
-     * @param isAttack Whether to allow attacks
-     * @param onlyAttack Whether to only allow attacks
-     * @param forceAttack Whether to allow attacks to empty squares
+     * @param isAttack Allow captures
+     * @param onlyAttack Only allow captures
+     * @param forceAttack Allow only moves that could be captures
      * @return Whether the move is valid
      */
     private boolean evalMove(Vector2 pos, boolean isAttack, boolean onlyAttack, boolean forceAttack) {
@@ -474,11 +473,11 @@ public class Engine implements EngineInterface {
     }
 
     /**
-     * Repeat a move in a direction
+     * Repeat a move in a direction for sliding pieces
      * @param pos The {@link Vector2} position to start from
      * @param direction The {@link Vector2} direction to move in
-     * @param allowAttack Whether to allow attacks
-     * @param forceAttack Whether to allow attacks to empty squares
+     * @param allowAttack Allow captures
+     * @param forceAttack Allow only moves that could be captures
      * @return The {@link ArrayList} of {@link Vector2} moves
      */
     private ArrayList<Vector2> repeatMove(Vector2 pos, Vector2 direction, boolean allowAttack, boolean forceAttack) {
@@ -537,10 +536,10 @@ public class Engine implements EngineInterface {
 
     /**
      * Orient the move based on whether the piece is white or black
-     * @param rawDirections The {@link ArrayList} of {@link Vector2} directions
-     * @param whiteDifferent Whether the move is diferent for white
-     * @param color The {@link Piece.Color} of the piece
-     * @return The {@link ArrayList} of {@link Vector2} moves
+     * @param rawDirections The {@link ArrayList} of {@link Vector2} directions to orient
+     * @param whiteDifferent Whether the moveset is different when the piece is white
+     * @param color The {@link Piece.Color} of the {@link Piece}
+     * @return The {@link ArrayList} of {@link Vector2} moves with the correct direction
      */
     private ArrayList<Vector2> orient(ArrayList<Vector2> rawDirections, boolean whiteDifferent, Piece.Color color) {
         if (whiteDifferent && color == Piece.Color.WHITE) {
@@ -555,7 +554,7 @@ public class Engine implements EngineInterface {
      * Filter a direction based on a pin
      * @param direction The {@link Vector2} direction to filter
      * @param pinDirection The {@link Vector2} pin direction
-     * @param onlyAttacks Whether to only allow attacks
+     * @param onlyAttacks Whether to only allow attacks (pinned pieces can still give check)
      * @return Whether the direction is valid
      */
     private boolean filterDirection(Vector2 direction, Vector2 pinDirection, boolean onlyAttacks) {
@@ -568,8 +567,8 @@ public class Engine implements EngineInterface {
      * Filter moves based on a pin
      * @param directions The {@link ArrayList} of {@link Vector2} directions to filter
      * @param pinDirection The {@link Vector2} pin direction
-     * @param onlyAttacks Whether to only allow attacks
-     * @return The {@link ArrayList} of {@link Vector2} moves
+     * @param onlyAttacks Whether to only allow attacks (pinned pieces can still give check)
+     * @return The {@link ArrayList} of filtered {@link Vector2} directions
      */
     private ArrayList<Vector2> filterDirections(ArrayList<Vector2> directions, Vector2 pinDirection, boolean onlyAttacks) {
         if (onlyAttacks || pinDirection == null) return new ArrayList<>(directions);
@@ -585,7 +584,7 @@ public class Engine implements EngineInterface {
 
     /**
      * Get the castling moves
-     * @return The {@link ArrayList} of {@link Vector2} moves
+     * @return The {@link ArrayList} of {@link Vector2} castling moves for the king.
      */
     ArrayList<Vector2> castlingMoves() {
         ArrayList<Vector2> castlingMoves = new ArrayList<>();
@@ -644,7 +643,7 @@ public class Engine implements EngineInterface {
     }
 
     /**
-     * Switch the player
+     * Switch the color of the player that moves next
      */
     private void switchPlayer() {
         opponentPieces = selectPieces(nextPlayer);
