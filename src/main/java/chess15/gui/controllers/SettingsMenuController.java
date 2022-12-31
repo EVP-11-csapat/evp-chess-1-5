@@ -299,15 +299,15 @@ public class SettingsMenuController {
                 "No time to think! \nEvery 2 seconds a random move is made.", 1);
         fastpacedButton.setOnMousePressed(e -> onFastpacedSelected());
 
-        pawnAttackButton =  setUpButton("fastpaced", "Pawn attack",
+        pawnAttackButton =  setUpButton("pawnattack", "Pawn attack",
                 "Just a bunch of pawns and their king", 2);
         pawnAttackButton.setOnMousePressed(e -> onPawnAttackSelected());
 
-        chess960Button = setUpButton("fastpaced", "Chess960",
+        chess960Button = setUpButton("chess960", "Chess960",
                 "A chess variant where the back row is randomized", 3);
         chess960Button.setOnMousePressed(e -> onChess960Selected());
 
-        chaosModeButton = setUpButton("fastpaced", "Chaos Mode",
+        chaosModeButton = setUpButton("chaos", "Chaos Mode",
                 "WARNING: This mode is chaotic", 4);
         chaosModeButton.setOnMousePressed(e -> onChaosModeSelected());
 

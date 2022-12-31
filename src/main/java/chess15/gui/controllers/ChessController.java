@@ -626,14 +626,21 @@ public class ChessController implements UIInteface {
         if (correctInput) {
             if (Constants.DEVMODE)
                 System.out.println("Pattern FOUND");
-            //TODO: Parse to move and call move method
+            Move move = General.getMoveFromText(text, engine);
+            if (move.from != null && move.from.x != -1) {
+                movePiece(move.from, move.to);
+                inputText.clear();
+            } else {
+                inputText.setText("Invalid Move");
+            }
+
             if (Constants.DEVMODE)
                 Constants.logger.info("Text move issued: " + text);
         } else {
+            inputText.clear();
             if (Constants.DEVMODE)
                 System.out.println("Pattern NOT FOUND");
         }
-        inputText.clear();
     }
 
     /**
