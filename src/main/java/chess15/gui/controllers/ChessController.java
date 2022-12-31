@@ -47,26 +47,52 @@ import java.util.stream.Collectors;
  * The ChessController is responsible for everything UI related in the main scene
  */
 public class ChessController implements UIInteface {
-    // A list of pieces we can use to promote pawns
+    /**
+     * List of pieces used for promotion
+     */
     private final ArrayList<Piece> PROMOTIONPIECES = new ArrayList<>(List.of(
             new Piece(Piece.Color.WHITE, Piece.Type.QUEEN, Queen.getInstance(), false),
             new Piece(Piece.Color.WHITE, Piece.Type.ROOK, Rook.getInstance(), false),
             new Piece(Piece.Color.WHITE, Piece.Type.BISHOP, Bishop.getInstance(), false),
             new Piece(Piece.Color.WHITE, Piece.Type.KNIGHT, Knight.getInstance(), false)
     ));
+    /**
+     * Engine used all game mechanics
+     */
     private EngineInterface engine;
+    /**
+     * Chess board {@link Pane}
+     */
     @FXML
     public Pane chessBoardPane;
+    /**
+     * Main {@link Pane} used to attach event handlers
+     */
     @FXML
     private Pane main;
+    /**
+     * Move List {@link ListView<String>} used to display all moves in the game
+     */
     @FXML
     public ListView<String> moveListElement;
+    /**
+     * The {@link ScrollPane} for the black taken pieces
+     */
     @FXML
     private ScrollPane blackTakenScroll;
+    /**
+     * The {@link ScrollPane} for the white taken pieces
+     */
     @FXML
     private ScrollPane whiteTakenScroll;
+    /**
+     * A {@link TextField} for chat input commands and moves
+     */
     @FXML
     private TextField inputText;
+    /**
+     * A {@link Pane} to attach the clock to
+     */
     @FXML
     public Pane clockPane;
 
@@ -273,7 +299,9 @@ public class ChessController implements UIInteface {
                 .collect(Collectors.toList());
     }
 
-    // Handle the click event on the piece
+    /**
+     * Handle the mouse press event for a piece
+     */
     EventHandler<MouseEvent> pressedHandler = mouseEvent -> {
         Vector2 handlePos = getKeysByValue(Constants.pieces, (ImageView) mouseEvent.getSource()).get(0);
         handlePieceClick(handlePos);

@@ -5,14 +5,7 @@ import chess15.gamemodes.JSONGrabber;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.FileReader;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -24,14 +17,12 @@ public class JsonToBoard {
      * Converts a JSON file to a Board object.
      * @param json The path to the JSON file.
      * @return The Board object.
-     * @throws Exception If the JSON file is invalid.
      */
     public static Board jsonToBoard(String json) {
         Board board = new Board();
-        JSONParser parser = new JSONParser();
 
         try {
-            InputStream inputStream = JSONGrabber.getInstance().getClass().getResource(json).openStream();
+            InputStream inputStream = Objects.requireNonNull(JSONGrabber.getInstance().getClass().getResource(json)).openStream();
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(inputStream);
             JsonNode piecesNode = root.get("pieces");

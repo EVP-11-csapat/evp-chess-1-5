@@ -4,12 +4,26 @@ package chess15;
  * This class represents a piece in a chess game.
  */
 public class Piece extends BoardElement{
+    /**
+     * The {@link Color} of the piece
+     */
     public Color color;
+    /**
+     * The Look of the piece, determines what image to use
+     */
     public Type look;
+    /**
+     * The Movement of the piece, determines how the piece moves
+     */
     public MoveSet movement;
+    /**
+     * True if the piece is king
+     */
     public boolean isKing;
 
-    //planning to use this both for castling and en passant
+    /**
+     * use this both for castling and en passant
+     */
     public boolean boolProperty = false;
 
     /**
@@ -27,6 +41,10 @@ public class Piece extends BoardElement{
         this.isKing = isKing;
     }
 
+    /**
+     * Constructor for piece
+     * @param original The piece to copy from
+     */
     public Piece(Piece original){
         this.isEmpty = false;
         this.color = original.color;
@@ -52,6 +70,9 @@ public class Piece extends BoardElement{
         WHITE, BLACK
     }
 
+    /**
+     * Used for pin calcualtion
+     */
     public Vector2 pin = null;
 
     /**

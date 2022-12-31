@@ -140,30 +140,6 @@ public class General {
     }
 
     /**
-     * Convert the chess coordiantes to move coordinates. Used for the chat input
-     * Example input a2
-     * @param move The move we want to convert
-     * @return The converted {@link Vector2}
-     */
-    public static Vector2 convertChessCoordToMove(String move) {
-        String x = move.substring(0, 1);
-        String y = move.substring(1, 2);
-
-        return switch (x) {
-            case "a" -> new Vector2(0, 8 - Integer.parseInt(y));
-            case "b" -> new Vector2(1, 8 - Integer.parseInt(y));
-            case "c" -> new Vector2(2, 8 - Integer.parseInt(y));
-            case "d" -> new Vector2(3, 8 - Integer.parseInt(y));
-            case "e" -> new Vector2(4, 8 - Integer.parseInt(y));
-            case "f" -> new Vector2(5, 8 - Integer.parseInt(y));
-            case "g" -> new Vector2(6, 8 - Integer.parseInt(y));
-            case "h" -> new Vector2(7, 8 - Integer.parseInt(y));
-            default -> new Vector2(-1, -1);
-        };
-
-    }
-
-    /**
      * Returns a given pieces type in a string from. Used for image path generation
      * @param p The {@link Piece} we want the type of
      * @return The {@link String} for the generator
@@ -216,6 +192,29 @@ public class General {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Convert the chess coordiantes to move coordinates. Used for the chat input
+     * Example input a2
+     * @param move The move we want to convert
+     * @return The converted {@link Vector2}
+     */
+    public static Vector2 convertChessCoordToMove(String move) {
+        String x = move.substring(0, 1);
+        String y = move.substring(1, 2);
+
+        return switch (x) {
+            case "a" -> new Vector2(0, 8 - Integer.parseInt(y));
+            case "b" -> new Vector2(1, 8 - Integer.parseInt(y));
+            case "c" -> new Vector2(2, 8 - Integer.parseInt(y));
+            case "d" -> new Vector2(3, 8 - Integer.parseInt(y));
+            case "e" -> new Vector2(4, 8 - Integer.parseInt(y));
+            case "f" -> new Vector2(5, 8 - Integer.parseInt(y));
+            case "g" -> new Vector2(6, 8 - Integer.parseInt(y));
+            case "h" -> new Vector2(7, 8 - Integer.parseInt(y));
+            default -> new Vector2(-1, -1);
+        };
     }
 
     /**
