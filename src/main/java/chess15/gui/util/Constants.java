@@ -160,7 +160,7 @@ public class Constants {
     /**
      * If true, all the developer specific console prints, and log file are activated
      */
-    public static final boolean DEVMODE = true;
+    public static final boolean DEVMODE = false;
     /**
      * A logger to create log files
      */

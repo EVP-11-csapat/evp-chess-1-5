@@ -299,7 +299,7 @@ public class SettingsMenuController {
                 "No time to think! \nEvery 2 seconds a random move is made.", 1);
         fastpacedButton.setOnMousePressed(e -> onFastpacedSelected());
 
-        pawnAttackButton =  setUpButton("pawnattack", "Pawn attack",
+        pawnAttackButton =  setUpButton("pawnattack", "Pawn Attack",
                 "Just a bunch of pawns and their king", 2);
         pawnAttackButton.setOnMousePressed(e -> onPawnAttackSelected());
 
@@ -474,8 +474,12 @@ public class SettingsMenuController {
         playButton.setText("Play Chaos Mode");
         timerCheckBox.setDisable(false);
         playButton.setDisable(false);
-        enpassantCheckBox.setDisable(false);
-        promotionCheckBox.setDisable(false);
+        enpassantCheckBox.setDisable(true);
+        enpassantCheckBox.setSelected(false);
+        isEnPassantEnabled = false;
+        promotionCheckBox.setDisable(true);
+        promotionCheckBox.setSelected(false);
+        isPromotionEnabled = false;
         castlingCheckBox.setDisable(true);
         castlingCheckBox.setSelected(false);
         isCastlingEnabled = false;

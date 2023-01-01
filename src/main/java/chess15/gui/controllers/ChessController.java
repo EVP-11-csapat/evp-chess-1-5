@@ -154,7 +154,8 @@ public class ChessController implements UIInteface {
 
         // Hook the handlers to the Key Pressed Event
         if (main.getScene() != null) {
-            main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
+            if (Constants.DEVMODE)
+                main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
             main.getScene().getWindow().setOnCloseRequest(e -> {
                 if (Constants.timerThread != null) {
                     General.threadStop();
@@ -166,7 +167,8 @@ public class ChessController implements UIInteface {
         } else {
             main.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
-                    main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
+                    if (Constants.DEVMODE)
+                        main.getScene().addEventHandler(KeyEvent.KEY_PRESSED, resetHandler);
                     main.getScene().getWindow().setOnCloseRequest(e -> {
                         if (Constants.timerThread != null) {
                             General.threadStop();
@@ -635,16 +637,18 @@ public class ChessController implements UIInteface {
             General.reset(this, engine);
 
         // handle AI color switch
-        if (text.equals("color swap") || text.equals("color switch") || text.equals("swap color") || text.equals("switch color") ||
-                text.equals("ai switch") || text.equals("switch ai")) {
-            switchAiMoveColor();
-            General.reset(this, engine);
-            if (Constants.AlgColor == Piece.Color.WHITE) {
-                Constants.algMoveThreads = new Thread(() -> {
-                    Move computerMove = Constants.alg.move(engine.getBoard(), null);
-                    Platform.runLater(() -> movePiece(computerMove.from, computerMove.to));
-                });
-                Constants.algMoveThreads.start();
+        if (RuleSet.getInstance().isAiGame) {
+            if (text.equals("color swap") || text.equals("color switch") || text.equals("swap color") || text.equals("switch color") ||
+                    text.equals("ai switch") || text.equals("switch ai")) {
+                switchAiMoveColor();
+                General.reset(this, engine);
+                if (Constants.AlgColor == Piece.Color.WHITE) {
+                    Constants.algMoveThreads = new Thread(() -> {
+                        Move computerMove = Constants.alg.move(engine.getBoard(), null);
+                        Platform.runLater(() -> movePiece(computerMove.from, computerMove.to));
+                    });
+                    Constants.algMoveThreads.start();
+                }
             }
         }
 
