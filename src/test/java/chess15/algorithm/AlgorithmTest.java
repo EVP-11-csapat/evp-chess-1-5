@@ -1,11 +1,11 @@
 package chess15.algorithm;
 
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.board.Piece;
+import chess15.board.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
-import chess15.util.Move;
+import chess15.board.Move;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,31 +1,27 @@
-package chess15;
+package chess15.board;
 
 import java.util.ArrayList;
 
 /**
- * King movement class
+ * Rook movement class
  * Singleton class
  */
-public class King extends MoveSet
+public class Rook extends MoveSet
 {
-    private static King instance;
+    private static Rook instance;
 
     /**
      * Add the posible moves for the class
      */
-    private King()
+    private Rook()
     {
         moves = new ArrayList<Vector2>();
-        moves.add(new Vector2(-1, -1));
         moves.add(new Vector2(0, -1));
-        moves.add(new Vector2(1, -1));
-        moves.add(new Vector2(-1, 0));
         moves.add(new Vector2(1, 0));
-        moves.add(new Vector2(-1, 1));
         moves.add(new Vector2(0, 1));
-        moves.add(new Vector2(1, 1));
+        moves.add(new Vector2(-1, 0));
 
-        repeating = false;
+        repeating = true;
         attackDifferent = false;
         whiteDifferent = false;
     }
@@ -35,12 +31,12 @@ public class King extends MoveSet
      */
     public static MoveSet getInstance()
     {
-        if(instance == null) instance = new King();
+        if (instance == null) instance = new Rook();
         return instance;
     }
 
     @Override
     public int hashCode() {
-        return 6;
+        return 4;
     }
 }

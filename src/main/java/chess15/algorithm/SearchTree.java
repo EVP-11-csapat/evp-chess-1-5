@@ -1,9 +1,9 @@
 package chess15.algorithm;
 
-import chess15.Vector2;
+import chess15.board.Vector2;
 import chess15.gamemodes.JSONGrabber;
 import chess15.gui.util.Constants;
-import chess15.util.Move;
+import chess15.board.Move;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;

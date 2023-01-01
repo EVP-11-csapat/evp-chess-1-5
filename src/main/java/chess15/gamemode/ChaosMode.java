@@ -1,6 +1,6 @@
 package chess15.gamemode;
 
-import chess15.*;
+import chess15.board.*;
 import chess15.gui.util.Constants;
 
 import java.security.SecureRandom;
@@ -13,8 +13,8 @@ import java.util.List;
 public class ChaosMode extends Gamemode {
 
     /**
-     * Gets a random {@link chess15.Piece.Type} to create a random piece
-     * @return The {@link chess15.Piece.Type} of the piece
+     * Gets a random {@link Piece.Type} to create a random piece
+     * @return The {@link Piece.Type} of the piece
      */
     private Piece.Type getRandomType() {
         ArrayList<Piece.Type> possible = new ArrayList<>(List.of(

@@ -1,6 +1,6 @@
 package chess15.util;
 
-import chess15.*;
+import chess15.board.*;
 import org.junit.Before;
 import org.junit.Test;
 

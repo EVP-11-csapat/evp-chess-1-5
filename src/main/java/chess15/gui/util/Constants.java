@@ -1,11 +1,11 @@
 package chess15.gui.util;
 
-import chess15.Board;
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.board.Board;
+import chess15.board.Piece;
+import chess15.board.Vector2;
 import chess15.algorithm.AlgorithmInterface;
 import chess15.gui.controllers.ChessController;
-import chess15.util.Move;
+import chess15.board.Move;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;

@@ -1,6 +1,9 @@
 package chess15.algorithm;
 
-import chess15.*;
+import chess15.board.Pawn;
+import chess15.board.Piece;
+import chess15.board.Rook;
+import chess15.board.Vector2;
 import chess15.engine.Engine;
 
 import java.util.ArrayList;

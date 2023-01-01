@@ -1,5 +1,6 @@
 package chess15;
 
+import chess15.board.Vector2;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

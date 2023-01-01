@@ -1,7 +1,7 @@
 package chess15.gui.controllers;
 
-import chess15.*;
 import chess15.algorithm.ChessAlgorithm;
+import chess15.board.*;
 import chess15.engine.Engine;
 import chess15.engine.EngineInterface;
 import chess15.engine.RuleSet;
@@ -13,8 +13,8 @@ import chess15.gui.util.Constants;
 import chess15.gui.util.General;
 import chess15.gui.util.TimerInit;
 import chess15.util.CustomFormatter;
-import chess15.util.Move;
-import chess15.util.PiecePoints;
+import chess15.board.Move;
+import chess15.algorithm.PiecePoints;
 import chess15.util.WinReason;
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -429,7 +429,7 @@ public class ChessController implements UIInteface {
     /**
      * Method to update the timer text and additional time
      *
-     * @param color The {@link chess15.Piece.Color} of the side where we need to update the text
+     * @param color The {@link Piece.Color} of the side where we need to update the text
      */
     private void handleTimerUpdate(Piece.Color color) {
         Constants.whiteSide = color != Piece.Color.WHITE;
@@ -597,7 +597,7 @@ public class ChessController implements UIInteface {
     // ####################
 
     /**
-     * Swaps the {@link chess15.Piece.Color} the alg uses
+     * Swaps the {@link Piece.Color} the alg uses
      */
     private void switchAiMoveColor() {
         if (Constants.AlgColor == Piece.Color.WHITE) Constants.AlgColor = Piece.Color.BLACK;
@@ -881,7 +881,7 @@ public class ChessController implements UIInteface {
      * The end game is called when we want to finist the current game.
      * Pauses the timer and puts an overlay on the board with the ending condition
      *
-     * @param won    The {@link chess15.Piece.Color} of the winning side
+     * @param won    The {@link Piece.Color} of the winning side
      * @param reason The {@link WinReason} we ended the game
      */
     @Override

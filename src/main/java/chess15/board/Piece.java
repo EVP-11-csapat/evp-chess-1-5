@@ -1,4 +1,4 @@
-package chess15;
+package chess15.board;
 
 /**
  * This class represents a piece in a chess game.

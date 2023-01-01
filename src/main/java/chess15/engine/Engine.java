@@ -1,10 +1,10 @@
 package chess15.engine;
 
-import chess15.*;
+import chess15.board.*;
 import chess15.gamemode.Gamemode;
 import chess15.gui.interfaces.UIInteface;
 import chess15.gui.util.Constants;
-import chess15.util.Move;
+import chess15.board.Move;
 import chess15.util.WinReason;
 
 import java.util.ArrayList;

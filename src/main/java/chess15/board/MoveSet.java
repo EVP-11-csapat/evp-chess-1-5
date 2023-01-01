@@ -1,7 +1,4 @@
-package chess15;
-
-import chess15.engine.RuleSet;
-import kotlin.jvm.functions.Function3;
+package chess15.board;
 
 import java.util.ArrayList;
 

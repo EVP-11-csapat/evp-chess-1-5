@@ -1,11 +1,10 @@
 package chess15.algorithm;
 
-import chess15.Board;
-import chess15.Pawn;
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.board.Board;
+import chess15.board.Pawn;
+import chess15.board.Piece;
+import chess15.board.Vector2;
 import chess15.engine.Engine;
-import chess15.util.PiecePoints;
 
 import java.util.ArrayList;
 

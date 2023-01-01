@@ -1,5 +1,7 @@
 package chess15;
 
+import chess15.board.Board;
+import chess15.board.Vector2;
 import chess15.gamemode.Classical;
 import org.junit.Before;
 import org.junit.Test;

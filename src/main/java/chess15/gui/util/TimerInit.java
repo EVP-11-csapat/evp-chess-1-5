@@ -1,12 +1,9 @@
 package chess15.gui.util;
 
-import chess15.Piece;
-import chess15.Vector2;
+import chess15.board.Piece;
 import chess15.engine.EngineInterface;
-import chess15.engine.RuleSet;
-import chess15.gamemode.Fastpaced;
 import chess15.gui.controllers.ChessController;
-import chess15.util.Move;
+import chess15.board.Move;
 import chess15.util.WinReason;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;

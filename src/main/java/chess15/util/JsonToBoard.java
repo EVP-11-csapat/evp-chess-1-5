@@ -1,6 +1,6 @@
 package chess15.util;
 
-import chess15.*;
+import chess15.board.*;
 import chess15.gamemodes.JSONGrabber;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

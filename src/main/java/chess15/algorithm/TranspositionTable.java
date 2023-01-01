@@ -1,6 +1,6 @@
 package chess15.algorithm;
 
-import chess15.util.Move;
+import chess15.board.Move;
 
 import java.util.HashMap;
 

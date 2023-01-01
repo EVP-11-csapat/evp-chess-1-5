@@ -1,6 +1,6 @@
-package chess15.util;
+package chess15.algorithm;
 
-import chess15.*;
+import chess15.board.*;
 
 /**
  * Class used for piece evaluation

@@ -1,6 +1,6 @@
 package chess15.gamemode;
 
-import chess15.*;
+import chess15.board.*;
 import chess15.util.JsonToBoard;
 
 import java.util.ArrayList;

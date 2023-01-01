@@ -1,4 +1,4 @@
-package chess15;
+package chess15.board;
 
 /**
  * This class represents a single element of the chess board.

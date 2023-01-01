@@ -1,7 +1,7 @@
 package chess15.util;
 
-import chess15.Board;
-import chess15.Piece;
+import chess15.board.Board;
+import chess15.board.Piece;
 
 /**
  * A utility class for printing a board to the console in a readable format.

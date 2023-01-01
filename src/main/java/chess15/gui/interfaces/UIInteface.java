@@ -1,6 +1,6 @@
 package chess15.gui.interfaces;
-import chess15.Vector2;
-import chess15.Piece;
+import chess15.board.Vector2;
+import chess15.board.Piece;
 import chess15.util.WinReason;
 
 /**
@@ -8,7 +8,7 @@ import chess15.util.WinReason;
  */
 public interface UIInteface {
     /**
-     * @param won The {@link chess15.Piece.Color} of the winning side, <b>null</b> for draw
+     * @param won The {@link Piece.Color} of the winning side, <b>null</b> for draw
      * @param reason The {@link WinReason} of the game
      */
     void endGame(Piece.Color won, WinReason reason);
@@ -26,7 +26,7 @@ public interface UIInteface {
     void remove(Vector2 pieceToRemove, Piece taken);
 
     /**
-     * @param color The {@link chess15.Piece.Color} of the side currently promoting
+     * @param color The {@link Piece.Color} of the side currently promoting
      * @param to The {@link Vector2} position of the pawn / where to put the new piece
      */
     void promote(Piece.Color color, Vector2 to);

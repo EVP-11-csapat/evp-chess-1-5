@@ -1,6 +1,6 @@
 package chess15.gamemode;
 
-import chess15.Board;
+import chess15.board.Board;
 import chess15.util.JsonToBoard;
 
 public class Testing extends Gamemode{
