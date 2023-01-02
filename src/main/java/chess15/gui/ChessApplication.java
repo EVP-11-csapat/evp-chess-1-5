@@ -1,5 +1,6 @@
 package chess15.gui;
 
+import chess15.gui.util.Constants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,13 +17,13 @@ public class ChessApplication extends Application {
      * the application scene can be set.
      * Applications may create other stages, if needed, but they will not be
      * primary stages.
-     * @throws Exception
+     * @throws Exception if mainMenu.fxml is not found
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(ChessApplication.class.getResource("scenes/mainMenu.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        primaryStage.setTitle("Chess 1.5");
+        primaryStage.setTitle("Chess 1.5 ver 1.0" + (Constants.DEVMODE ? " Dev" : ""));
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
