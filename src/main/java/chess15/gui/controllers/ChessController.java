@@ -658,7 +658,7 @@ public class ChessController implements UIInteface {
         if (correctInput) {
             if (Constants.DEVMODE)
                 System.out.println("Pattern FOUND");
-            Move move = General.getMoveFromText(text, engine);
+            Move move = General.getMoveFromText(text.toLowerCase(), engine);
             if (move.from != null && move.from.x != -1) {
                 movePiece(move.from, move.to);
                 inputText.clear();

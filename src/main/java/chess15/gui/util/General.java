@@ -225,8 +225,11 @@ public class General {
      * @return A {@link Move} containing the from and to coordiantes
      */
     public static Move getMoveFromText(String moveText, EngineInterface engine) {
-        // TODO: Impement
-        // For move validity use engine.getMoves(from) on the from coordinate
+        Vector2 from = convertChessCoordToMove(moveText.substring(0,2));
+        Vector2 to = convertChessCoordToMove(moveText.substring(2, 4));
+        if (engine.getMoves(from).contains(to)) {
+            return new Move(from, to, null);
+        }
         return new Move(null, null, null);
     }
 }
