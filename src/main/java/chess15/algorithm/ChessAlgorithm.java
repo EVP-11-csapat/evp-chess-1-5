@@ -7,7 +7,7 @@ import chess15.board.Vector2;
 import chess15.engine.Engine;
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
-import chess15.gui.util.Constants;
+import chess15.gui.newui.Variables;
 import chess15.board.Move;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
                 return answer.black;
             } else {
                 tree = null;
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     System.out.println("going dark!");
             }
         }
@@ -71,10 +71,10 @@ public class ChessAlgorithm implements AlgorithmInterface {
             try {
 
                 while (!Thread.currentThread().isInterrupted()) {
-                    if (Constants.DEVMODE) System.out.println("starting iteration " + i);
+                    if (Variables.DEVMODE) System.out.println("starting iteration " + i);
                     bestScore = minmax(i, 0, engine, -infinity, infinity);
                     bestMove = bestMoveInIteration;
-                    if (Constants.DEVMODE) System.out.println("completed iteration " + i);
+                    if (Variables.DEVMODE) System.out.println("completed iteration " + i);
                     i++;
                 }
             } catch (InterruptedException ignored) {
@@ -87,7 +87,7 @@ public class ChessAlgorithm implements AlgorithmInterface {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             searchThread.interrupt();
-            if (Constants.DEVMODE) {
+            if (Variables.DEVMODE) {
                 System.out.println("time's up\n");
                 if (isWinScore(bestScore)) {
                     int mateIn = -(bestScore - mateScore);

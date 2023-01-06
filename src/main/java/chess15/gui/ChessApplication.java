@@ -1,6 +1,6 @@
 package chess15.gui;
 
-import chess15.gui.util.Constants;
+import chess15.gui.newui.Variables;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,7 +23,7 @@ public class ChessApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(ChessApplication.class.getResource("scenes/mainMenu.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        primaryStage.setTitle("Chess 1.5 ver 1.0" + (Constants.DEVMODE ? " Dev" : ""));
+        primaryStage.setTitle("Chess 1.5 ver 1.0" + (Variables.DEVMODE ? " Dev" : ""));
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();

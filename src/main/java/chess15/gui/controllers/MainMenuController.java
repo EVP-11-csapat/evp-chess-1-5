@@ -2,8 +2,8 @@ package chess15.gui.controllers;
 
 import chess15.engine.RuleSet;
 import chess15.gamemode.Classical;
+import chess15.gui.newui.Variables;
 import chess15.gui.scenes.ResourceGrabber;
-import chess15.gui.util.Constants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,7 +57,7 @@ public class MainMenuController {
      */
     @FXML
     protected void onAiButtonPressed() {
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("AI button pressed");
         RuleSet rules = RuleSet.getInstance();
         rules.castling = true;
@@ -71,7 +71,8 @@ public class MainMenuController {
 
         Parent newRoot;
         try {
-            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+//            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("newChess.fxml")));
         } catch (IOException e) {
             System.out.println("ERROR in MainMenuController (onAiButtonPressed): Chess.fxml not found");
             throw new RuntimeException(e);

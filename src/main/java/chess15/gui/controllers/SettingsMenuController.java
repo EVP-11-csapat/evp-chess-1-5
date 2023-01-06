@@ -3,8 +3,8 @@ package chess15.gui.controllers;
 import chess15.engine.RuleSet;
 import chess15.gamemode.*;
 import chess15.gui.images.ImageGrabber;
+import chess15.gui.newui.Variables;
 import chess15.gui.scenes.ResourceGrabber;
-import chess15.gui.util.Constants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
@@ -92,7 +92,7 @@ public class SettingsMenuController {
                 IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
                 classicalButton.setStyle("-fx-background-color: #5A5A5A;");
                 fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
                 pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
                 chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
@@ -107,7 +107,7 @@ public class SettingsMenuController {
                 IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
                 classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
                 fastpacedButton.setStyle("-fx-background-color: #5A5A5A;");
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
                 pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
                 chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
@@ -122,7 +122,7 @@ public class SettingsMenuController {
                 IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
                 classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
                 fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     testingButton.setStyle("-fx-background-color: #5A5A5A;");
                 pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
                 chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
@@ -137,7 +137,7 @@ public class SettingsMenuController {
                 IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
                 classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
                 fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
                 pawnAttackButton.setStyle("-fx-background-color: #5A5A5A;");
                 chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
@@ -152,7 +152,7 @@ public class SettingsMenuController {
                 IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: transparent;";
                 classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
                 fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
                 pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
                 chess960Button.setStyle("-fx-background-color: #5A5A5A;");
@@ -167,7 +167,7 @@ public class SettingsMenuController {
                 IDLE_CHAOS_MODE_BUTTON_STYLE = "-fx-background-color: #5A5A5A;";
                 classicalButton.setStyle(IDLE_CLASSICAL_BUTTON_STYLE);
                 fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE);
-                if (Constants.DEVMODE)
+                if (Variables.DEVMODE)
                     testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
                 pawnAttackButton.setStyle(IDLE_PAWNATTACK_BUTTON_STYLE);
                 chess960Button.setStyle(IDLE_CHESS960_BUTTON_STYLE);
@@ -311,7 +311,7 @@ public class SettingsMenuController {
                 "WARNING: This mode is chaotic", 4);
         chaosModeButton.setOnMousePressed(e -> onChaosModeSelected());
 
-        if (Constants.DEVMODE) {
+        if (Variables.DEVMODE) {
             testingButton =  setUpButton("fastpaced", "Testing",
                     "Made for testing", 5);
             testingButton.setOnMousePressed(e -> onTestingSelected());
@@ -344,7 +344,7 @@ public class SettingsMenuController {
         fastpacedButton.setOnMouseEntered(e -> fastpacedButton.setStyle(HOVERED_BUTTON_STYLE));
         fastpacedButton.setOnMouseExited(e -> fastpacedButton.setStyle(IDLE_FASTPACED_BUTTON_STYLE));
 
-        if (Constants.DEVMODE) {
+        if (Variables.DEVMODE) {
             testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE);
             testingButton.setOnMouseEntered(e -> testingButton.setStyle(HOVERED_BUTTON_STYLE));
             testingButton.setOnMouseExited(e -> testingButton.setStyle(IDLE_TESTING_BUTTON_STYLE));
@@ -374,7 +374,7 @@ public class SettingsMenuController {
         selectedGameMode = "classical";
         disableEverything();
         setSelectedGameModeButton();
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("Classical selected");
         playButton.setText("Play Classical");
         timerCheckBox.setDisable(false);
@@ -391,7 +391,7 @@ public class SettingsMenuController {
         selectedGameMode = "pawnattack";
         disableEverything();
         setSelectedGameModeButton();
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("Pawn attack selected");
         playButton.setText("Play Pawn attack");
         timerCheckBox.setDisable(false);
@@ -412,7 +412,7 @@ public class SettingsMenuController {
         selectedGameMode = "fastpaced";
         disableEverything();
         setSelectedGameModeButton();
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("Fast-paced selected");
         playButton.setText("Play Fast-Paced");
         timerCheckBox.setDisable(true);
@@ -433,7 +433,7 @@ public class SettingsMenuController {
         selectedGameMode = "testing";
         disableEverything();
         setSelectedGameModeButton();
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("Testing selected");
         playButton.setText("Play Testing");
         timerCheckBox.setDisable(false);
@@ -450,7 +450,7 @@ public class SettingsMenuController {
         selectedGameMode = "chess960";
         disableEverything();
         setSelectedGameModeButton();
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("Chess960 selected");
         playButton.setText("Play Chess96");
         timerCheckBox.setDisable(false);
@@ -469,7 +469,7 @@ public class SettingsMenuController {
         selectedGameMode = "chaos";
         disableEverything();
         setSelectedGameModeButton();
-        if (Constants.DEVMODE)
+        if (Variables.DEVMODE)
             System.out.println("Chaos mode selected");
         playButton.setText("Play Chaos Mode");
         timerCheckBox.setDisable(false);
@@ -551,7 +551,8 @@ public class SettingsMenuController {
             rules.enpassant = isEnPassantEnabled;
             Parent newRoot;
             try {
-                newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+//                newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("chess.fxml")));
+                newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("newChess.fxml")));
             } catch (IOException e) {
                 System.out.println("ERROR in SettingsMenuController (onPlayButtonPressed): Chess.fxml not found");
                 throw new RuntimeException(e);
