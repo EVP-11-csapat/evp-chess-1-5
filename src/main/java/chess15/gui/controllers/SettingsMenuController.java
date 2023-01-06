@@ -572,7 +572,7 @@ public class SettingsMenuController {
     protected void onBackButtonPressed() {
         Parent newRoot;
         try {
-            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("mainMenu.fxml")));
+            newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("newMainMenu.fxml")));
         } catch (IOException e) {
             System.out.println("ERROR in SettingsMenuController (onBackButtonPressed): Chess.fxml not found");
             throw new RuntimeException(e);

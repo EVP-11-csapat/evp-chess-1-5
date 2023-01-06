@@ -187,7 +187,7 @@ public class General {
 
     public static void changeScene(Stage stage) {
         try {
-            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("mainMenu.fxml")));
+            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(ResourceGrabber.getInstance().getClass().getResource("newMainMenu.fxml")));
             stage.getScene().setRoot(newRoot);
             stage.requestFocus();
         } catch (IOException e) {

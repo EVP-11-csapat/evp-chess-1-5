@@ -21,9 +21,9 @@ public class ChessApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ChessApplication.class.getResource("scenes/mainMenu.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ChessApplication.class.getResource("scenes/newMainMenu.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        primaryStage.setTitle("Chess 1.5 ver 1.1" + (Variables.DEVMODE ? " Dev" : ""));
+        primaryStage.setTitle("Chess 1.5 ver 1.2" + (Variables.DEVMODE ? " Dev" : ""));
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
