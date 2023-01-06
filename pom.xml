@@ -32,7 +32,7 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <replace file="src/main/java/chess15/gui/util/Constants.java"
+                                        <replace file="src/main/java/chess15/gui/newui/Variables.java"
                                              token="DEVMODE = true;"
                                              value="DEVMODE = false;"/>
                                     </target>
@@ -60,7 +60,7 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <replace file="src/main/java/chess15/gui/util/Constants.java"
+                                        <replace file="src/main/java/chess15/gui/newui/Variables.java"
                                                  token="DEVMODE = false;"
                                                  value="DEVMODE = true;"/>
                                     </target>
